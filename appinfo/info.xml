@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<info>
+	<id>files_external_links</id>
+	<name>External Links</name>
+	<description>This application allows users to create external links in their filelist and also to share them with others.
+	</description>
+	<licence>AGPL</licence>
+	<author>Thomas Ebert</author>
+	<version>1.0.1</version>
+	<dependencies>
+		<nextcloud min-version="12" max-version="13" />
+	</dependencies>
+</info>
