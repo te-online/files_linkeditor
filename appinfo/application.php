@@ -20,10 +20,10 @@
  */
 
 
-namespace OCA\Files_External_Links\AppInfo;
+namespace OCA\Files_Linkeditor\AppInfo;
 
 use OC\Files\View;
-use OCA\Files_External_Links\Controller\LinkHandlingController;
+use OCA\Files_Linkeditor\Controller\LinkHandlingController;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use Punic\Exception;
@@ -34,7 +34,7 @@ class Application extends App {
 	 * @param array $urlParams
 	 */
 	public function __construct(array $urlParams = array()) {
-		parent::__construct('files_external_links', $urlParams);
+		parent::__construct('files_linkeditor', $urlParams);
 
 		$container = $this->getContainer();
 		$server = $container->getServer();

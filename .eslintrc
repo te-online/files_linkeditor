@@ -1,0 +1,38 @@
+{
+	"globals": {
+    "_": true,
+    "t": true,
+    "OC": true,
+    "OCA": true,
+    "$": true
+  },
+  "env": {
+    "es6": false,
+    "node": false,
+    "browser": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "indent": [
+        "warn",
+        "tab"
+    ],
+    "linebreak-style": [
+        "warn",
+        "unix"
+    ],
+    "quotes": [
+        "warn",
+        "single"
+    ],
+    "no-console": [
+        "warn"
+    ],
+    "no-redeclare": [
+        "off"
+    ]
+  }
+}

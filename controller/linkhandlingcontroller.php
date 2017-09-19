@@ -20,7 +20,7 @@
  */
 
 
-namespace OCA\Files_External_Links\Controller;
+namespace OCA\Files_Linkeditor\Controller;
 
 
 use OC\HintException;
@@ -159,7 +159,7 @@ class LinkHandlingController extends Controller{
 				if($mtime !== $filemtime) {
 					// Then the file has changed since opening
 					$this->logger->error('File: ' . $path . ' modified since opening.',
-						['app' => 'files_external_links']);
+						['app' => 'files_linkeditor']);
 					return new DataResponse(
 						['message' => $this->l->t('Cannot save file as it has been modified since opening')],
 						Http::STATUS_BAD_REQUEST);
@@ -184,7 +184,7 @@ class LinkHandlingController extends Controller{
 					} else {
 						// Not writeable!
 						$this->logger->error('User does not have permission to write to file: ' . $path,
-							['app' => 'files_external_links']);
+							['app' => 'files_linkeditor']);
 						return new DataResponse([ 'message' => $this->l->t('Insufficient permissions')],
 							Http::STATUS_BAD_REQUEST);
 					}
@@ -193,7 +193,7 @@ class LinkHandlingController extends Controller{
 				$this->logger->error('No file path supplied');
 				return new DataResponse(['message' => $this->l->t('File path not supplied')], Http::STATUS_BAD_REQUEST);
 			} else {
-				$this->logger->error('No file mtime supplied', ['app' => 'files_external_links']);
+				$this->logger->error('No file mtime supplied', ['app' => 'files_linkeditor']);
 				return new DataResponse(['message' => $this->l->t('File mtime not supplied')], Http::STATUS_BAD_REQUEST);
 			}
 

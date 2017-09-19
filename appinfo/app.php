@@ -1,8 +1,7 @@
 <?php
 
-$app = new \OCA\Files_External_Links\AppInfo\Application();
-$eventDispatcher = \OC::$server->getEventDispatcher();
+$app = new \OCA\Files_Linkeditor\AppInfo\Application();
 
-OCP\Util::addScript('files_external_links', 'merged');
-OCP\Util::addStyle('files_external_links', 'merged');
+OCP\Util::addScript('files_linkeditor', 'merged');
+OCP\Util::addStyle('files_linkeditor', 'merged');
 
