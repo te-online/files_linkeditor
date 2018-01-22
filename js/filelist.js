@@ -5,8 +5,8 @@
  * later. See the COPYING file.
  *
  * @originalAuthor Tom Needham <tom@owncloud.com>
- * @author Thomas Ebert <thomas.ebert@usability.de>
- * @copyright Thomas Ebert 2017
+ * @author Thomas Ebert <thomas@thomasebert.net>
+ * @copyright Thomas Ebert 2018
  */
 
 var Files_Linkeditor = {
@@ -600,7 +600,6 @@ Files_Linkeditor.NewFileMenuPlugin = {
 		var fileList = menu.fileList;
 
 		// only attach to main file list, public view is not supported yet
-		console.log('file list id', fileList.id);
 		if (fileList.id !== 'files') {
 			return;
 		}
