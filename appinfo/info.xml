@@ -2,11 +2,13 @@
 <info>
 	<id>files_linkeditor</id>
 	<name>Link editor</name>
-	<description>This application allows users to create and edit external links in their filelist (.URL and .webloc) and also to open the links when publicly shared.
-	</description>
+	<summary>An app to read and edit .URL and .webloc files.</summary>
+	<description>This application allows users to create and edit external links in their filelist (.URL and .webloc) and also to open the links when publicly shared.</description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
 	<version>1.0.2</version>
+	<category>files</category>
+  <bugs>https://github.com/te-online/nextcloud--files_linkeditor/issues</bugs>
 	<dependencies>
 		<nextcloud min-version="13" max-version="13" />
 	</dependencies>
