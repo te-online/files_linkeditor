@@ -6,7 +6,7 @@
 	<description>This application allows users to create and edit external links in their filelist (.URL and .webloc) and also to open the links when publicly shared.</description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<category>files</category>
   <bugs>https://github.com/te-online/nextcloud--files_linkeditor/issues</bugs>
 	<dependencies>
