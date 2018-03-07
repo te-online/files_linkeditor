@@ -8,7 +8,13 @@
 	<author>Thomas Ebert</author>
 	<version>1.0.3</version>
 	<category>files</category>
-  <bugs>https://github.com/te-online/nextcloud--files_linkeditor/issues</bugs>
+	<documentation>
+		<user>https://github.com/te-online/files_linkeditor/blob/master/README.md</user>
+		<admin>https://github.com/te-online/files_linkeditor/blob/master/README.md</admin>
+	</documentation>
+	<website>https://github.com/te-online/files_linkeditor</website>
+	<repository type="git">https://github.com/te-online/files_linkeditor.git</repository>
+	<bugs>https://github.com/te-online/files_linkeditor/issues</bugs>
 	<dependencies>
 		<nextcloud min-version="13" max-version="13" />
 	</dependencies>
