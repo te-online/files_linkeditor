@@ -153,16 +153,6 @@ var Files_Linkeditor = {
 	},
 
 	/**
-	 * Handles the trigger or re open editor
-	 */
-	_onReOpenTrigger: function() {
-		if($('#notification').data('reopeneditor') == true) {
-			document.title = OCA.Files_Linkeditor.file.name + ' - ' + OCA.Files_Linkeditor.oldTitle;
-			OCA.Files_Linkeditor.$container.show();
-		}
-	},
-
-	/**
 	 * Handles the FileAction click event
 	 */
 	_onEditorTrigger: function(filename, context) {
@@ -451,14 +441,6 @@ var Files_Linkeditor = {
 	closeEditor: function() {
 		this.$container.html('').show();
 		this.unBindVisibleActions();
-		if (this.fileInfoModel) {
-			this.fileInfoModel.set({
-				// temp dummy, until we can do a PROPFIND
-				etag: this.fileInfoModel.get('id') + this.file.mtime,
-				mtime: this.file.mtime * 1000,
-				size: this.file.size
-			});
-		}
 		document.title = this.oldTitle;
 	},
 
