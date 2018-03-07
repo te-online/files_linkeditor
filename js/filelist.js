@@ -549,8 +549,8 @@ var Files_Linkeditor = {
 			+ '<plist version="1.0">\n'
 			+ '	<dict>\n'
 			+ '		<key>URL</key>\n'
-			+ '		<string>' + encodeURI(url) + '</string>'
-			+ '	</dict>'
+			+ '		<string>' + encodeURI(url) + '</string>\n'
+			+ '	</dict>\n'
 			+	'</plist>';
 		}
 	},
