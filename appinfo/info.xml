@@ -9,8 +9,8 @@
 	<version>1.0.3</version>
 	<category>files</category>
 	<documentation>
-		<user>https://github.com/te-online/files_linkeditor/blob/master/README.md</user>
-		<admin>https://github.com/te-online/files_linkeditor/blob/master/README.md</admin>
+		<user>https://github.com/te-online/nextcloud-app-releases/blob/master/files_linkeditor/v1.0.4/files_linkeditor/README.md</user>
+		<admin>https://github.com/te-online/nextcloud-app-releases/blob/master/files_linkeditor/v1.0.4/files_linkeditor/README.md</admin>
 	</documentation>
 	<website>https://github.com/te-online/files_linkeditor</website>
 	<repository type="git">https://github.com/te-online/files_linkeditor.git</repository>
