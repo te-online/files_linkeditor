@@ -509,7 +509,7 @@ var Files_Linkeditor = {
 			return oldcontent.replace(new RegExp('URL=.*', 'gm'), 'URL=' + encodeURI(url));
 		} else {
 			// Okay, let's create a new file.
-			return '[InternetShortcut]\nURL=' + encodeURI(url);
+			return '[InternetShortcut]\r\nURL=' + encodeURI(url);
 		}
 	},
 
