@@ -21,6 +21,18 @@
 
 $app = new \OCA\Files_Linkeditor\AppInfo\Application();
 
-OCP\Util::addScript('files_linkeditor', 'merged');
-OCP\Util::addStyle('files_linkeditor', 'merged');
+$eventDispatcher = \OC::$server->getEventDispatcher();
+$eventDispatcher->addListener(
+	'OCA\Files::loadAdditionalScripts',
+	function () {
+		OCP\Util::addScript('files_linkeditor', 'merged');
+		OCP\Util::addStyle('files_linkeditor', 'merged');
+	});
 
+
+$eventDispatcher->addListener(
+	'OCA\Files_Sharing::loadAdditionalScripts',
+	function () {
+		OCP\Util::addScript('files_linkeditor', 'merged');
+		OCP\Util::addStyle('files_linkeditor', 'merged');
+	});

@@ -197,8 +197,6 @@ var Files_Linkeditor = {
 		if(!OCA.Files) {
 			return;
 		}
-		// Don't load if not in the files app TODO: Fix for sharing
-		// if(!$('#content.app-files').length) { return; }
 		this.$container = container;
 		this.registerFileActions();
 		this.oldTitle = document.title;
