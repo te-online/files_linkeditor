@@ -491,7 +491,7 @@ var Files_Linkeditor = {
 			return oldcontent.replace(new RegExp('URL=.*', 'gm'), 'URL=' + sanitizeUrl(url));
 		} else {
 			// Okay, let's create a new file.
-			return '[InternetShortcut]\r\nURL=' + sanitizeUrl(url);
+			return '[InternetShortcut]\r\nURL=' + sanitizeUrl(url) + '\r\n';
 		}
 	},
 
