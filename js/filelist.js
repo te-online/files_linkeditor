@@ -176,7 +176,7 @@ var Files_Linkeditor = {
 		if(!OCA.Files_Linkeditor.file.edited) {
 			OCA.Files_Linkeditor.file.edited = true;
 		}
-		$('#linkeditor_visitlink').attr('href', encodeURI($('#linkeditor_url').val()));
+		$('#linkeditor_visitlink').attr('href', sanitizeUrl($('#linkeditor_url').val()));
 	},
 
 	/**
@@ -488,10 +488,10 @@ var Files_Linkeditor = {
 				oldcontent.indexOf('[InternetShortcut]') !== -1 &&
 				oldcontent.indexOf('URL=') !== -1) {
 			// Seems like it, replace the url.
-			return oldcontent.replace(new RegExp('URL=.*', 'gm'), 'URL=' + encodeURI(url));
+			return oldcontent.replace(new RegExp('URL=.*', 'gm'), 'URL=' + sanitizeUrl(url));
 		} else {
 			// Okay, let's create a new file.
-			return '[InternetShortcut]\r\nURL=' + encodeURI(url);
+			return '[InternetShortcut]\r\nURL=' + sanitizeUrl(url);
 		}
 	},
 
@@ -507,7 +507,7 @@ var Files_Linkeditor = {
 				// Let's use the first match.
 				var url = urllines[0];
 				// Return the part after the equal sign, which is suprisingly: the URL.
-				return encodeURI((url.split('='))[1]);
+				return sanitizeUrl((url.split('='))[1]);
 			}
 		}
 		return '';
@@ -523,7 +523,7 @@ var Files_Linkeditor = {
 		// See if at least two matches were found (the whole expression and the url itself).
 		if(urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
 			// Seems like it, replace the url.
-			return oldcontent.replace(urlmatch[1], encodeURI(url));
+			return oldcontent.replace(urlmatch[1], sanitizeUrl(url));
 		} else {
 			// Okay, let's create a new file.
 			return '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -531,7 +531,7 @@ var Files_Linkeditor = {
 			+ '<plist version="1.0">\n'
 			+ '	<dict>\n'
 			+ '		<key>URL</key>\n'
-			+ '		<string>' + encodeURI(url) + '</string>\n'
+			+ '		<string>' + sanitizeUrl(url) + '</string>\n'
 			+ '	</dict>\n'
 			+	'</plist>';
 		}
@@ -547,7 +547,7 @@ var Files_Linkeditor = {
 			// See if at least two matches were found (the whole expression and the url itself).
 			if(urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
 				// Let's use the first match.
-				return encodeURI(urlmatch[1]);
+				return sanitizeUrl(urlmatch[1]);
 			}
 		}
 		return '';
