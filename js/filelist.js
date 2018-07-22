@@ -506,8 +506,8 @@ var Files_Linkeditor = {
 			if(urllines && Array.isArray(urllines) && urllines.length > 0) {
 				// Let's use the first match.
 				var url = urllines[0];
-				// Return the part after the equal sign, which is suprisingly: the URL.
-				return sanitizeUrl((url.split('='))[1]);
+				// Return only the URL.
+				return sanitizeUrl(url.replace('URL=', ''));
 			}
 		}
 		return '';
