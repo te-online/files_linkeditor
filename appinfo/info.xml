@@ -6,7 +6,7 @@
 	<description>This application allows users to create and edit external links in their filelist (.URL and .webloc) and also to open the links when publicly shared.</description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<category>files</category>
 	<documentation>
 		<user>https://github.com/te-online/files_linkeditor/blob/master/README.md</user>
