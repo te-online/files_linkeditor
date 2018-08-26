@@ -212,9 +212,7 @@ var Files_Linkeditor = {
 				mime: value,
 				actionHandler: _.bind(_self._onEditorTrigger, _self),
 				permissions: OC.PERMISSION_UPDATE,
-				icon: function () {
-					return OC.imagePath('core', 'places/link');
-				}
+				iconClass: 'icon-link'
 			});
 
 			// @TODO: Use the same markup for both views.
@@ -299,9 +297,6 @@ var Files_Linkeditor = {
 					});
 				},
 				permissions: OC.PERMISSION_READ,
-				icon: function () {
-					return OC.imagePath('core', 'places/link');
-				},
 				iconClass: 'icon-link'
 			});
 
