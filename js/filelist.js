@@ -224,12 +224,13 @@ var Files_Linkeditor = {
 					window.context = context;
 					// Build the download url.
 					var downloadUrl = context.fileList.getDownloadUrl(filename);
-					// Find out where we are to use this link for the cancel button.
-					var currentUrl = encodeURI(context.fileList.linkTo() + '?path=' + context.dir);
 					// Find the element we are clicking on.
 					var linkElement = $('[href="'+ downloadUrl +'"]');
 					// Add a loading spinner.
 					linkElement.addClass('icon-loading');
+
+					// open a new window (or tab) directly to avoid the browsers popup warning
+					var linkWindow = window.open('./', '_blank');
 
 					$.ajax(
 						downloadUrl,
@@ -247,49 +248,23 @@ var Files_Linkeditor = {
 
 						// Remove the loading spinner.
 						linkElement.removeClass('icon-loading');
+
 						// Show error, if we don't have a url.
 						if(!url) {
+							linkWindow.close();
 							OC.dialogs.alert(
 								t('files_linkeditor', 'This link-file doesn\'t seem to be valid.'),
 								t('files_linkeditor', 'A slight problem')
 							);
 							return;
 						}
-						// Open a pop-up to show the target of the URL and a button to visit it.
-						$('body')
-							.append(
-							'<div id="linkeditor_overlay" class="oc-dialog-dim"></div>'
-							+'<div id="linkeditor_container" class="oc-dialog" style="position: fixed;">'
-								+'<div id="linkeditor">'
-							+'</div>'
-						);
-						$('#linkeditor').append(
-							'<div class="urledit push-bottom">'
-								+'<h3>' + filename + '</h3>'
-								+'<p class="urldisplay">'
-									+t('files_linkeditor', 'You are about to visit:')
-									+' <em>' + url + '</em>'
-								+'</p>'
-							+'</div>'
-							+'<div class="oc-dialog-buttonrow twobutton">'
-								+'<a href="' + currentUrl + '" class="button" id="linkeditor_cancel">' + t('files_linkeditor', 'Cancel') + '</a>'
-								+'<a href="' + url + '" target="_blank" class="button primary" id="linkeditor_visitlink">' + t('files_linkeditor', 'Visit link') + '</a>'
-							+'</div>'
-						);
 
-						// Add event listener for cancel click.
-						$(document).on('click', '#linkeditor_cancel', function(e) {
-							e.preventDefault();
-							$('#linkeditor_container').remove();
-							$('#linkeditor_overlay').remove();
-						});
+						// open link new window
+						linkWindow.location.href = url;
+						linkWindow.focus();
 
-						// Add event listener to close pop-up once user visits link.
-						$(document).on('click', '#linkeditor_visitlink', function() {
-							$('#linkeditor_container').remove();
-							$('#linkeditor_overlay').remove();
-						});
 					}).fail(function(jqXHR) {
+						linkWindow.close();
 						OC.dialogs.alert(
 							JSON.parse(jqXHR.responseText).message,
 							t('files_linkeditor', 'An error occurred!')
