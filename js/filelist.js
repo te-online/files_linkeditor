@@ -230,7 +230,7 @@ var Files_Linkeditor = {
 					linkElement.addClass('icon-loading');
 
 					// open a new window (or tab) directly to avoid the browsers popup warning
-					var linkWindow = window.open('./', '_blank');
+					var linkWindow = window.open('about:blank', '_blank');
 
 					$.ajax(
 						downloadUrl,
