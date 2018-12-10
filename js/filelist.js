@@ -250,7 +250,7 @@ var Files_Linkeditor = {
 						// Show error, if we don't have a url.
 						if(!url) {
 							OC.dialogs.alert(
-								t('files_linkeditor', 'This link-file doesn\'t seem to be valid.'),
+								t('files_linkeditor', 'This link-file doesn\'t seem to be valid. – You can fix this by editing the file.'),
 								t('files_linkeditor', 'A slight problem')
 							);
 							return;

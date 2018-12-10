@@ -5,7 +5,7 @@ OC.L10N.register(
 		'Saving failed!': 'Speichern fehlgeschlagen!',
 		'Edit link': 'Link bearbeiten',
 		'View link': 'Link ansehen',
-		'This link-file doesn\'t seem to be valid.': 'Diese Link-Datei scheint nicht lesbar zu sein.',
+		'This link-file doesn\'t seem to be valid. – You can fix this by editing the file.': 'Diese Link-Datei scheint nicht lesbar zu sein. – Du kannst die Datei durch Bearbeiten reparieren.',
 		'A slight problem': 'Kleines Problem',
 		'Cancel': 'Abbrechen',
 		'Visit link': 'Link besuchen',
