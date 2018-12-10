@@ -273,7 +273,7 @@ var Files_Linkeditor = {
 							+'</div>'
 							+'<div class="oc-dialog-buttonrow twobutton">'
 								+'<a href="' + currentUrl + '" class="button" id="linkeditor_cancel">' + t('files_linkeditor', 'Cancel') + '</a>'
-								+'<a href="' + url + '" target="_blank" class="button primary" id="linkeditor_visitlink">' + t('files_linkeditor', 'Visit link') + '</a>'
+								+'<a href="' + url + '" target="_blank" class="button primary" id="linkviewer_visitlink">' + t('files_linkeditor', 'Visit link') + '</a>'
 							+'</div>'
 						);
 
@@ -285,7 +285,7 @@ var Files_Linkeditor = {
 						});
 
 						// Add event listener to close pop-up once user visits link.
-						$(document).on('click', '#linkeditor_visitlink', function() {
+						$(document).on('click', '#linkviewer_visitlink', function() {
 							$('#linkeditor_container').remove();
 							$('#linkeditor_overlay').remove();
 						});
