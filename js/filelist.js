@@ -228,73 +228,8 @@ var Files_Linkeditor = {
 					var currentUrl = encodeURI(context.fileList.linkTo() + '?path=' + context.dir);
 					// Find the element we are clicking on.
 					var linkElement = $('[href="'+ downloadUrl +'"]');
-					// Add a loading spinner.
-					linkElement.addClass('icon-loading');
-
-					$.ajax(
-						downloadUrl,
-						{}
-					).done(function(data) {
-						// Read extension and run fitting parser.
-						var extension = OCA.Files_Linkeditor.getExtension(filename);
-						// Parse the filecontent to get to the URL.
-						var url = '';
-						if(extension === 'webloc') {
-							url = OCA.Files_Linkeditor.parseWeblocFile(data);
-						} else {
-							url = OCA.Files_Linkeditor.parseURLFile(data);
-						}
-
-						// Remove the loading spinner.
-						linkElement.removeClass('icon-loading');
-						// Show error, if we don't have a url.
-						if(!url) {
-							OC.dialogs.alert(
-								t('files_linkeditor', 'This link-file doesn\'t seem to be valid. – You can fix this by editing the file.'),
-								t('files_linkeditor', 'A slight problem')
-							);
-							return;
-						}
-						// Open a pop-up to show the target of the URL and a button to visit it.
-						$('body')
-							.append(
-							'<div id="linkeditor_overlay" class="oc-dialog-dim"></div>'
-							+'<div id="linkeditor_container" class="oc-dialog" style="position: fixed;">'
-								+'<div id="linkeditor">'
-							+'</div>'
-						);
-						$('#linkeditor').append(
-							'<div class="urledit push-bottom">'
-								+'<h3>' + filename + '</h3>'
-								+'<p class="urldisplay">'
-									+t('files_linkeditor', 'You are about to visit:')
-									+' <em>' + url + '</em>'
-								+'</p>'
-							+'</div>'
-							+'<div class="oc-dialog-buttonrow twobutton">'
-								+'<a href="' + currentUrl + '" class="button" id="linkeditor_cancel">' + t('files_linkeditor', 'Cancel') + '</a>'
-								+'<a href="' + url + '" target="_blank" class="button primary" id="linkviewer_visitlink">' + t('files_linkeditor', 'Visit link') + '</a>'
-							+'</div>'
-						);
-
-						// Add event listener for cancel click.
-						$(document).on('click', '#linkeditor_cancel', function(e) {
-							e.preventDefault();
-							$('#linkeditor_container').remove();
-							$('#linkeditor_overlay').remove();
-						});
-
-						// Add event listener to close pop-up once user visits link.
-						$(document).on('click', '#linkviewer_visitlink', function() {
-							$('#linkeditor_container').remove();
-							$('#linkeditor_overlay').remove();
-						});
-					}).fail(function(jqXHR) {
-						OC.dialogs.alert(
-							JSON.parse(jqXHR.responseText).message,
-							t('files_linkeditor', 'An error occurred!')
-						);
-					});
+					// Trigger view Action
+					OCA.Files_Linkeditor.viewAction(filename, downloadUrl, currentUrl, linkElement)
 				},
 				permissions: OC.PERMISSION_READ,
 				iconClass: 'icon-link'
@@ -302,6 +237,76 @@ var Files_Linkeditor = {
 
 			// Use Link viewing as default action.
 			OCA.Files.fileActions.setDefault(value, 'viewLink');
+		});
+	},
+
+	viewAction: function(filename, downloadUrl, currentUrl, linkElement) {
+		// Add a loading spinner.
+		linkElement.addClass('icon-loading');
+
+		$.ajax(
+			downloadUrl,
+			{}
+		).done(function(data) {
+			// Read extension and run fitting parser.
+			var extension = OCA.Files_Linkeditor.getExtension(filename);
+			// Parse the filecontent to get to the URL.
+			var url = '';
+			if(extension === 'webloc') {
+				url = OCA.Files_Linkeditor.parseWeblocFile(data);
+			} else {
+				url = OCA.Files_Linkeditor.parseURLFile(data);
+			}
+
+			// Remove the loading spinner.
+			linkElement.removeClass('icon-loading');
+			// Show error, if we don't have a url.
+			if(!url) {
+				OC.dialogs.alert(
+					t('files_linkeditor', 'This link-file doesn\'t seem to be valid. – You can fix this by editing the file.'),
+					t('files_linkeditor', 'A slight problem')
+				);
+				return;
+			}
+			// Open a pop-up to show the target of the URL and a button to visit it.
+			$('body')
+				.append(
+				'<div id="linkeditor_overlay" class="oc-dialog-dim"></div>'
+				+'<div id="linkeditor_container" class="oc-dialog" style="position: fixed;">'
+					+'<div id="linkeditor">'
+				+'</div>'
+			);
+			$('#linkeditor').append(
+				'<div class="urledit push-bottom">'
+					+'<h3>' + filename + '</h3>'
+					+'<p class="urldisplay">'
+						+t('files_linkeditor', 'You are about to visit:')
+						+' <em>' + url + '</em>'
+					+'</p>'
+				+'</div>'
+				+'<div class="oc-dialog-buttonrow twobutton">'
+					+'<a href="' + currentUrl + '" class="button" id="linkeditor_cancel">' + t('files_linkeditor', 'Cancel') + '</a>'
+					+'<a href="' + url + '" target="_blank" class="button primary" id="linkviewer_visitlink">' + t('files_linkeditor', 'Visit link') + '</a>'
+				+'</div>'
+			);
+
+			// Add event listener for cancel click.
+			$(document).on('click', '#linkeditor_cancel', function(e) {
+				e.preventDefault();
+				$('#linkeditor_container').remove();
+				$('#linkeditor_overlay').remove();
+			});
+
+			// Add event listener to close pop-up once user visits link.
+			$(document).on('click', '#linkviewer_visitlink', function() {
+				$('#linkeditor_container').remove();
+				$('#linkeditor_overlay').remove();
+			});
+		}).fail(function(jqXHR) {
+			OC.dialogs.alert(
+				JSON.parse(jqXHR.responseText).message,
+				t('files_linkeditor', 'An error occurred!')
+			);
 		});
 	},
 
@@ -610,5 +615,25 @@ OCA.Files_Linkeditor = Files_Linkeditor;
 OC.Plugins.register('OCA.Files.NewFileMenu', Files_Linkeditor.NewFileMenuPlugin);
 
 $(document).ready(function () {
+	// Initialize Linkeditor plugin.
 	OCA.Files_Linkeditor.initialize($('<div id="app-content-linkeditor"></div>'));
+	// Public download page, single file
+	if($('.directDownload').length > 0) {
+		// Create a clone of the download button
+		var open = $('.directDownload').clone().removeClass('directDownload').addClass('viewLink');
+		// Append it
+		$('.directDownload').parent().append(open);
+		// Get the download URL
+		var downloadUrl = $('input#downloadURL').val();
+		// Get the filename
+		var filename = $('input#filename').val();
+		// Replace link and id on new button, add icon and label
+		$(open).find('a').attr('href', '#/').attr('id', 'openFile')
+		.html('<span class="icon icon-link"></span>\n' + t('files_linkeditor', 'View link'));
+		// Add click handler
+		$(document).on('click', '.viewLink', function(e) {
+			// Show view modal when clicked
+			OCA.Files_Linkeditor.viewAction(filename, downloadUrl, window.location.href, open)
+		});
+	}
 });
