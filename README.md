@@ -12,3 +12,11 @@ A nextcloud app to edit .URL and .webloc files and visit links stored in them.
 ## What are .URL or .webloc files?
 
 If you ever saved a favorite/shortcut in a browser on macOS or Windows, you have thereby created a .webloc or .URL file. Windows saves internet-shortcuts in .URL files and macOS in .webloc files. Example: You drag and drop a shortcut from Firefox to your macOS Desktop -> you have a .webloc file. Now if you sync this file with your Nextcloud, you can view, edit or open the link from within the webinterface.
+
+## Changelog
+
+### 1.0.8, 11. Dec 2018
+- Initial changelog entry.
+- Add nextcloud 15 compatibility.
+- Fix pop-up closing, when visit link is clicked on edit pop-up.
+- Allow directly shared link files to be opened. Fixes #19.
