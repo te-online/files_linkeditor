@@ -15,6 +15,9 @@ If you ever saved a favorite/shortcut in a browser on macOS or Windows, you have
 
 ## Changelog
 
+### 1.0.9, 19. Dec 2018
+- Fix issue with public single file shares always displaying `View link` button. Fixes #22.
+
 ### 1.0.8, 11. Dec 2018
 - Initial changelog entry.
 - Add nextcloud 15 compatibility.
