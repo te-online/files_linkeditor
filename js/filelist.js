@@ -617,16 +617,18 @@ OC.Plugins.register('OCA.Files.NewFileMenu', Files_Linkeditor.NewFileMenuPlugin)
 $(document).ready(function () {
 	// Initialize Linkeditor plugin.
 	OCA.Files_Linkeditor.initialize($('<div id="app-content-linkeditor"></div>'));
+	// Get the filename
+	var filename = $('input#filename').val();
+	// Get extension
+	var extension = Files_Linkeditor.getExtension(filename);
 	// Public download page, single file
-	if($('.directDownload').length > 0) {
+	if($('.directDownload').length > 0 && (extension === 'url' || extension === 'webloc')) {
 		// Create a clone of the download button
 		var open = $('.directDownload').clone().removeClass('directDownload').addClass('viewLink');
 		// Append it
 		$('.directDownload').parent().append(open);
 		// Get the download URL
 		var downloadUrl = $('input#downloadURL').val();
-		// Get the filename
-		var filename = $('input#filename').val();
 		// Replace link and id on new button, add icon and label
 		$(open).find('a').attr('href', '#/').attr('id', 'openFile')
 		.html('<span class="icon icon-link"></span>\n' + t('files_linkeditor', 'View link'));
