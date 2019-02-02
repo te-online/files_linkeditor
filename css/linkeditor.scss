@@ -1,19 +1,18 @@
 .oc-dialog .urlvisit {
-	margin-bottom: 25px;
+  margin-bottom: 25px;
 }
 
 .oc-dialog .urledit {
-	padding-left: 10px;
-	padding-right: 10px;
-	min-width: 300px;
-	max-width: 400px;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-width: 300px;
+  max-width: 400px;
 
-	&.push-bottom {
-		margin-bottom: 15px;
-	}
+  &.push-bottom {
+    margin-bottom: 15px;
+  }
 
-	.urldisplay {
-		word-wrap: break-word;
-	}
+  .urldisplay {
+    word-wrap: break-word;
+  }
 }
-
