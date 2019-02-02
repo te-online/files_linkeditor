@@ -367,8 +367,12 @@ var Files_Linkeditor = {
 				// Fill input.
 				$('#linkeditor_url').val(url);
 
-				// Bind actions and focus input.
+				// Bind actions.
 				_self.bindVisibleActions();
+				// Hotfix for the intervening sidebar.
+				$('#app-sidebar').css('display', 'none');
+				$('#app-sidebar').addClass('disappear');
+				// Focus the input.
 				$('#linkeditor_url').focus();
 
 				// Set url for link.
