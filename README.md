@@ -15,9 +15,15 @@ If you ever saved a favorite/shortcut in a browser on macOS or Windows, you have
 
 ## Changelog
 
+### 1.0.11, 10. Oct 2019
+- Improve appstore description and add screenshots (thanks to @jospoortvliet).
+- Add Spanish translation (thanks to @alemorbel).
+- Add compatibility for Nextcloud 17.
+- Set `scrollTop` property, when creating a new file (see https://github.com/nextcloud/server/pull/12990)
+
 ### 1.0.10, 2. Feb 2019
 - Apply temporary fix to sidebar issue. See #18.
-- Add compatibility for nextcloud 16.
+- Add compatibility for Nextcloud 16.
 
 ### 1.0.9, 19. Dec 2018
 - Fix issue with public single file shares always displaying `View link` button. Fixes #22.
