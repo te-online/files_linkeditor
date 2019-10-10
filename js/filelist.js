@@ -598,7 +598,9 @@ Files_Linkeditor.NewFileMenuPlugin = {
 			actionHandler: function(name) {
 				var dir = fileList.getCurrentDirectory();
 				// first create the file
-				fileList.createFile(name).then(function() {
+				fileList.createFile(name, {
+					scrollTo: false
+				}).then(function() {
 					// once the file got successfully created,
 					// open the editor
 					Files_Linkeditor._onEditorTrigger(
