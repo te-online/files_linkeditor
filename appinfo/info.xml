@@ -13,8 +13,8 @@
 	<author>Thomas Ebert</author>
 	<version>1.0.11</version>
 	<category>files</category>
-	<screenshot>https://github.com/te-online/files_linkeditor/blob/master/img/link_editor.png</screenshot>
-	<screenshot>https://github.com/te-online/files_linkeditor/blob/master/img/link_editor_edit.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/master/img/link_editor.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/master/img/link_editor_edit.png</screenshot>
 	<documentation>
 		<user>https://github.com/te-online/files_linkeditor/blob/master/README.md</user>
 		<admin>https://github.com/te-online/files_linkeditor/blob/master/README.md</admin>
