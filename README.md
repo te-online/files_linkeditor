@@ -15,8 +15,11 @@ If you ever saved a favorite/shortcut in a browser on macOS or Windows, you have
 
 ## Changelog
 
-### 1.0.12, 9. Mar 2020
+### 1.0.13, 9. Mar 2020
 - Add Basque translation (thanks to @aldatsa).
+
+### 1.0.12, 7. Jan 2020
+- Add French translation (thanks to @Gildas-GH).
 
 ### 1.0.11, 10. Oct 2019
 - Improve appstore description and add screenshots (thanks to @jospoortvliet).
