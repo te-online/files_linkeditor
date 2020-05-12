@@ -1,31 +1,55 @@
 <script>
-  export let filename = '.url'
-  export let url = 'about:blank'
-  export let currentUrl = ''
-  import Overlay from './Overlay.svelte'
-  const t = window.t
+	import Overlay from "./Overlay.svelte";
+	import { viewMode, currentFile } from "../store";
+	import { onDestroy, onMount } from "svelte";
+	import { FileService } from "../File.service";
+	const t = window.t;
 
-  // @TODO: Implement closing
+	$: file = FileService.getFileConfig();
+	$: loading = true;
+	let unsubscribe;
+	onMount(() => {
+		// Subscribe to changes of the current file
+		unsubscribe = currentFile.subscribe(async (fileUpdate) => {
+			file = fileUpdate;
+			if (file.url && file.url !== "about:blank") {
+				loading = false;
+      }
+      // @TODO: Show error when url is permanently empty (or maybe show editor?)
+		});
+	});
+
+	onDestroy(() => {
+		// Unsubscribe from store to avoid memory leaks
+		unsubscribe();
+  });
+
+  // @TODO: Add viewing of public link shares
 </script>
 
-<Overlay>
-  <div class="urledit push-bottom">
-    <h3>{filename}</h3>
-    <p class="urldisplay">
-      {t('files_linkeditor', 'You are about to visit:')}
-      <em>{url}</em>
-    </p>
-  </div>
-  <div class="oc-dialog-buttonrow twobutton">
-    <a href={currentUrl} class="button" id="linkeditor_cancel">
-      {t('files_linkeditor', 'Cancel')}
-    </a>
-    <a
-      href={url}
-      target="_blank"
-      class="button primary"
-      id="linkviewer_visitlink">
-      {t('files_linkeditor', 'Visit link')}
-    </a>
-  </div>
+<Overlay {loading}>
+	<div class="urledit push-bottom">
+		<h3>{file.name}</h3>
+		{#if !loading}
+			<p class="urldisplay">
+				{t('files_linkeditor', 'You are about to visit:')}
+				<em>{file.url}</em>
+			</p>
+		{/if}
+	</div>
+	<div class="oc-dialog-buttonrow twobutton">
+		<a
+			href={file.currentUrl}
+			class="button"
+			on:click|preventDefault={() => {
+				viewMode.update(() => 'none');
+			}}>
+			{t('files_linkeditor', 'Cancel')}
+		</a>
+		{#if !loading}
+			<a href={file.url} target="_blank" class="button primary" id="linkviewer_visitlink">
+				{t('files_linkeditor', 'Visit link')}
+			</a>
+		{/if}
+	</div>
 </Overlay>

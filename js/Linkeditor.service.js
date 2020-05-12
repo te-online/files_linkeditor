@@ -1,4 +1,6 @@
 import { sanitizeUrl } from "./sanitizeUrl";
+import { viewMode, currentFile } from "./store.js";
+import { FileService } from "./File.service";
 
 const supportedMimetype = "application/internet-shortcut";
 export class LinkeditorService {
@@ -12,9 +14,8 @@ export class LinkeditorService {
 			displayName: t("files_linkeditor", "Edit link"),
 			mime: supportedMimetype,
 			// @TODO:
-			actionHandler: (something) => {
-				console.log({ edit: true, something });
-			},
+			actionHandler: async (filename, context) =>
+				await LinkeditorService.loadAndChangeViewMode({ filename, context, nextViewMode: "edit" }),
 			permissions: window.OC.PERMISSION_UPDATE,
 			iconClass: "icon-link",
 		});
@@ -24,24 +25,8 @@ export class LinkeditorService {
 			name: "viewLink",
 			displayName: t("files_linkeditor", "View link"),
 			mime: supportedMimetype,
-			actionHandler: (filename, context) => {
-				window.context = context;
-				// Build the download url.
-				const downloadUrl = context.fileList.getDownloadUrl(filename);
-				// Find out where we are to use this link for the cancel button.
-				const currentUrl = encodeURI(context.fileList.linkTo() + "?path=" + context.dir);
-				// Find the element we are clicking on.
-				const linkElement = document.querySelector('[href="' + downloadUrl + '"]');
-				// Trigger view Action
-				// @TODO:
-				console.log({
-					view: true,
-					filename,
-					downloadUrl,
-					currentUrl,
-					linkElement,
-				});
-			},
+			actionHandler: async (filename, context) =>
+				await LinkeditorService.loadAndChangeViewMode({ filename, context, nextViewMode: "view" }),
 			permissions: window.OC.PERMISSION_READ,
 			iconClass: "icon-link",
 		});
@@ -82,11 +67,46 @@ export class LinkeditorService {
 									dir: dir,
 									name,
 								});
+								viewMode.update(() => "edit");
+								currentFile.update(() =>
+									FileService.getFileConfig({
+										name,
+										dir,
+									})
+								);
 							});
 					},
 				});
 			},
 		});
+	}
+
+	static async loadAndChangeViewMode({ filename, context, nextViewMode }) {
+		window.context = context;
+		// Find out where we are to use this link for the cancel button.
+		const currentUrl = encodeURI(context.fileList.linkTo() + "?path=" + context.dir);
+		// Get ready to show viewer
+		viewMode.update(() => nextViewMode);
+		// Preliminary file config update
+		currentFile.update(() =>
+			FileService.getFileConfig({
+				name: filename,
+				currentUrl,
+			})
+		);
+		// Load file from backend
+		const file = await FileService.load({ filename, dir: context.dir });
+		// Read extension and run fitting parser.
+		const extension = LinkeditorService.getExtension(filename);
+		// Parse the filecontent to get to the URL.
+		let url = "";
+		if (extension === "webloc") {
+			url = LinkeditorService.parseWeblocFile(file.filecontents);
+		} else {
+			url = LinkeditorService.parseURLFile(file.filecontents);
+		}
+		// Update file info in store
+		currentFile.update((fileConfig) => ({ ...fileConfig, url: sanitizeUrl(url) }));
 	}
 
 	/**
