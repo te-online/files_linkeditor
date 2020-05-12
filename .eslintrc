@@ -6,33 +6,13 @@
     "OCA": true,
     "$": true
   },
-  "env": {
-    "es6": false,
-    "node": false,
-    "browser": true
-  },
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "sourceType": "module"
-  },
+  "extends": [
+    "standard",
+    "prettier",
+    "plugin:prettier/recommended"
+  ],
   "rules": {
-    "indent": [
-        "warn",
-        "tab"
-    ],
-    "linebreak-style": [
-        "warn",
-        "unix"
-    ],
-    "quotes": [
-        "warn",
-        "single"
-    ],
-    "no-console": [
-        "warn"
-    ],
-    "no-redeclare": [
-        "off"
-    ]
+    "dot-notation": "off",
+    "camelcase": "off"
   }
 }
