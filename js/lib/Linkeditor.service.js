@@ -159,9 +159,9 @@ export class LinkeditorService {
 			// Parse the filecontent to get to the URL.
 			let url = "";
 			if (extension === "webloc") {
-				url = Parser.parseWeblocFile(file.filecontents);
+				url = Parser.parseWeblocFile(file.filecontents).url;
 			} else {
-				url = Parser.parseURLFile(file.filecontents);
+				url = Parser.parseURLFile(file.filecontents).url;
 			}
 			// Update file info in store
 			currentFile.update((fileConfig) =>

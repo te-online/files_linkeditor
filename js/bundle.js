@@ -4463,6 +4463,19 @@
       }
     });
 
+    var extraFields = {
+      skipConfirmNavigation: "X-Skip-Confirm-Navigation=1",
+      sameWindow: "X-Target=_self"
+    };
+    var extraFieldNames = {
+      skipConfirmNavigation: "X-Skip-Confirm-Navigation",
+      sameWindow: "X-Target"
+    };
+    var emptyFile = {
+      url: "",
+      sameWindow: false,
+      skipConfirmNavigation: true
+    };
     var Parser = /*#__PURE__*/function () {
       function Parser() {
         _classCallCheck(this, Parser);
@@ -4474,15 +4487,34 @@
         /**
          * Generates a URL file.
          */
-        value: function generateURLFileContent(oldcontent, url) {
-          // Find if this is already a shortcut file.
-          if (oldcontent && oldcontent.indexOf("[InternetShortcut]") !== -1 && oldcontent.indexOf("URL=") !== -1) {
+        value: function generateURLFileContent(oldContent, url) {
+          var sameWindow = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+          var skipConfirmNavigation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+          var newContent = ""; // Find if this is already a shortcut file.
+
+          if (oldContent && oldContent.indexOf("[InternetShortcut]") !== -1 && oldContent.indexOf("URL=") !== -1) {
             // Seems like it, replace the url.
-            return oldcontent.replace(new RegExp("URL=.*", "gm"), "URL=" + sanitizeUrl(url));
+            newContent = oldContent.replace(new RegExp("URL=.*", "gm"), "URL=".concat(sanitizeUrl(url)));
           } else {
             // Okay, let's create a new file.
-            return "[InternetShortcut]\r\nURL=".concat(sanitizeUrl(url), "\r\n");
+            newContent = "[InternetShortcut]\r\nURL=".concat(sanitizeUrl(url), "\r\n");
+          } // Adjust same window property
+
+
+          if (!sameWindow && newContent.indexOf(extraFields.sameWindow) !== -1) {
+            newContent = newContent.replace(extraFields.sameWindow, "");
+          } else if (sameWindow && newContent.indexOf(extraFields.sameWindow) === -1) {
+            newContent = "".concat(newContent, "\r\n").concat(extraFields.sameWindow);
+          } // Adjust skip navigation confirmation property
+
+
+          if (!skipConfirmNavigation && newContent.indexOf(extraFields.skipConfirmNavigation) !== -1) {
+            newContent = newContent.replace(extraFields.skipConfirmNavigation, "");
+          } else if (skipConfirmNavigation && newContent.indexOf(extraFields.skipConfirmNavigation) === -1) {
+            newContent = "".concat(newContent, "\r\n").concat(extraFields.skipConfirmNavigation);
           }
+
+          return newContent;
         }
         /**
          * Parse a URL file.
@@ -4491,6 +4523,8 @@
       }, {
         key: "parseURLFile",
         value: function parseURLFile(filecontent) {
+          var result = _objectSpread2({}, emptyFile);
+
           if (filecontent) {
             // Match for URL line.
             var urllines = filecontent.match("URL=.*"); // See if matches were found.
@@ -4499,11 +4533,21 @@
               // Let's use the first match.
               var url = urllines[0]; // Return only the URL.
 
-              return sanitizeUrl(url.replace("URL=", ""));
+              result.url = sanitizeUrl(url.replace("URL=", ""));
+            } // If this extra field is present, we skip the navigation confirmation view
+
+
+            if (filecontent.indexOf(extraFields.skipConfirmNavigation) !== -1) {
+              result.skipConfirmNavigation = true;
+            } // If this extra field is present, the link opens in the same window
+
+
+            if (filecontent.indexOf(extraFields.sameWindow) !== -1) {
+              result.sameWindow = true;
             }
           }
 
-          return "";
+          return result;
         }
         /**
          * Generates a webloc file.
@@ -4512,17 +4556,37 @@
       }, {
         key: "generateWeblocFileContent",
         value: function generateWeblocFileContent(oldcontent, url) {
+          var sameWindow = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+          var skipConfirmNavigation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
           // Find if this is already a shortcut file.
-          // Match for URL line.
-          var urlmatch = oldcontent.match("<key>URL</key>\n.<string>(.*)</string>"); // See if at least two matches were found (the whole expression and the url itself).
+          var newContent = ""; // Match for URL line.
+
+          var urlmatch = oldcontent.match("<key>URL</key>\n.<string>(.*)</string>");
+          var sameWindowMatch = oldcontent.indexOf("<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>")) !== -1;
+          var skipConfirmNavigationMatch = oldcontent.indexOf("<dict><key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string></dict>")) !== -1; // See if at least two matches were found (the whole expression and the url itself).
 
           if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
             // Seems like it, replace the url.
-            return oldcontent.replace(urlmatch[1], sanitizeUrl(url));
+            newContent = oldcontent.replace(urlmatch[1], sanitizeUrl(url)); // Check for same window property
+
+            if (!sameWindow && sameWindowMatch) {
+              newContent = newContent.replace("<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>"), "");
+            } else if (sameWindow && !sameWindowMatch) {
+              newContent = newContent.replace("</plist>", "<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>\n</plist>"));
+            } // Check for skip confirm navigation property
+
+
+            if (!skipConfirmNavigation && skipConfirmNavigationMatch) {
+              newContent = newContent.replace("<dict>\n<key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string>\n</dict>"), "");
+            } else if (skipConfirmNavigation && !skipConfirmNavigationMatch) {
+              newContent = newContent.replace("</plist>", "<dict>\n<key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string>\n</dict>\n</plist>"));
+            }
           } else {
             // Okay, let's create a new file.
-            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t<plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(sanitizeUrl(url), "</string>\n\t\t\t\t\t</dict>\n\t\t\t\t</plist>").replace(/(\n|\b)\t+/g, "$1").trim();
+            newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t<plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(sanitizeUrl(url), "</string>\n\t\t\t\t\t</dict>\n\t\t\t\t\t").concat(sameWindow ? "\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>".concat(extraFieldNames.sameWindow, "</key>\n\t\t\t\t\t\t<string>_self</string>\n\t\t\t\t\t</dict>") : "", "\n\t\t\t\t\t").concat(skipConfirmNavigation ? "\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n\t\t\t\t\t\t<string>1</string>\n\t\t\t\t\t</dict>") : "", "\n\t\t\t\t</plist>").replace(/(\n|\b)\t+/g, "$1").trim();
           }
+
+          return newContent;
         }
         /**
          * Parse a webloc file.
@@ -4531,17 +4595,33 @@
       }, {
         key: "parseWeblocFile",
         value: function parseWeblocFile(filecontent) {
+          var result = _objectSpread2({}, emptyFile);
+
           if (filecontent) {
             // Match for URL line.
             var urlmatch = filecontent.replace(/(\n|\b)\t+/g, "$1").trim().match("<key>URL</key>\n\t\t\t\t\t<string>(.*)</string>\n\t\t\t\t\t".replace(/(\n|\b)\t+/g, "$1").trim()); // See if at least two matches were found (the whole expression and the url itself).
 
             if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
               // Let's use the first match.
-              return sanitizeUrl(urlmatch[1]);
+              result.url = sanitizeUrl(urlmatch[1]);
+            } // If this extra field is present, we skip the navigation confirmation view
+
+
+            var sameWindowMatch = filecontent.indexOf("<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>")) !== -1;
+
+            if (sameWindowMatch) {
+              result.sameWindow = true;
+            } // If this extra field is present, the link opens in the same window
+
+
+            var skipConfirmNavigationMatch = filecontent.indexOf("<dict><key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string></dict>")) !== -1;
+
+            if (skipConfirmNavigationMatch) {
+              result.skipConfirmNavigation = true;
             }
           }
 
-          return "";
+          return result;
         }
         /**
          * Get extension from filename.
@@ -4928,9 +5008,9 @@
                       url = "";
 
                       if (extension === "webloc") {
-                        url = Parser.parseWeblocFile(file.filecontents);
+                        url = Parser.parseWeblocFile(file.filecontents).url;
                       } else {
-                        url = Parser.parseURLFile(file.filecontents);
+                        url = Parser.parseURLFile(file.filecontents).url;
                       } // Update file info in store
 
 
