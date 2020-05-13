@@ -29,8 +29,6 @@
 		// Unsubscribe from store to avoid memory leaks
 		unsubscribe();
 	});
-
-	// @TODO: Add viewing of public link shares
 </script>
 
 <Overlay {loading}>
@@ -39,7 +37,9 @@
 		{#if !loading}
 			<p class="urldisplay">
 				{t('files_linkeditor', 'You are about to visit:')}
-				<em>{file.url}</em>
+				<em>
+					<a href={file.url} target="_blank">{file.url}</a>
+				</em>
 			</p>
 		{/if}
 	</div>
@@ -53,9 +53,7 @@
 			{t('files_linkeditor', 'Cancel')}
 		</a>
 		{#if !loading}
-			<a href={file.url} target="_blank" class="button primary" id="linkviewer_visitlink">
-				{t('files_linkeditor', 'Visit link')}
-			</a>
+			<a href={file.url} target="_blank" class="button primary">{t('files_linkeditor', 'Visit link')}</a>
 		{/if}
 	</div>
 </Overlay>

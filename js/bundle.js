@@ -413,9 +413,7 @@
     			t = space();
     			div1 = element("div");
     			if (default_slot) default_slot.c();
-    			attr(div0, "id", "linkeditor_overlay");
     			attr(div0, "class", "oc-dialog-dim");
-    			attr(div1, "id", "linkeditor_container");
     			attr(div1, "class", div1_class_value = `oc-dialog ${/*loading*/ ctx[0] ? "icon-loading" : ""}`);
     			set_style(div1, "position", "fixed");
     		},
@@ -3827,8 +3825,10 @@
     	let t0;
     	let t1;
     	let em;
+    	let a;
     	let t2_value = /*file*/ ctx[0].url + "";
     	let t2;
+    	let a_href_value;
 
     	return {
     		c() {
@@ -3836,7 +3836,10 @@
     			t0 = text(t0_value);
     			t1 = space();
     			em = element("em");
+    			a = element("a");
     			t2 = text(t2_value);
+    			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
+    			attr(a, "target", "_blank");
     			attr(p, "class", "urldisplay");
     		},
     		m(target, anchor) {
@@ -3844,10 +3847,15 @@
     			append(p, t0);
     			append(p, t1);
     			append(p, em);
-    			append(em, t2);
+    			append(em, a);
+    			append(a, t2);
     		},
     		p(ctx, dirty) {
     			if (dirty & /*file*/ 1 && t2_value !== (t2_value = /*file*/ ctx[0].url + "")) set_data(t2, t2_value);
+
+    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
+    				attr(a, "href", a_href_value);
+    			}
     		},
     		d(detaching) {
     			if (detaching) detach(p);
@@ -3869,7 +3877,6 @@
     			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
     			attr(a, "target", "_blank");
     			attr(a, "class", "button primary");
-    			attr(a, "id", "linkviewer_visitlink");
     		},
     		m(target, anchor) {
     			insert(target, a, anchor);
@@ -3886,7 +3893,7 @@
     	};
     }
 
-    // (36:0) <Overlay {loading}>
+    // (34:0) <Overlay {loading}>
     function create_default_slot(ctx) {
     	let div0;
     	let h3;
