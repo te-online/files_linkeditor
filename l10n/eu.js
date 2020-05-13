@@ -14,6 +14,7 @@ OC.L10N.register(
                 'e.g. https://example.org': 'Adibidez, https://adibidea.eus',
                 'Save': 'Gorde',
                 'New link': 'Esteka berria',
-                'Link.URL': 'Esteka.URL'
+                'Link.URL': 'Esteka.URL',
+                'Link.webloc': 'Esteka.webloc'
         },
 'nplurals=2; plural=(n != 1);');

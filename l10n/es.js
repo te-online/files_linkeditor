@@ -14,6 +14,7 @@ OC.L10N.register(
                 'e.g. https://example.org': 'Ej. https://example.org',
                 'Save': 'Guardar',
                 'New link': 'Nuevo enlace',
-                'Link.URL': 'Link.URL'
+                'Link.URL': 'Link.URL',
+                'Link.webloc': 'Link.webloc'
         },
 'nplurals=2; plural=(n != 1);');

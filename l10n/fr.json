@@ -1,4 +1,4 @@
-{ "translations": {		
+{ "translations": {
 	"You are about to visit:": "Voulez vous ouvrir ce lien dans un nouvel onglet ?",
 	"Saving failed!": "L'enregistrement a échoué !",
 	"Edit link": "Editer le lien",
@@ -12,5 +12,6 @@
 	"e.g. https://example.org": "par exemple : https://example.org",
 	"Save": "Enregistrer",
 	"New link": "Nouveau lien",
-	"Link.URL": "Link.URL"
+	"Link.URL": "Link.URL",
+	"Link.webloc": "Link.webloc"
 }, "pluralForm": "nplurals=2; plural=(n != 1);"

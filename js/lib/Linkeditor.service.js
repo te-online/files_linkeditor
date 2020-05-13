@@ -57,32 +57,45 @@ export class LinkeditorService {
 					return;
 				}
 
-				// Register the new menu entry
-				menu.addMenuEntry({
+				const menuEntryFactory = ({ id, displayName, templateName }) => {
+					// Register the new menu entry
+					menu.addMenuEntry({
+						id,
+						displayName,
+						templateName,
+						iconClass: "icon-link",
+						fileType: supportedMimetype,
+						actionHandler: function (name) {
+							const dir = fileList.getCurrentDirectory();
+							// First create the file
+							viewMode.update(() => "edit");
+							currentFile.update(() =>
+								FileService.getFileConfig({
+									name,
+									dir,
+									isNew: true,
+									onCreate: async (file) => {
+										await fileList.createFile(name, {
+											scrollTo: false,
+										});
+										const newFile = await FileService.load({ fileName: name, dir });
+										await LinkeditorService.saveAndChangeViewMode({ ...file, fileModifiedTime: newFile.mtime });
+									},
+								})
+							);
+						},
+					});
+				};
+
+				menuEntryFactory({
 					id: "application-internet-shortcut",
-					displayName: window.t("files_linkeditor", "New link"),
+					displayName: `${window.t("files_linkeditor", "New link")} (.URL)`,
 					templateName: window.t("files_linkeditor", "Link.URL"),
-					iconClass: "icon-link",
-					fileType: supportedMimetype,
-					actionHandler: function (name) {
-						const dir = fileList.getCurrentDirectory();
-						// First create the file
-						viewMode.update(() => "edit");
-						currentFile.update(() =>
-							FileService.getFileConfig({
-								name,
-								dir,
-								isNew: true,
-								onCreate: async (file) => {
-									await fileList.createFile(name, {
-										scrollTo: false,
-									});
-									const newFile = await FileService.load({ fileName: name, dir });
-									await LinkeditorService.saveAndChangeViewMode({ ...file, fileModifiedTime: newFile.mtime });
-								},
-							})
-						);
-					},
+				});
+				menuEntryFactory({
+					id: "application-internet-shortcut-webloc",
+					displayName: `${window.t("files_linkeditor", "New link")} (.webloc)`,
+					templateName: window.t("files_linkeditor", "Link.webloc"),
 				});
 			},
 		});

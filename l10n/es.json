@@ -12,6 +12,7 @@
     "e.g. https://example.org": "Ej. https://example.org",
     "Save": "Guardar",
     "New link": "Nuevo Enlace",
-    "Link.URL": "Link.URL"
+    "Link.URL": "Link.URL",
+    "Link.webloc": "Link.webloc"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
