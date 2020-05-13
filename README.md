@@ -26,6 +26,7 @@ Before building or development, dependencies need to be installed once, by runni
 - New file: Don't save an empty file if editing is canceled
 - Fix loading spinner on top of text
 - Fix displayed link was not wrapped in anchor tag
+- Add button to skip to edit modal from viewer modal
 - ...
 
 ### 1.0.13, 9. Mar 2020
