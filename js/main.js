@@ -1,4 +1,4 @@
-import App from "./templates/App.svelte";
+import App from "./views/App.svelte";
 import { LinkeditorService } from "./Linkeditor.service";
 const components = [];
 
