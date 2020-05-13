@@ -1,9 +1,9 @@
 <script>
 	import Overlay from "./Overlay.svelte";
-	import { viewMode, currentFile } from "../store";
+	import { viewMode, currentFile } from "../lib/store";
 	import { onDestroy, onMount } from "svelte";
-	import { FileService } from "../File.service";
-	import { LinkeditorService } from "../Linkeditor.service";
+	import { FileService } from "../lib/File.service";
+	import { LinkeditorService } from "../lib/Linkeditor.service";
 	const t = window.t;
 	const OC = window.OC;
 

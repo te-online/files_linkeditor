@@ -1,8 +1,8 @@
 <script>
 	import Overlay from "./Overlay.svelte";
-	import { viewMode, currentFile } from "../store";
+	import { viewMode, currentFile } from "../lib/store";
 	import { onDestroy, onMount } from "svelte";
-	import { FileService } from "../File.service";
+	import { FileService } from "../lib/File.service";
 	const t = window.t;
 
 	$: file = FileService.getFileConfig();

@@ -2,7 +2,7 @@
 	import Viewer from "./Viewer.svelte";
 	import Editor from "./Editor.svelte";
 	import { onDestroy, onMount } from "svelte";
-	import { viewMode as viewModeStore } from "../store";
+	import { viewMode as viewModeStore } from "../lib/store";
 
 	$: viewMode = "";
 	let unsubscribe;

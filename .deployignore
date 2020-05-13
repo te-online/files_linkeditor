@@ -5,3 +5,6 @@ package-lock.json
 package.json
 test
 .deployignore
+js/views/*
+js/lib/*
+js/main.js

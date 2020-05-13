@@ -1,7 +1,7 @@
 import { viewMode, currentFile } from "./store.js";
 import { FileService } from "./File.service";
 import { Parser } from "./Parser";
-import PublicButton from "./views/PublicButton.svelte";
+import PublicButton from "../views/PublicButton.svelte";
 
 const supportedMimetype = "application/internet-shortcut";
 const buttons = [];

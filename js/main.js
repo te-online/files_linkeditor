@@ -1,5 +1,5 @@
 import App from "./views/App.svelte";
-import { LinkeditorService } from "./Linkeditor.service";
+import { LinkeditorService } from "./lib/Linkeditor.service";
 const components = [];
 
 components.push(
