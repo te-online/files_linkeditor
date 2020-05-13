@@ -4409,6 +4409,60 @@
       }];
     }, !SUPPORTS_Y);
 
+    // a string of all valid unicode whitespaces
+    // eslint-disable-next-line max-len
+    var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
+
+    var whitespace = '[' + whitespaces + ']';
+    var ltrim = RegExp('^' + whitespace + whitespace + '*');
+    var rtrim = RegExp(whitespace + whitespace + '*$'); // `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
+
+    var createMethod$2 = function (TYPE) {
+      return function ($this) {
+        var string = String(requireObjectCoercible($this));
+        if (TYPE & 1) string = string.replace(ltrim, '');
+        if (TYPE & 2) string = string.replace(rtrim, '');
+        return string;
+      };
+    };
+
+    var stringTrim = {
+      // `String.prototype.{ trimLeft, trimStart }` methods
+      // https://tc39.github.io/ecma262/#sec-string.prototype.trimstart
+      start: createMethod$2(1),
+      // `String.prototype.{ trimRight, trimEnd }` methods
+      // https://tc39.github.io/ecma262/#sec-string.prototype.trimend
+      end: createMethod$2(2),
+      // `String.prototype.trim` method
+      // https://tc39.github.io/ecma262/#sec-string.prototype.trim
+      trim: createMethod$2(3)
+    };
+
+    var non = '\u200B\u0085\u180E'; // check that a method works with the correct list
+    // of whitespaces and has a correct name
+
+    var stringTrimForced = function (METHOD_NAME) {
+      return fails(function () {
+        return !!whitespaces[METHOD_NAME]() || non[METHOD_NAME]() != non || whitespaces[METHOD_NAME].name !== METHOD_NAME;
+      });
+    };
+
+    var $trim = stringTrim.trim;
+
+     // `String.prototype.trim` method
+    // https://tc39.github.io/ecma262/#sec-string.prototype.trim
+
+
+    _export({
+      target: 'String',
+      proto: true,
+      forced: stringTrimForced('trim')
+    }, {
+      trim: function trim() {
+        return $trim(this);
+      }
+    });
+
     var Parser = /*#__PURE__*/function () {
       function Parser() {
         _classCallCheck(this, Parser);
@@ -4467,7 +4521,7 @@
             return oldcontent.replace(urlmatch[1], sanitizeUrl(url));
           } else {
             // Okay, let's create a new file.
-            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t <plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(sanitizeUrl(url), "</string>\n\t\t\t\t\t</dict>\n\t\t\t\t</plist>");
+            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t<plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(sanitizeUrl(url), "</string>\n\t\t\t\t\t</dict>\n\t\t\t\t</plist>").replace(/(\n|\b)\t+/g, "$1").trim();
           }
         }
         /**
@@ -4479,7 +4533,7 @@
         value: function parseWeblocFile(filecontent) {
           if (filecontent) {
             // Match for URL line.
-            var urlmatch = filecontent.match("<key>URL</key>\n.<string>(.*)</string>"); // See if at least two matches were found (the whole expression and the url itself).
+            var urlmatch = filecontent.replace(/(\n|\b)\t+/g, "$1").trim().match("<key>URL</key>\n\t\t\t\t\t<string>(.*)</string>\n\t\t\t\t\t".replace(/(\n|\b)\t+/g, "$1").trim()); // See if at least two matches were found (the whole expression and the url itself).
 
             if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
               // Let's use the first match.
@@ -4697,69 +4751,85 @@
 
               if (fileList.id !== "files") {
                 return;
-              } // Register the new menu entry
+              }
 
+              var menuEntryFactory = function menuEntryFactory(_ref) {
+                var id = _ref.id,
+                    displayName = _ref.displayName,
+                    templateName = _ref.templateName;
+                // Register the new menu entry
+                menu.addMenuEntry({
+                  id: id,
+                  displayName: displayName,
+                  templateName: templateName,
+                  iconClass: "icon-link",
+                  fileType: supportedMimetype,
+                  actionHandler: function actionHandler(name) {
+                    var dir = fileList.getCurrentDirectory(); // First create the file
 
-              menu.addMenuEntry({
-                id: "application-internet-shortcut",
-                displayName: window.t("files_linkeditor", "New link"),
-                templateName: window.t("files_linkeditor", "Link.URL"),
-                iconClass: "icon-link",
-                fileType: supportedMimetype,
-                actionHandler: function actionHandler(name) {
-                  var dir = fileList.getCurrentDirectory(); // First create the file
-
-                  viewMode.update(function () {
-                    return "edit";
-                  });
-                  currentFile.update(function () {
-                    return FileService.getFileConfig({
-                      name: name,
-                      dir: dir,
-                      isNew: true,
-                      onCreate: function () {
-                        var _onCreate = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file) {
-                          var newFile;
-                          return regeneratorRuntime.wrap(function _callee3$(_context3) {
-                            while (1) {
-                              switch (_context3.prev = _context3.next) {
-                                case 0:
-                                  _context3.next = 2;
-                                  return fileList.createFile(name, {
-                                    scrollTo: false
-                                  });
-
-                                case 2:
-                                  _context3.next = 4;
-                                  return FileService.load({
-                                    fileName: name,
-                                    dir: dir
-                                  });
-
-                                case 4:
-                                  newFile = _context3.sent;
-                                  _context3.next = 7;
-                                  return LinkeditorService.saveAndChangeViewMode(_objectSpread2(_objectSpread2({}, file), {}, {
-                                    fileModifiedTime: newFile.mtime
-                                  }));
-
-                                case 7:
-                                case "end":
-                                  return _context3.stop();
-                              }
-                            }
-                          }, _callee3);
-                        }));
-
-                        function onCreate(_x5) {
-                          return _onCreate.apply(this, arguments);
-                        }
-
-                        return onCreate;
-                      }()
+                    viewMode.update(function () {
+                      return "edit";
                     });
-                  });
-                }
+                    currentFile.update(function () {
+                      return FileService.getFileConfig({
+                        name: name,
+                        dir: dir,
+                        isNew: true,
+                        onCreate: function () {
+                          var _onCreate = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file) {
+                            var newFile;
+                            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                              while (1) {
+                                switch (_context3.prev = _context3.next) {
+                                  case 0:
+                                    _context3.next = 2;
+                                    return fileList.createFile(name, {
+                                      scrollTo: false
+                                    });
+
+                                  case 2:
+                                    _context3.next = 4;
+                                    return FileService.load({
+                                      fileName: name,
+                                      dir: dir
+                                    });
+
+                                  case 4:
+                                    newFile = _context3.sent;
+                                    _context3.next = 7;
+                                    return LinkeditorService.saveAndChangeViewMode(_objectSpread2(_objectSpread2({}, file), {}, {
+                                      fileModifiedTime: newFile.mtime
+                                    }));
+
+                                  case 7:
+                                  case "end":
+                                    return _context3.stop();
+                                }
+                              }
+                            }, _callee3);
+                          }));
+
+                          function onCreate(_x5) {
+                            return _onCreate.apply(this, arguments);
+                          }
+
+                          return onCreate;
+                        }()
+                      });
+                    });
+                  }
+                });
+              };
+
+              menuEntryFactory({
+                id: "application-internet-shortcut",
+                displayName: "".concat(window.t("files_linkeditor", "New link"), " (.URL)"),
+                templateName: window.t("files_linkeditor", "Link.URL")
+              });
+              menuEntryFactory({
+                id: "application-internet-shortcut-webloc",
+                displayName: "".concat(window.t("files_linkeditor", "New link"), " (.webloc)"),
+                templateName: window.t("files_linkeditor", "Link.webloc")
               });
             }
           }); // Public shares where only the link file is shared
@@ -4801,13 +4871,13 @@
       }, {
         key: "loadAndChangeViewMode",
         value: function () {
-          var _loadAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref) {
+          var _loadAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref2) {
             var fileName, context, nextViewMode, publicUser, downloadUrl, currentUrl, file, extension, url;
             return regeneratorRuntime.wrap(function _callee4$(_context4) {
               while (1) {
                 switch (_context4.prev = _context4.next) {
                   case 0:
-                    fileName = _ref.fileName, context = _ref.context, nextViewMode = _ref.nextViewMode, publicUser = _ref.publicUser, downloadUrl = _ref.downloadUrl;
+                    fileName = _ref2.fileName, context = _ref2.context, nextViewMode = _ref2.nextViewMode, publicUser = _ref2.publicUser, downloadUrl = _ref2.downloadUrl;
                     // Find out where we are to use this link for the cancel button.
                     currentUrl = context ? encodeURI(context.fileList.linkTo() + "?path=" + context.dir) : window.location.href; // Get ready to show viewer
 
@@ -4892,13 +4962,13 @@
       }, {
         key: "saveAndChangeViewMode",
         value: function () {
-          var _saveAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(_ref2) {
+          var _saveAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(_ref3) {
             var name, dir, url, fileModifiedTime, extension, fileContent;
             return regeneratorRuntime.wrap(function _callee5$(_context5) {
               while (1) {
                 switch (_context5.prev = _context5.next) {
                   case 0:
-                    name = _ref2.name, dir = _ref2.dir, url = _ref2.url, fileModifiedTime = _ref2.fileModifiedTime;
+                    name = _ref3.name, dir = _ref3.dir, url = _ref3.url, fileModifiedTime = _ref3.fileModifiedTime;
                     // Read extension and run fitting parser.
                     extension = Parser.getExtension(name); // Parse the filecontent to get to the URL.
 

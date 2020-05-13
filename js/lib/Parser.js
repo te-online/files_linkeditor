@@ -47,13 +47,15 @@ export class Parser {
 		} else {
 			// Okay, let's create a new file.
 			return `<?xml version="1.0" encoding="UTF-8"?>
-				 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-				 <plist version="1.0">
+				<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+				<plist version="1.0">
 					<dict>
 						<key>URL</key>
 						<string>${sanitizeUrl(url)}</string>
 					</dict>
-				</plist>`;
+				</plist>`
+				.replace(/(\n|\b)\t+/g, "$1")
+				.trim();
 		}
 	}
 
@@ -63,7 +65,16 @@ export class Parser {
 	static parseWeblocFile(filecontent) {
 		if (filecontent) {
 			// Match for URL line.
-			const urlmatch = filecontent.match("<key>URL</key>\n.<string>(.*)</string>");
+			const urlmatch = filecontent
+				.replace(/(\n|\b)\t+/g, "$1")
+				.trim()
+				.match(
+					`<key>URL</key>
+					<string>(.*)</string>
+					`
+						.replace(/(\n|\b)\t+/g, "$1")
+						.trim()
+				);
 			// See if at least two matches were found (the whole expression and the url itself).
 			if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
 				// Let's use the first match.
