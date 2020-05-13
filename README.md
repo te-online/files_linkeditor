@@ -27,6 +27,7 @@ Before building or development, dependencies need to be installed once, by runni
 - Fix loading spinner on top of text
 - Fix displayed link was not wrapped in anchor tag
 - Add button to skip to edit modal from viewer modal
+- Add ability to create .webloc files from create menu on file list
 - ...
 
 ### 1.0.13, 9. Mar 2020
