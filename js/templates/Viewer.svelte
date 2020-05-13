@@ -43,7 +43,7 @@
 			</p>
 		{/if}
 	</div>
-	<div class="oc-dialog-buttonrow twobutton">
+	<div class="oc-dialog-buttonrow twobuttons">
 		<a
 			href={file.currentUrl}
 			class="button"
@@ -53,6 +53,16 @@
 			{t('files_linkeditor', 'Cancel')}
 		</a>
 		{#if !loading}
+			{#if FileService.userCanEdit()}
+				<a
+					href={file.currentUrl}
+					class="button"
+					on:click|preventDefault={() => {
+						viewMode.update(() => 'edit');
+					}}>
+					{t('files_linkeditor', 'Edit link')}
+				</a>
+			{/if}
 			<a href={file.url} target="_blank" class="button primary">{t('files_linkeditor', 'Visit link')}</a>
 		{/if}
 	</div>

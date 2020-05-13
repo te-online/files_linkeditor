@@ -58,7 +58,7 @@
 				<a href={file.url} target="_blank" class="button">{t('files_linkeditor', 'Visit link')}</a>
 			{/if}
 		</div>
-		<div class="oc-dialog-buttonrow twobutton">
+		<div class="oc-dialog-buttonrow twobuttons">
 			<button
 				type="reset"
 				on:click|preventDefault={() => {

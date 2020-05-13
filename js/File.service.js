@@ -69,4 +69,13 @@ export class FileService {
 		}
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}
+
+	static userCanEdit() {
+		return (
+			window.FileList &&
+			window.OC &&
+			(window.OC.PERMISSION_ALL === window.FileList.getDirectoryPermissions() ||
+				window.OC.PERMISSION_UPDATE === window.FileList.getDirectoryPermissions())
+		);
+	}
 }
