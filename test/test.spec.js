@@ -1,7 +1,7 @@
 "use strict";
 
-import { sanitizeUrl } from "../js/sanitizeUrl";
-import { Parser } from "../js/Parser";
+import { sanitizeUrl } from "../js/lib/sanitizeUrl";
+import { Parser } from "../js/lib/Parser";
 
 describe("filelist", function () {
 	it("replaces javascript urls with about:blank", function () {
