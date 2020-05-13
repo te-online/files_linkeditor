@@ -13,7 +13,20 @@ A nextcloud app to edit .URL and .webloc files and visit links stored in them.
 
 If you ever saved a favorite/shortcut in a browser on macOS or Windows, you have thereby created a .webloc or .URL file. Windows saves internet-shortcuts in .URL files and macOS in .webloc files. Example: You drag and drop a shortcut from Firefox to your macOS Desktop -> you have a .webloc file. Now if you sync this file with your Nextcloud, you can view, edit or open the link from within the webinterface.
 
+## Development
+The client-side JavaScript of this plugin uses ES6 features and needs to be transpiled for use in a browser. To run a watch command that automatically updates the `bundle.js` file when you make changes, execute `npm run dev`. To make a simple build, use `npm build`.
+
+Before building or development, dependencies need to be installed once, by running `npm install`.
+
 ## Changelog
+
+### 1.1.0, xx. May 2020
+- Rewrite client-side JavaScript in ES6 and with use of [Svelte](https://svelte.dev) components
+- Add autofocus to URL input field when editing a link file
+- New file: Don't save an empty file if editing is canceled
+- Fix loading spinner on top of text
+- Fix displayed link was not wrapped in anchor tag
+- ...
 
 ### 1.0.13, 9. Mar 2020
 - Add Basque translation (thanks to @aldatsa).
