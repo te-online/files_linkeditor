@@ -3672,7 +3672,7 @@
                     return _context.abrupt("return", _context.sent);
 
                   case 8:
-                    window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
+                    window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 
                   case 9:
                   case "end":
@@ -3689,15 +3689,11 @@
           return load;
         }()
       }, {
-        key: "save",
+        key: "loadPublic",
         value: function () {
-          var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          var _loadPublic = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
             var _ref3,
-                fileContent,
-                name,
-                fileModifiedTime,
-                dir,
-                path,
+                downloadUrl,
                 result,
                 _args2 = arguments;
 
@@ -3705,7 +3701,67 @@
               while (1) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
-                    _ref3 = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {}, fileContent = _ref3.fileContent, name = _ref3.name, fileModifiedTime = _ref3.fileModifiedTime, dir = _ref3.dir;
+                    _ref3 = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {}, downloadUrl = _ref3.downloadUrl;
+                    _context2.next = 3;
+                    return window.fetch(downloadUrl, {
+                      method: "GET",
+                      headers: {
+                        requesttoken: window.OC.requestToken
+                      }
+                    });
+
+                  case 3:
+                    result = _context2.sent;
+
+                    if (!(result && result.ok)) {
+                      _context2.next = 9;
+                      break;
+                    }
+
+                    _context2.next = 7;
+                    return result.text();
+
+                  case 7:
+                    _context2.t0 = _context2.sent;
+                    return _context2.abrupt("return", {
+                      filecontents: _context2.t0
+                    });
+
+                  case 9:
+                    window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+
+                  case 10:
+                  case "end":
+                    return _context2.stop();
+                }
+              }
+            }, _callee2);
+          }));
+
+          function loadPublic() {
+            return _loadPublic.apply(this, arguments);
+          }
+
+          return loadPublic;
+        }()
+      }, {
+        key: "save",
+        value: function () {
+          var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+            var _ref4,
+                fileContent,
+                name,
+                fileModifiedTime,
+                dir,
+                path,
+                result,
+                _args3 = arguments;
+
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+              while (1) {
+                switch (_context3.prev = _context3.next) {
+                  case 0:
+                    _ref4 = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {}, fileContent = _ref4.fileContent, name = _ref4.name, fileModifiedTime = _ref4.fileModifiedTime, dir = _ref4.dir;
                     // Send the PUT request
                     path = "".concat(dir).concat(name);
 
@@ -3713,7 +3769,7 @@
                       path = "".concat(dir, "/").concat(name);
                     }
 
-                    _context2.next = 5;
+                    _context3.next = 5;
                     return window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
                       method: "PUT",
                       body: JSON.stringify({
@@ -3728,24 +3784,24 @@
                     });
 
                   case 5:
-                    result = _context2.sent;
+                    result = _context3.sent;
 
                     if (!(result && result.ok)) {
-                      _context2.next = 8;
+                      _context3.next = 8;
                       break;
                     }
 
-                    return _context2.abrupt("return", true);
+                    return _context3.abrupt("return", true);
 
                   case 8:
-                    window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
+                    window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 
                   case 9:
                   case "end":
-                    return _context2.stop();
+                    return _context3.stop();
                 }
               }
-            }, _callee2);
+            }, _callee3);
           }));
 
           function save() {
@@ -4401,7 +4457,74 @@
       return Parser;
     }();
 
+    /* js/templates/PublicButton.svelte generated by Svelte v3.22.2 */
+
+    function create_fragment$2(ctx) {
+    	let div;
+    	let a;
+    	let span;
+    	let t0;
+    	let t1_value = /*t*/ ctx[1]("files_linkeditor", "View link") + "";
+    	let t1;
+    	let dispose;
+
+    	return {
+    		c() {
+    			div = element("div");
+    			a = element("a");
+    			span = element("span");
+    			t0 = space();
+    			t1 = text(t1_value);
+    			attr(span, "class", "icon icon-link");
+    			attr(a, "href", "#/");
+    			attr(a, "class", "button");
+    			attr(a, "id", "downloadFile");
+    			attr(div, "class", "directDownload");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, div, anchor);
+    			append(div, a);
+    			append(a, span);
+    			append(a, t0);
+    			append(a, t1);
+    			if (remount) dispose();
+
+    			dispose = listen(a, "click", prevent_default(function () {
+    				if (is_function(/*onClick*/ ctx[0])) /*onClick*/ ctx[0].apply(this, arguments);
+    			}));
+    		},
+    		p(new_ctx, [dirty]) {
+    			ctx = new_ctx;
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(div);
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	let { onClick } = $$props;
+    	const t = window.t;
+
+    	$$self.$set = $$props => {
+    		if ("onClick" in $$props) $$invalidate(0, onClick = $$props.onClick);
+    	};
+
+    	return [onClick, t];
+    }
+
+    class PublicButton extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { onClick: 0 });
+    	}
+    }
+
     var supportedMimetype = "application/internet-shortcut";
+    var buttons = [];
     var LinkeditorService = /*#__PURE__*/function () {
       function LinkeditorService() {
         _classCallCheck(this, LinkeditorService);
@@ -4463,17 +4586,33 @@
                   while (1) {
                     switch (_context2.prev = _context2.next) {
                       case 0:
-                        _context2.next = 2;
+                        if (!window.OC.currentUser) {
+                          _context2.next = 5;
+                          break;
+                        }
+
+                        _context2.next = 3;
                         return LinkeditorService.loadAndChangeViewMode({
                           fileName: fileName,
                           context: context,
                           nextViewMode: "view"
                         });
 
-                      case 2:
-                        return _context2.abrupt("return", _context2.sent);
-
                       case 3:
+                        _context2.next = 7;
+                        break;
+
+                      case 5:
+                        _context2.next = 7;
+                        return LinkeditorService.loadAndChangeViewMode({
+                          fileName: fileName,
+                          context: context,
+                          nextViewMode: "view",
+                          downloadUrl: context.fileList.getDownloadUrl(fileName),
+                          publicUser: true
+                        });
+
+                      case 7:
                       case "end":
                         return _context2.stop();
                     }
@@ -4563,21 +4702,54 @@
                 }
               });
             }
-          });
+          }); // Public shares where only the link file is shared
+
+          var directDownload = document.querySelectorAll(".directDownload");
+
+          if (directDownload && directDownload.length > 0) {
+            // Get the filename
+            var filename = (document.querySelector("input#filename") || {
+              value: ""
+            }).value; // Get extension
+
+            var extension = Parser.getExtension(filename); // Public download page, single file
+
+            if (extension === "url" || extension === "webloc") {
+              // Get the download URL
+              var downloadUrl = (document.querySelector("input#downloadURL") || {
+                value: ""
+              }).value; // Replace link and id on new button, add icon and label
+
+              buttons.push(new PublicButton({
+                anchor: document.querySelector(".directDownload"),
+                target: document.querySelector(".directDownload").parentElement,
+                props: {
+                  onClick: function onClick() {
+                    // Show view modal when clicked
+                    LinkeditorService.loadAndChangeViewMode({
+                      fileName: filename,
+                      nextViewMode: "view",
+                      publicUser: true,
+                      downloadUrl: downloadUrl
+                    });
+                  }
+                }
+              }));
+            }
+          }
         }
       }, {
         key: "loadAndChangeViewMode",
         value: function () {
           var _loadAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref) {
-            var fileName, context, nextViewMode, currentUrl, file, extension, url;
+            var fileName, context, nextViewMode, publicUser, downloadUrl, currentUrl, file, extension, url;
             return regeneratorRuntime.wrap(function _callee4$(_context4) {
               while (1) {
                 switch (_context4.prev = _context4.next) {
                   case 0:
-                    fileName = _ref.fileName, context = _ref.context, nextViewMode = _ref.nextViewMode;
-                    window.context = context; // Find out where we are to use this link for the cancel button.
-
-                    currentUrl = encodeURI(context.fileList.linkTo() + "?path=" + context.dir); // Get ready to show viewer
+                    fileName = _ref.fileName, context = _ref.context, nextViewMode = _ref.nextViewMode, publicUser = _ref.publicUser, downloadUrl = _ref.downloadUrl;
+                    // Find out where we are to use this link for the cancel button.
+                    currentUrl = context ? encodeURI(context.fileList.linkTo() + "?path=" + context.dir) : window.location.href; // Get ready to show viewer
 
                     viewMode.update(function () {
                       return nextViewMode;
@@ -4587,39 +4759,63 @@
                       return FileService.getFileConfig({
                         name: fileName,
                         currentUrl: currentUrl,
-                        dir: context.dir
+                        dir: context ? context.dir : ""
                       });
                     }); // Load file from backend
 
-                    _context4.next = 7;
+                    file = {};
+
+                    if (!publicUser) {
+                      _context4.next = 11;
+                      break;
+                    }
+
+                    _context4.next = 8;
+                    return FileService.loadPublic({
+                      downloadUrl: downloadUrl
+                    });
+
+                  case 8:
+                    file = _context4.sent;
+                    _context4.next = 14;
+                    break;
+
+                  case 11:
+                    _context4.next = 13;
                     return FileService.load({
                       fileName: fileName,
                       dir: context.dir
                     });
 
-                  case 7:
+                  case 13:
                     file = _context4.sent;
-                    // Read extension and run fitting parser.
-                    extension = Parser.getExtension(fileName); // Parse the filecontent to get to the URL.
 
-                    url = "";
+                  case 14:
+                    if (file) {
+                      // Read extension and run fitting parser.
+                      extension = Parser.getExtension(fileName); // Parse the filecontent to get to the URL.
 
-                    if (extension === "webloc") {
-                      url = Parser.parseWeblocFile(file ? file.filecontents : "");
+                      url = "";
+
+                      if (extension === "webloc") {
+                        url = Parser.parseWeblocFile(file.filecontents);
+                      } else {
+                        url = Parser.parseURLFile(file.filecontents);
+                      } // Update file info in store
+
+
+                      currentFile.update(function (fileConfig) {
+                        return FileService.getFileConfig(_objectSpread2(_objectSpread2({}, fileConfig), {}, {
+                          url: url,
+                          fileModifiedTime: file.mtime,
+                          isLoaded: true
+                        }));
+                      });
                     } else {
-                      url = Parser.parseURLFile(file ? file.filecontents : "");
-                    } // Update file info in store
+                      window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+                    }
 
-
-                    currentFile.update(function (fileConfig) {
-                      return FileService.getFileConfig(_objectSpread2(_objectSpread2({}, fileConfig), {}, {
-                        url: url,
-                        fileModifiedTime: file.mtime,
-                        isLoaded: true
-                      }));
-                    });
-
-                  case 12:
+                  case 15:
                   case "end":
                     return _context4.stop();
                 }
@@ -4913,7 +5109,7 @@
     	};
     }
 
-    function create_fragment$2(ctx) {
+    function create_fragment$3(ctx) {
     	let current;
 
     	const overlay = new Overlay({
@@ -4957,7 +5153,7 @@
     	};
     }
 
-    function instance$2($$self, $$props, $$invalidate) {
+    function instance$3($$self, $$props, $$invalidate) {
     	const t = window.t;
     	const OC = window.OC;
     	let unsubscribe;
@@ -5007,7 +5203,7 @@
     class Editor extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
     	}
     }
 
@@ -5068,7 +5264,7 @@
     	};
     }
 
-    function create_fragment$3(ctx) {
+    function create_fragment$4(ctx) {
     	let t;
     	let if_block1_anchor;
     	let current;
@@ -5152,7 +5348,7 @@
     	};
     }
 
-    function instance$3($$self, $$props, $$invalidate) {
+    function instance$4($$self, $$props, $$invalidate) {
     	let unsubscribe;
 
     	onMount(() => {
@@ -5175,7 +5371,7 @@
     class App extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
     	}
     }
 

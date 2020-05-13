@@ -30,7 +30,20 @@ export class FileService {
 		if (result && result.ok) {
 			return await result.json();
 		}
-		window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
+		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+	}
+
+	static async loadPublic({ downloadUrl } = {}) {
+		const result = await window.fetch(downloadUrl, {
+			method: "GET",
+			headers: {
+				requesttoken: window.OC.requestToken,
+			},
+		});
+		if (result && result.ok) {
+			return { filecontents: await result.text() };
+		}
+		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}
 
 	static async save({ fileContent, name, fileModifiedTime, dir } = {}) {
@@ -54,6 +67,6 @@ export class FileService {
 		if (result && result.ok) {
 			return true;
 		}
-		window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
+		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}
 }
