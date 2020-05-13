@@ -1,6 +1,6 @@
-import { sanitizeUrl } from "./sanitizeUrl";
 import { viewMode, currentFile } from "./store.js";
 import { FileService } from "./File.service";
+import { Parser } from "./Parser";
 
 const supportedMimetype = "application/internet-shortcut";
 export class LinkeditorService {
@@ -13,9 +13,8 @@ export class LinkeditorService {
 			name: "editLink",
 			displayName: t("files_linkeditor", "Edit link"),
 			mime: supportedMimetype,
-			// @TODO:
-			actionHandler: async (filename, context) =>
-				await LinkeditorService.loadAndChangeViewMode({ filename, context, nextViewMode: "edit" }),
+			actionHandler: async (fileName, context) =>
+				await LinkeditorService.loadAndChangeViewMode({ fileName, context, nextViewMode: "edit" }),
 			permissions: window.OC.PERMISSION_UPDATE,
 			iconClass: "icon-link",
 		});
@@ -25,8 +24,8 @@ export class LinkeditorService {
 			name: "viewLink",
 			displayName: t("files_linkeditor", "View link"),
 			mime: supportedMimetype,
-			actionHandler: async (filename, context) =>
-				await LinkeditorService.loadAndChangeViewMode({ filename, context, nextViewMode: "view" }),
+			actionHandler: async (fileName, context) =>
+				await LinkeditorService.loadAndChangeViewMode({ fileName, context, nextViewMode: "view" }),
 			permissions: window.OC.PERMISSION_READ,
 			iconClass: "icon-link",
 		});
@@ -53,35 +52,28 @@ export class LinkeditorService {
 					actionHandler: function (name) {
 						const dir = fileList.getCurrentDirectory();
 						// First create the file
-						fileList
-							.createFile(name, {
-								scrollTo: false,
+						viewMode.update(() => "edit");
+						currentFile.update(() =>
+							FileService.getFileConfig({
+								name,
+								dir,
+								isNew: true,
+								onCreate: async (file) => {
+									await fileList.createFile(name, {
+										scrollTo: false,
+									});
+									const newFile = await FileService.load({ fileName: name, dir });
+									await LinkeditorService.saveAndChangeViewMode({ ...file, fileModifiedTime: newFile.mtime });
+								},
 							})
-							.then(function () {
-								// once the file got successfully created,
-								// open the editor
-								// @TODO:
-								console.log({
-									new: true,
-									fileList: fileList,
-									dir: dir,
-									name,
-								});
-								viewMode.update(() => "edit");
-								currentFile.update(() =>
-									FileService.getFileConfig({
-										name,
-										dir,
-									})
-								);
-							});
+						);
 					},
 				});
 			},
 		});
 	}
 
-	static async loadAndChangeViewMode({ filename, context, nextViewMode }) {
+	static async loadAndChangeViewMode({ fileName, context, nextViewMode }) {
 		window.context = context;
 		// Find out where we are to use this link for the cancel button.
 		const currentUrl = encodeURI(context.fileList.linkTo() + "?path=" + context.dir);
@@ -90,114 +82,41 @@ export class LinkeditorService {
 		// Preliminary file config update
 		currentFile.update(() =>
 			FileService.getFileConfig({
-				name: filename,
+				name: fileName,
 				currentUrl,
+				dir: context.dir,
 			})
 		);
 		// Load file from backend
-		const file = await FileService.load({ filename, dir: context.dir });
+		const file = await FileService.load({ fileName, dir: context.dir });
 		// Read extension and run fitting parser.
-		const extension = LinkeditorService.getExtension(filename);
+		const extension = Parser.getExtension(fileName);
 		// Parse the filecontent to get to the URL.
 		let url = "";
 		if (extension === "webloc") {
-			url = LinkeditorService.parseWeblocFile(file.filecontents);
+			url = Parser.parseWeblocFile(file ? file.filecontents : "");
 		} else {
-			url = LinkeditorService.parseURLFile(file.filecontents);
+			url = Parser.parseURLFile(file ? file.filecontents : "");
 		}
 		// Update file info in store
-		currentFile.update((fileConfig) => ({ ...fileConfig, url: sanitizeUrl(url) }));
+		currentFile.update((fileConfig) =>
+			FileService.getFileConfig({ ...fileConfig, url, fileModifiedTime: file.mtime, isLoaded: true })
+		);
 	}
 
-	/**
-	 * Generates a URL file.
-	 */
-	static generateURLFileContent(oldcontent, url) {
-		// Find if this is already a shortcut file.
-		if (oldcontent && oldcontent.indexOf("[InternetShortcut]") !== -1 && oldcontent.indexOf("URL=") !== -1) {
-			// Seems like it, replace the url.
-			return oldcontent.replace(new RegExp("URL=.*", "gm"), "URL=" + sanitizeUrl(url));
+	static async saveAndChangeViewMode({ name, dir, url, fileModifiedTime }) {
+		// Read extension and run fitting parser.
+		const extension = Parser.getExtension(name);
+		// Parse the filecontent to get to the URL.
+		let fileContent = "";
+		if (extension === "webloc") {
+			fileContent = Parser.generateWeblocFileContent("", url);
 		} else {
-			// Okay, let's create a new file.
-			return `[InternetShortcut]\r\nURL=${sanitizeUrl(url)}\r\n`;
+			fileContent = Parser.generateURLFileContent("", url);
 		}
-	}
-
-	/**
-	 * Parse a URL file.
-	 */
-	static parseURLFile(filecontent) {
-		if (filecontent) {
-			// Match for URL line.
-			const urllines = filecontent.match("URL=.*");
-			// See if matches were found.
-			if (urllines && Array.isArray(urllines) && urllines.length > 0) {
-				// Let's use the first match.
-				const url = urllines[0];
-				// Return only the URL.
-				return sanitizeUrl(url.replace("URL=", ""));
-			}
-		}
-		return "";
-	}
-
-	/**
-	 * Generates a webloc file.
-	 */
-	static generateWeblocFileContent(oldcontent, url) {
-		// Find if this is already a shortcut file.
-		// Match for URL line.
-		const urlmatch = oldcontent.match("<key>URL</key>\n.<string>(.*)</string>");
-		// See if at least two matches were found (the whole expression and the url itself).
-		if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
-			// Seems like it, replace the url.
-			return oldcontent.replace(urlmatch[1], sanitizeUrl(url));
-		} else {
-			// Okay, let's create a new file.
-			return `<?xml version="1.0" encoding="UTF-8"?>
-				 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-				 <plist version="1.0">
-					<dict>
-						<key>URL</key>
-						<string>${sanitizeUrl(url)}</string>
-					</dict>
-				</plist>`;
-		}
-	}
-
-	/**
-	 * Parse a webloc file.
-	 */
-	static parseWeblocFile(filecontent) {
-		if (filecontent) {
-			// Match for URL line.
-			const urlmatch = filecontent.match("<key>URL</key>\n.<string>(.*)</string>");
-			// See if at least two matches were found (the whole expression and the url itself).
-			if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
-				// Let's use the first match.
-				return sanitizeUrl(urlmatch[1]);
-			}
-		}
-		return "";
-	}
-
-	/**
-	 * Get extension from filename.
-	 */
-	static getExtension(filename) {
-		if (filename) {
-			// Split at dot.
-			const parts = filename.split(".");
-			// See if there was a dot in the name.
-			if (parts && Array.isArray(parts) && parts.length > 1) {
-				// Get extension.
-				const extension = parts[parts.length - 1];
-				// Return the last part after the last dot.
-				if (extension) {
-					return extension.toLowerCase();
-				}
-			}
-		}
-		return "";
+		// Save file
+		await FileService.save({ fileContent, name, dir, fileModifiedTime });
+		// Hide editor
+		viewMode.update(() => "none");
 	}
 }

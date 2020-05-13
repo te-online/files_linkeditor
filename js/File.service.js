@@ -1,20 +1,24 @@
 import { sanitizeUrl } from "./sanitizeUrl";
 
 export class FileService {
-	static getFileConfig({ name, url, downloadUrl, currentUrl, dir } = {}) {
+	static getFileConfig({ name, url, downloadUrl, currentUrl, dir, onCreate, fileModifiedTime, isNew, isLoaded } = {}) {
 		return {
 			name: name || "?",
 			downloadUrl: downloadUrl || "",
-			url: sanitizeUrl(url || ""),
+			url: url ? sanitizeUrl(url) : "",
 			dir: dir || "",
 			currentUrl: currentUrl || "",
+			onCreate: onCreate,
+			fileModifiedTime: fileModifiedTime || null,
+			isNew: isNew || false,
+			isLoaded: isLoaded || false,
 		};
 	}
 
-	static async load({ filename, dir } = {}) {
+	static async load({ fileName, dir } = {}) {
 		const result = await window.fetch(
 			`${window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile")}?filename=${encodeURIComponent(
-				filename
+				fileName
 			)}&dir=${encodeURIComponent(dir)}`,
 			{
 				method: "GET",
@@ -26,27 +30,30 @@ export class FileService {
 		if (result && result.ok) {
 			return await result.json();
 		}
+		window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
 	}
 
-	static async save(data, file) {
+	static async save({ fileContent, name, fileModifiedTime, dir } = {}) {
 		// Send the PUT request
-		let path = `${file.dir}${file.name}`;
-		if (file.dir !== "/") {
-			path = `${file.dir}/${file.name}`;
+		let path = `${dir}${name}`;
+		if (dir !== "/") {
+			path = `${dir}/${name}`;
 		}
 		const result = await window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
 			method: "PUT",
 			body: JSON.stringify({
-				filecontents: data,
+				filecontents: fileContent,
 				path,
-				mtime: file.mtime,
+				mtime: fileModifiedTime,
 			}),
 			headers: {
 				requesttoken: window.OC.requestToken,
+				"Content-Type": "application/json",
 			},
 		});
 		if (result && result.ok) {
-			console.log({ result });
+			return true;
 		}
+		window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
 	}
 }

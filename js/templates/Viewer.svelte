@@ -12,19 +12,25 @@
 		// Subscribe to changes of the current file
 		unsubscribe = currentFile.subscribe(async (fileUpdate) => {
 			file = fileUpdate;
-			if (file.url && file.url !== "about:blank") {
+			if (file.isLoaded) {
 				loading = false;
-      }
-      // @TODO: Show error when url is permanently empty (or maybe show editor?)
+				// Show error when url is permanently empty (or maybe show editor?)
+				if (!file.url) {
+					OC.dialogs.alert(
+						t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."),
+						t("files_linkeditor", "A slight problem")
+					);
+				}
+			}
 		});
 	});
 
 	onDestroy(() => {
 		// Unsubscribe from store to avoid memory leaks
 		unsubscribe();
-  });
+	});
 
-  // @TODO: Add viewing of public link shares
+	// @TODO: Add viewing of public link shares
 </script>
 
 <Overlay {loading}>

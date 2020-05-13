@@ -120,6 +120,12 @@
       if (text.data !== data) text.data = data;
     }
 
+    function set_input_value(input, value) {
+      if (value != null || input.value) {
+        input.value = value;
+      }
+    }
+
     function set_style(node, key, value, important) {
       node.style.setProperty(key, value, important ? 'important' : '');
     }
@@ -3610,14 +3616,22 @@
               url = _ref.url,
               downloadUrl = _ref.downloadUrl,
               currentUrl = _ref.currentUrl,
-              dir = _ref.dir;
+              dir = _ref.dir,
+              onCreate = _ref.onCreate,
+              fileModifiedTime = _ref.fileModifiedTime,
+              isNew = _ref.isNew,
+              isLoaded = _ref.isLoaded;
 
           return {
             name: name || "?",
             downloadUrl: downloadUrl || "",
-            url: sanitizeUrl(url || ""),
+            url: url ? sanitizeUrl(url) : "",
             dir: dir || "",
-            currentUrl: currentUrl || ""
+            currentUrl: currentUrl || "",
+            onCreate: onCreate,
+            fileModifiedTime: fileModifiedTime || null,
+            isNew: isNew || false,
+            isLoaded: isLoaded || false
           };
         }
       }, {
@@ -3625,7 +3639,7 @@
         value: function () {
           var _load = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
             var _ref2,
-                filename,
+                fileName,
                 dir,
                 result,
                 _args = arguments;
@@ -3634,9 +3648,9 @@
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
-                    _ref2 = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, filename = _ref2.filename, dir = _ref2.dir;
+                    _ref2 = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, fileName = _ref2.fileName, dir = _ref2.dir;
                     _context.next = 3;
-                    return window.fetch("".concat(window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile"), "?filename=").concat(encodeURIComponent(filename), "&dir=").concat(encodeURIComponent(dir)), {
+                    return window.fetch("".concat(window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile"), "?filename=").concat(encodeURIComponent(fileName), "&dir=").concat(encodeURIComponent(dir)), {
                       method: "GET",
                       headers: {
                         requesttoken: window.OC.requestToken
@@ -3658,6 +3672,9 @@
                     return _context.abrupt("return", _context.sent);
 
                   case 8:
+                    window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
+
+                  case 9:
                   case "end":
                     return _context.stop();
                 }
@@ -3674,42 +3691,56 @@
       }, {
         key: "save",
         value: function () {
-          var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(data, file) {
-            var path, result;
+          var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+            var _ref3,
+                fileContent,
+                name,
+                fileModifiedTime,
+                dir,
+                path,
+                result,
+                _args2 = arguments;
+
             return regeneratorRuntime.wrap(function _callee2$(_context2) {
               while (1) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
+                    _ref3 = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {}, fileContent = _ref3.fileContent, name = _ref3.name, fileModifiedTime = _ref3.fileModifiedTime, dir = _ref3.dir;
                     // Send the PUT request
-                    path = "".concat(file.dir).concat(file.name);
+                    path = "".concat(dir).concat(name);
 
-                    if (file.dir !== "/") {
-                      path = "".concat(file.dir, "/").concat(file.name);
+                    if (dir !== "/") {
+                      path = "".concat(dir, "/").concat(name);
                     }
 
-                    _context2.next = 4;
+                    _context2.next = 5;
                     return window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
                       method: "PUT",
                       body: JSON.stringify({
-                        filecontents: data,
+                        filecontents: fileContent,
                         path: path,
-                        mtime: file.mtime
+                        mtime: fileModifiedTime
                       }),
                       headers: {
-                        requesttoken: window.OC.requestToken
+                        requesttoken: window.OC.requestToken,
+                        "Content-Type": "application/json"
                       }
                     });
 
-                  case 4:
+                  case 5:
                     result = _context2.sent;
 
-                    if (result && result.ok) {
-                      console.log({
-                        result: result
-                      });
+                    if (!(result && result.ok)) {
+                      _context2.next = 8;
+                      break;
                     }
 
-                  case 6:
+                    return _context2.abrupt("return", true);
+
+                  case 8:
+                    window.OC.dialogs.alert(result ? result.message : "", window.t("files_linkeditor", "An error occurred!"));
+
+                  case 9:
                   case "end":
                     return _context2.stop();
                 }
@@ -3717,7 +3748,7 @@
             }, _callee2);
           }));
 
-          function save(_x, _x2) {
+          function save() {
             return _save.apply(this, arguments);
           }
 
@@ -3768,7 +3799,7 @@
     	};
     }
 
-    // (49:2) {#if !loading}
+    // (55:2) {#if !loading}
     function create_if_block(ctx) {
     	let a;
     	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Visit link") + "";
@@ -3799,7 +3830,7 @@
     	};
     }
 
-    // (30:0) <Overlay {loading}>
+    // (36:0) <Overlay {loading}>
     function create_default_slot(ctx) {
     	let div0;
     	let h3;
@@ -3947,10 +3978,15 @@
     		unsubscribe = currentFile.subscribe(async fileUpdate => {
     			$$invalidate(0, file = fileUpdate);
 
-    			if (file.url && file.url !== "about:blank") {
+    			if (file.isLoaded) {
     				$$invalidate(1, loading = false);
+
+    				// Show error when url is permanently empty (or maybe show editor?)
+    				if (!file.url) {
+    					OC.dialogs.alert(t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."), t("files_linkeditor", "A slight problem"));
+    				}
     			}
-    		}); // @TODO: Show error when url is permanently empty (or maybe show editor?)
+    		});
     	});
 
     	onDestroy(() => {
@@ -3973,471 +4009,6 @@
     	constructor(options) {
     		super();
     		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
-    	}
-    }
-
-    /* js/templates/Editor.svelte generated by Svelte v3.22.2 */
-
-    function create_if_block_2(ctx) {
-    	let label;
-    	let t0_value = /*t*/ ctx[2]("files_linkeditor", "Link target URL") + "";
-    	let t0;
-    	let t1;
-    	let br;
-    	let t2;
-    	let input;
-    	let input_value_value;
-    	let input_placeholder_value;
-
-    	return {
-    		c() {
-    			label = element("label");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			br = element("br");
-    			t2 = space();
-    			input = element("input");
-    			attr(input, "type", "text");
-    			set_style(input, "width", "100%");
-    			attr(input, "class", "input-wide");
-    			input.value = input_value_value = /*file*/ ctx[0].url;
-    			attr(input, "placeholder", input_placeholder_value = /*t*/ ctx[2]("files_linkeditor", "e.g. https://example.org"));
-    		},
-    		m(target, anchor) {
-    			insert(target, label, anchor);
-    			append(label, t0);
-    			append(label, t1);
-    			append(label, br);
-    			append(label, t2);
-    			append(label, input);
-    		},
-    		p(ctx, dirty) {
-    			if (dirty & /*file*/ 1 && input_value_value !== (input_value_value = /*file*/ ctx[0].url) && input.value !== input_value_value) {
-    				input.value = input_value_value;
-    			}
-    		},
-    		d(detaching) {
-    			if (detaching) detach(label);
-    		}
-    	};
-    }
-
-    // (48:3) {#if !loading}
-    function create_if_block_1$1(ctx) {
-    	let a;
-    	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Visit link") + "";
-    	let t_1;
-    	let a_href_value;
-
-    	return {
-    		c() {
-    			a = element("a");
-    			t_1 = text(t_1_value);
-    			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
-    			attr(a, "target", "_blank");
-    			attr(a, "class", "button");
-    		},
-    		m(target, anchor) {
-    			insert(target, a, anchor);
-    			append(a, t_1);
-    		},
-    		p(ctx, dirty) {
-    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
-    				attr(a, "href", a_href_value);
-    			}
-    		},
-    		d(detaching) {
-    			if (detaching) detach(a);
-    		}
-    	};
-    }
-
-    // (61:3) {#if !loading}
-    function create_if_block$1(ctx) {
-    	let button;
-
-    	return {
-    		c() {
-    			button = element("button");
-    			button.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Save")}`;
-    			attr(button, "type", "submit");
-    			attr(button, "id", "linkeditor_save");
-    			attr(button, "class", "primary");
-    		},
-    		m(target, anchor) {
-    			insert(target, button, anchor);
-    		},
-    		p: noop,
-    		d(detaching) {
-    			if (detaching) detach(button);
-    		}
-    	};
-    }
-
-    // (30:0) <Overlay {loading}>
-    function create_default_slot$1(ctx) {
-    	let form;
-    	let div0;
-    	let h3;
-    	let t0_value = /*file*/ ctx[0].name + "";
-    	let t0;
-    	let t1;
-    	let t2;
-    	let div1;
-    	let t3;
-    	let div2;
-    	let button;
-    	let t5;
-    	let form_action_value;
-    	let dispose;
-    	let if_block0 = !/*loading*/ ctx[1] && create_if_block_2(ctx);
-    	let if_block1 = !/*loading*/ ctx[1] && create_if_block_1$1(ctx);
-    	let if_block2 = !/*loading*/ ctx[1] && create_if_block$1(ctx);
-
-    	return {
-    		c() {
-    			form = element("form");
-    			div0 = element("div");
-    			h3 = element("h3");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			if (if_block0) if_block0.c();
-    			t2 = space();
-    			div1 = element("div");
-    			if (if_block1) if_block1.c();
-    			t3 = space();
-    			div2 = element("div");
-    			button = element("button");
-    			button.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Cancel")}`;
-    			t5 = space();
-    			if (if_block2) if_block2.c();
-    			attr(div0, "class", "urledit");
-    			attr(div1, "class", "oc-dialog-buttonrow onebutton urlvisit");
-    			attr(button, "type", "reset");
-    			attr(button, "class", "cancel");
-    			attr(div2, "class", "oc-dialog-buttonrow twobutton");
-    			attr(form, "action", form_action_value = /*OC*/ ctx[3].generateUrl("/"));
-    			attr(form, "method", "post");
-    			attr(form, "id", "linkeditor_form");
-    		},
-    		m(target, anchor, remount) {
-    			insert(target, form, anchor);
-    			append(form, div0);
-    			append(div0, h3);
-    			append(h3, t0);
-    			append(div0, t1);
-    			if (if_block0) if_block0.m(div0, null);
-    			append(form, t2);
-    			append(form, div1);
-    			if (if_block1) if_block1.m(div1, null);
-    			append(form, t3);
-    			append(form, div2);
-    			append(div2, button);
-    			append(div2, t5);
-    			if (if_block2) if_block2.m(div2, null);
-    			if (remount) dispose();
-    			dispose = listen(button, "click", prevent_default(/*click_handler*/ ctx[5]));
-    		},
-    		p(ctx, dirty) {
-    			if (dirty & /*file*/ 1 && t0_value !== (t0_value = /*file*/ ctx[0].name + "")) set_data(t0, t0_value);
-
-    			if (!/*loading*/ ctx[1]) {
-    				if (if_block0) {
-    					if_block0.p(ctx, dirty);
-    				} else {
-    					if_block0 = create_if_block_2(ctx);
-    					if_block0.c();
-    					if_block0.m(div0, null);
-    				}
-    			} else if (if_block0) {
-    				if_block0.d(1);
-    				if_block0 = null;
-    			}
-
-    			if (!/*loading*/ ctx[1]) {
-    				if (if_block1) {
-    					if_block1.p(ctx, dirty);
-    				} else {
-    					if_block1 = create_if_block_1$1(ctx);
-    					if_block1.c();
-    					if_block1.m(div1, null);
-    				}
-    			} else if (if_block1) {
-    				if_block1.d(1);
-    				if_block1 = null;
-    			}
-
-    			if (!/*loading*/ ctx[1]) {
-    				if (if_block2) {
-    					if_block2.p(ctx, dirty);
-    				} else {
-    					if_block2 = create_if_block$1(ctx);
-    					if_block2.c();
-    					if_block2.m(div2, null);
-    				}
-    			} else if (if_block2) {
-    				if_block2.d(1);
-    				if_block2 = null;
-    			}
-    		},
-    		d(detaching) {
-    			if (detaching) detach(form);
-    			if (if_block0) if_block0.d();
-    			if (if_block1) if_block1.d();
-    			if (if_block2) if_block2.d();
-    			dispose();
-    		}
-    	};
-    }
-
-    function create_fragment$2(ctx) {
-    	let current;
-
-    	const overlay = new Overlay({
-    			props: {
-    				loading: /*loading*/ ctx[1],
-    				$$slots: { default: [create_default_slot$1] },
-    				$$scope: { ctx }
-    			}
-    		});
-
-    	return {
-    		c() {
-    			create_component(overlay.$$.fragment);
-    		},
-    		m(target, anchor) {
-    			mount_component(overlay, target, anchor);
-    			current = true;
-    		},
-    		p(ctx, [dirty]) {
-    			const overlay_changes = {};
-    			if (dirty & /*loading*/ 2) overlay_changes.loading = /*loading*/ ctx[1];
-
-    			if (dirty & /*$$scope, loading, file*/ 67) {
-    				overlay_changes.$$scope = { dirty, ctx };
-    			}
-
-    			overlay.$set(overlay_changes);
-    		},
-    		i(local) {
-    			if (current) return;
-    			transition_in(overlay.$$.fragment, local);
-    			current = true;
-    		},
-    		o(local) {
-    			transition_out(overlay.$$.fragment, local);
-    			current = false;
-    		},
-    		d(detaching) {
-    			destroy_component(overlay, detaching);
-    		}
-    	};
-    }
-
-    function instance$2($$self, $$props, $$invalidate) {
-    	const t = window.t;
-    	const OC = window.OC;
-    	let unsubscribe;
-
-    	onMount(() => {
-    		// Subscribe to changes of the current file
-    		unsubscribe = currentFile.subscribe(fileUpdate => {
-    			$$invalidate(0, file = fileUpdate);
-
-    			if (file.url && file.url !== "about:blank") {
-    				$$invalidate(1, loading = false);
-    			}
-    		});
-    	});
-
-    	onDestroy(() => {
-    		// Unsubscribe from store to avoid memory leaks
-    		unsubscribe();
-    	});
-
-    	const click_handler = () => {
-    		viewMode.update(() => "none");
-    	};
-
-    	let file;
-    	let loading;
-    	 $$invalidate(0, file = FileService.getFileConfig());
-    	 $$invalidate(1, loading = true);
-    	return [file, loading, t, OC, unsubscribe, click_handler];
-    }
-
-    class Editor extends SvelteComponent {
-    	constructor(options) {
-    		super();
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
-    	}
-    }
-
-    /* js/templates/App.svelte generated by Svelte v3.22.2 */
-
-    function create_if_block_1$2(ctx) {
-    	let current;
-    	const viewer = new Viewer({});
-
-    	return {
-    		c() {
-    			create_component(viewer.$$.fragment);
-    		},
-    		m(target, anchor) {
-    			mount_component(viewer, target, anchor);
-    			current = true;
-    		},
-    		i(local) {
-    			if (current) return;
-    			transition_in(viewer.$$.fragment, local);
-    			current = true;
-    		},
-    		o(local) {
-    			transition_out(viewer.$$.fragment, local);
-    			current = false;
-    		},
-    		d(detaching) {
-    			destroy_component(viewer, detaching);
-    		}
-    	};
-    }
-
-    // (25:0) {#if viewMode === 'edit'}
-    function create_if_block$2(ctx) {
-    	let current;
-    	const editor = new Editor({});
-
-    	return {
-    		c() {
-    			create_component(editor.$$.fragment);
-    		},
-    		m(target, anchor) {
-    			mount_component(editor, target, anchor);
-    			current = true;
-    		},
-    		i(local) {
-    			if (current) return;
-    			transition_in(editor.$$.fragment, local);
-    			current = true;
-    		},
-    		o(local) {
-    			transition_out(editor.$$.fragment, local);
-    			current = false;
-    		},
-    		d(detaching) {
-    			destroy_component(editor, detaching);
-    		}
-    	};
-    }
-
-    function create_fragment$3(ctx) {
-    	let t;
-    	let if_block1_anchor;
-    	let current;
-    	let if_block0 = /*viewMode*/ ctx[0] === "view" && create_if_block_1$2();
-    	let if_block1 = /*viewMode*/ ctx[0] === "edit" && create_if_block$2();
-
-    	return {
-    		c() {
-    			if (if_block0) if_block0.c();
-    			t = space();
-    			if (if_block1) if_block1.c();
-    			if_block1_anchor = empty();
-    		},
-    		m(target, anchor) {
-    			if (if_block0) if_block0.m(target, anchor);
-    			insert(target, t, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
-    			insert(target, if_block1_anchor, anchor);
-    			current = true;
-    		},
-    		p(ctx, [dirty]) {
-    			if (/*viewMode*/ ctx[0] === "view") {
-    				if (if_block0) {
-    					if (dirty & /*viewMode*/ 1) {
-    						transition_in(if_block0, 1);
-    					}
-    				} else {
-    					if_block0 = create_if_block_1$2();
-    					if_block0.c();
-    					transition_in(if_block0, 1);
-    					if_block0.m(t.parentNode, t);
-    				}
-    			} else if (if_block0) {
-    				group_outros();
-
-    				transition_out(if_block0, 1, 1, () => {
-    					if_block0 = null;
-    				});
-
-    				check_outros();
-    			}
-
-    			if (/*viewMode*/ ctx[0] === "edit") {
-    				if (if_block1) {
-    					if (dirty & /*viewMode*/ 1) {
-    						transition_in(if_block1, 1);
-    					}
-    				} else {
-    					if_block1 = create_if_block$2();
-    					if_block1.c();
-    					transition_in(if_block1, 1);
-    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
-    				}
-    			} else if (if_block1) {
-    				group_outros();
-
-    				transition_out(if_block1, 1, 1, () => {
-    					if_block1 = null;
-    				});
-
-    				check_outros();
-    			}
-    		},
-    		i(local) {
-    			if (current) return;
-    			transition_in(if_block0);
-    			transition_in(if_block1);
-    			current = true;
-    		},
-    		o(local) {
-    			transition_out(if_block0);
-    			transition_out(if_block1);
-    			current = false;
-    		},
-    		d(detaching) {
-    			if (if_block0) if_block0.d(detaching);
-    			if (detaching) detach(t);
-    			if (if_block1) if_block1.d(detaching);
-    			if (detaching) detach(if_block1_anchor);
-    		}
-    	};
-    }
-
-    function instance$3($$self, $$props, $$invalidate) {
-    	let unsubscribe;
-
-    	onMount(() => {
-    		// Subscribe to changes of the viewmode
-    		unsubscribe = viewMode.subscribe(mode => {
-    			$$invalidate(0, viewMode$1 = mode);
-    		});
-    	});
-
-    	onDestroy(() => {
-    		// Unsubscribe from store to avoid memory leaks
-    		unsubscribe();
-    	});
-
-    	let viewMode$1;
-    	 $$invalidate(0, viewMode$1 = "");
-    	return [viewMode$1];
-    }
-
-    class App extends SvelteComponent {
-    	constructor(options) {
-    		super();
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
     	}
     }
 
@@ -4722,214 +4293,17 @@
       }];
     }, !SUPPORTS_Y);
 
-    var supportedMimetype = "application/internet-shortcut";
-    var LinkeditorService = /*#__PURE__*/function () {
-      function LinkeditorService() {
-        _classCallCheck(this, LinkeditorService);
+    var Parser = /*#__PURE__*/function () {
+      function Parser() {
+        _classCallCheck(this, Parser);
       }
 
-      _createClass(LinkeditorService, null, [{
-        key: "registerFileActions",
+      _createClass(Parser, null, [{
+        key: "generateURLFileContent",
 
-        /**
-         * Registers the file actions with files app
-         */
-        value: function registerFileActions() {
-          // Edit action on single file
-          window.OCA.Files.fileActions.registerAction({
-            name: "editLink",
-            displayName: t("files_linkeditor", "Edit link"),
-            mime: supportedMimetype,
-            // @TODO:
-            actionHandler: function () {
-              var _actionHandler = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(filename, context) {
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                  while (1) {
-                    switch (_context.prev = _context.next) {
-                      case 0:
-                        _context.next = 2;
-                        return LinkeditorService.loadAndChangeViewMode({
-                          filename: filename,
-                          context: context,
-                          nextViewMode: "edit"
-                        });
-
-                      case 2:
-                        return _context.abrupt("return", _context.sent);
-
-                      case 3:
-                      case "end":
-                        return _context.stop();
-                    }
-                  }
-                }, _callee);
-              }));
-
-              function actionHandler(_x, _x2) {
-                return _actionHandler.apply(this, arguments);
-              }
-
-              return actionHandler;
-            }(),
-            permissions: window.OC.PERMISSION_UPDATE,
-            iconClass: "icon-link"
-          }); // View action on single file
-
-          window.OCA.Files.fileActions.registerAction({
-            name: "viewLink",
-            displayName: t("files_linkeditor", "View link"),
-            mime: supportedMimetype,
-            actionHandler: function () {
-              var _actionHandler2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(filename, context) {
-                return regeneratorRuntime.wrap(function _callee2$(_context2) {
-                  while (1) {
-                    switch (_context2.prev = _context2.next) {
-                      case 0:
-                        _context2.next = 2;
-                        return LinkeditorService.loadAndChangeViewMode({
-                          filename: filename,
-                          context: context,
-                          nextViewMode: "view"
-                        });
-
-                      case 2:
-                        return _context2.abrupt("return", _context2.sent);
-
-                      case 3:
-                      case "end":
-                        return _context2.stop();
-                    }
-                  }
-                }, _callee2);
-              }));
-
-              function actionHandler(_x3, _x4) {
-                return _actionHandler2.apply(this, arguments);
-              }
-
-              return actionHandler;
-            }(),
-            permissions: window.OC.PERMISSION_READ,
-            iconClass: "icon-link"
-          }); // Use Link viewing as default action.
-
-          window.OCA.Files.fileActions.setDefault(supportedMimetype, "viewLink");
-          window.OC.Plugins.register("OCA.Files.NewFileMenu", {
-            attach: function attach(menu) {
-              var fileList = menu.fileList; // Only attach to main file list
-
-              if (fileList.id !== "files") {
-                return;
-              } // Register the new menu entry
-
-
-              menu.addMenuEntry({
-                id: "application-internet-shortcut",
-                displayName: window.t("files_linkeditor", "New link"),
-                templateName: window.t("files_linkeditor", "Link.URL"),
-                iconClass: "icon-link",
-                fileType: supportedMimetype,
-                actionHandler: function actionHandler(name) {
-                  var dir = fileList.getCurrentDirectory(); // First create the file
-
-                  fileList.createFile(name, {
-                    scrollTo: false
-                  }).then(function () {
-                    // once the file got successfully created,
-                    // open the editor
-                    // @TODO:
-                    console.log({
-                      new: true,
-                      fileList: fileList,
-                      dir: dir,
-                      name: name
-                    });
-                    viewMode.update(function () {
-                      return "edit";
-                    });
-                    currentFile.update(function () {
-                      return FileService.getFileConfig({
-                        name: name,
-                        dir: dir
-                      });
-                    });
-                  });
-                }
-              });
-            }
-          });
-        }
-      }, {
-        key: "loadAndChangeViewMode",
-        value: function () {
-          var _loadAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref) {
-            var filename, context, nextViewMode, currentUrl, file, extension, url;
-            return regeneratorRuntime.wrap(function _callee3$(_context3) {
-              while (1) {
-                switch (_context3.prev = _context3.next) {
-                  case 0:
-                    filename = _ref.filename, context = _ref.context, nextViewMode = _ref.nextViewMode;
-                    window.context = context; // Find out where we are to use this link for the cancel button.
-
-                    currentUrl = encodeURI(context.fileList.linkTo() + "?path=" + context.dir); // Get ready to show viewer
-
-                    viewMode.update(function () {
-                      return nextViewMode;
-                    }); // Preliminary file config update
-
-                    currentFile.update(function () {
-                      return FileService.getFileConfig({
-                        name: filename,
-                        currentUrl: currentUrl
-                      });
-                    }); // Load file from backend
-
-                    _context3.next = 7;
-                    return FileService.load({
-                      filename: filename,
-                      dir: context.dir
-                    });
-
-                  case 7:
-                    file = _context3.sent;
-                    // Read extension and run fitting parser.
-                    extension = LinkeditorService.getExtension(filename); // Parse the filecontent to get to the URL.
-
-                    url = "";
-
-                    if (extension === "webloc") {
-                      url = LinkeditorService.parseWeblocFile(file.filecontents);
-                    } else {
-                      url = LinkeditorService.parseURLFile(file.filecontents);
-                    } // Update file info in store
-
-
-                    currentFile.update(function (fileConfig) {
-                      return _objectSpread2(_objectSpread2({}, fileConfig), {}, {
-                        url: sanitizeUrl(url)
-                      });
-                    });
-
-                  case 12:
-                  case "end":
-                    return _context3.stop();
-                }
-              }
-            }, _callee3);
-          }));
-
-          function loadAndChangeViewMode(_x5) {
-            return _loadAndChangeViewMode.apply(this, arguments);
-          }
-
-          return loadAndChangeViewMode;
-        }()
         /**
          * Generates a URL file.
          */
-
-      }, {
-        key: "generateURLFileContent",
         value: function generateURLFileContent(oldcontent, url) {
           // Find if this is already a shortcut file.
           if (oldcontent && oldcontent.indexOf("[InternetShortcut]") !== -1 && oldcontent.indexOf("URL=") !== -1) {
@@ -5024,8 +4398,786 @@
         }
       }]);
 
+      return Parser;
+    }();
+
+    var supportedMimetype = "application/internet-shortcut";
+    var LinkeditorService = /*#__PURE__*/function () {
+      function LinkeditorService() {
+        _classCallCheck(this, LinkeditorService);
+      }
+
+      _createClass(LinkeditorService, null, [{
+        key: "registerFileActions",
+
+        /**
+         * Registers the file actions with files app
+         */
+        value: function registerFileActions() {
+          // Edit action on single file
+          window.OCA.Files.fileActions.registerAction({
+            name: "editLink",
+            displayName: t("files_linkeditor", "Edit link"),
+            mime: supportedMimetype,
+            actionHandler: function () {
+              var _actionHandler = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileName, context) {
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        _context.next = 2;
+                        return LinkeditorService.loadAndChangeViewMode({
+                          fileName: fileName,
+                          context: context,
+                          nextViewMode: "edit"
+                        });
+
+                      case 2:
+                        return _context.abrupt("return", _context.sent);
+
+                      case 3:
+                      case "end":
+                        return _context.stop();
+                    }
+                  }
+                }, _callee);
+              }));
+
+              function actionHandler(_x, _x2) {
+                return _actionHandler.apply(this, arguments);
+              }
+
+              return actionHandler;
+            }(),
+            permissions: window.OC.PERMISSION_UPDATE,
+            iconClass: "icon-link"
+          }); // View action on single file
+
+          window.OCA.Files.fileActions.registerAction({
+            name: "viewLink",
+            displayName: t("files_linkeditor", "View link"),
+            mime: supportedMimetype,
+            actionHandler: function () {
+              var _actionHandler2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(fileName, context) {
+                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        _context2.next = 2;
+                        return LinkeditorService.loadAndChangeViewMode({
+                          fileName: fileName,
+                          context: context,
+                          nextViewMode: "view"
+                        });
+
+                      case 2:
+                        return _context2.abrupt("return", _context2.sent);
+
+                      case 3:
+                      case "end":
+                        return _context2.stop();
+                    }
+                  }
+                }, _callee2);
+              }));
+
+              function actionHandler(_x3, _x4) {
+                return _actionHandler2.apply(this, arguments);
+              }
+
+              return actionHandler;
+            }(),
+            permissions: window.OC.PERMISSION_READ,
+            iconClass: "icon-link"
+          }); // Use Link viewing as default action.
+
+          window.OCA.Files.fileActions.setDefault(supportedMimetype, "viewLink");
+          window.OC.Plugins.register("OCA.Files.NewFileMenu", {
+            attach: function attach(menu) {
+              var fileList = menu.fileList; // Only attach to main file list
+
+              if (fileList.id !== "files") {
+                return;
+              } // Register the new menu entry
+
+
+              menu.addMenuEntry({
+                id: "application-internet-shortcut",
+                displayName: window.t("files_linkeditor", "New link"),
+                templateName: window.t("files_linkeditor", "Link.URL"),
+                iconClass: "icon-link",
+                fileType: supportedMimetype,
+                actionHandler: function actionHandler(name) {
+                  var dir = fileList.getCurrentDirectory(); // First create the file
+
+                  viewMode.update(function () {
+                    return "edit";
+                  });
+                  currentFile.update(function () {
+                    return FileService.getFileConfig({
+                      name: name,
+                      dir: dir,
+                      isNew: true,
+                      onCreate: function () {
+                        var _onCreate = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file) {
+                          var newFile;
+                          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                            while (1) {
+                              switch (_context3.prev = _context3.next) {
+                                case 0:
+                                  _context3.next = 2;
+                                  return fileList.createFile(name, {
+                                    scrollTo: false
+                                  });
+
+                                case 2:
+                                  _context3.next = 4;
+                                  return FileService.load({
+                                    fileName: name,
+                                    dir: dir
+                                  });
+
+                                case 4:
+                                  newFile = _context3.sent;
+                                  _context3.next = 7;
+                                  return LinkeditorService.saveAndChangeViewMode(_objectSpread2(_objectSpread2({}, file), {}, {
+                                    fileModifiedTime: newFile.mtime
+                                  }));
+
+                                case 7:
+                                case "end":
+                                  return _context3.stop();
+                              }
+                            }
+                          }, _callee3);
+                        }));
+
+                        function onCreate(_x5) {
+                          return _onCreate.apply(this, arguments);
+                        }
+
+                        return onCreate;
+                      }()
+                    });
+                  });
+                }
+              });
+            }
+          });
+        }
+      }, {
+        key: "loadAndChangeViewMode",
+        value: function () {
+          var _loadAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref) {
+            var fileName, context, nextViewMode, currentUrl, file, extension, url;
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              while (1) {
+                switch (_context4.prev = _context4.next) {
+                  case 0:
+                    fileName = _ref.fileName, context = _ref.context, nextViewMode = _ref.nextViewMode;
+                    window.context = context; // Find out where we are to use this link for the cancel button.
+
+                    currentUrl = encodeURI(context.fileList.linkTo() + "?path=" + context.dir); // Get ready to show viewer
+
+                    viewMode.update(function () {
+                      return nextViewMode;
+                    }); // Preliminary file config update
+
+                    currentFile.update(function () {
+                      return FileService.getFileConfig({
+                        name: fileName,
+                        currentUrl: currentUrl,
+                        dir: context.dir
+                      });
+                    }); // Load file from backend
+
+                    _context4.next = 7;
+                    return FileService.load({
+                      fileName: fileName,
+                      dir: context.dir
+                    });
+
+                  case 7:
+                    file = _context4.sent;
+                    // Read extension and run fitting parser.
+                    extension = Parser.getExtension(fileName); // Parse the filecontent to get to the URL.
+
+                    url = "";
+
+                    if (extension === "webloc") {
+                      url = Parser.parseWeblocFile(file ? file.filecontents : "");
+                    } else {
+                      url = Parser.parseURLFile(file ? file.filecontents : "");
+                    } // Update file info in store
+
+
+                    currentFile.update(function (fileConfig) {
+                      return FileService.getFileConfig(_objectSpread2(_objectSpread2({}, fileConfig), {}, {
+                        url: url,
+                        fileModifiedTime: file.mtime,
+                        isLoaded: true
+                      }));
+                    });
+
+                  case 12:
+                  case "end":
+                    return _context4.stop();
+                }
+              }
+            }, _callee4);
+          }));
+
+          function loadAndChangeViewMode(_x6) {
+            return _loadAndChangeViewMode.apply(this, arguments);
+          }
+
+          return loadAndChangeViewMode;
+        }()
+      }, {
+        key: "saveAndChangeViewMode",
+        value: function () {
+          var _saveAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(_ref2) {
+            var name, dir, url, fileModifiedTime, extension, fileContent;
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    name = _ref2.name, dir = _ref2.dir, url = _ref2.url, fileModifiedTime = _ref2.fileModifiedTime;
+                    // Read extension and run fitting parser.
+                    extension = Parser.getExtension(name); // Parse the filecontent to get to the URL.
+
+                    fileContent = "";
+
+                    if (extension === "webloc") {
+                      fileContent = Parser.generateWeblocFileContent("", url);
+                    } else {
+                      fileContent = Parser.generateURLFileContent("", url);
+                    } // Save file
+
+
+                    _context5.next = 6;
+                    return FileService.save({
+                      fileContent: fileContent,
+                      name: name,
+                      dir: dir,
+                      fileModifiedTime: fileModifiedTime
+                    });
+
+                  case 6:
+                    // Hide editor
+                    viewMode.update(function () {
+                      return "none";
+                    });
+
+                  case 7:
+                  case "end":
+                    return _context5.stop();
+                }
+              }
+            }, _callee5);
+          }));
+
+          function saveAndChangeViewMode(_x7) {
+            return _saveAndChangeViewMode.apply(this, arguments);
+          }
+
+          return saveAndChangeViewMode;
+        }()
+      }]);
+
       return LinkeditorService;
     }();
+
+    /* js/templates/Editor.svelte generated by Svelte v3.22.2 */
+
+    function create_if_block_2(ctx) {
+    	let label;
+    	let t0_value = /*t*/ ctx[2]("files_linkeditor", "Link target URL") + "";
+    	let t0;
+    	let t1;
+    	let br;
+    	let t2;
+    	let input;
+    	let input_placeholder_value;
+    	let dispose;
+
+    	return {
+    		c() {
+    			label = element("label");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			br = element("br");
+    			t2 = space();
+    			input = element("input");
+    			attr(input, "type", "text");
+    			set_style(input, "width", "100%");
+    			attr(input, "class", "input-wide");
+    			input.autofocus = true;
+    			attr(input, "placeholder", input_placeholder_value = /*t*/ ctx[2]("files_linkeditor", "e.g. https://example.org"));
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, label, anchor);
+    			append(label, t0);
+    			append(label, t1);
+    			append(label, br);
+    			append(label, t2);
+    			append(label, input);
+    			set_input_value(input, /*file*/ ctx[0].url);
+    			input.focus();
+    			if (remount) dispose();
+    			dispose = listen(input, "input", /*input_input_handler*/ ctx[6]);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*file*/ 1 && input.value !== /*file*/ ctx[0].url) {
+    				set_input_value(input, /*file*/ ctx[0].url);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(label);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (57:3) {#if !loading}
+    function create_if_block_1$1(ctx) {
+    	let a;
+    	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Visit link") + "";
+    	let t_1;
+    	let a_href_value;
+
+    	return {
+    		c() {
+    			a = element("a");
+    			t_1 = text(t_1_value);
+    			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
+    			attr(a, "target", "_blank");
+    			attr(a, "class", "button");
+    		},
+    		m(target, anchor) {
+    			insert(target, a, anchor);
+    			append(a, t_1);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
+    				attr(a, "href", a_href_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(a);
+    		}
+    	};
+    }
+
+    // (70:3) {#if !loading}
+    function create_if_block$1(ctx) {
+    	let button;
+    	let dispose;
+
+    	return {
+    		c() {
+    			button = element("button");
+    			button.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Save")}`;
+    			attr(button, "type", "submit");
+    			attr(button, "class", "primary");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, button, anchor);
+    			if (remount) dispose();
+    			dispose = listen(button, "click", prevent_default(/*save*/ ctx[4]));
+    		},
+    		p: noop,
+    		d(detaching) {
+    			if (detaching) detach(button);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (38:0) <Overlay {loading}>
+    function create_default_slot$1(ctx) {
+    	let form;
+    	let div0;
+    	let h3;
+    	let t0_value = /*file*/ ctx[0].name + "";
+    	let t0;
+    	let t1;
+    	let t2;
+    	let div1;
+    	let t3;
+    	let div2;
+    	let button;
+    	let t5;
+    	let form_action_value;
+    	let dispose;
+    	let if_block0 = !/*loading*/ ctx[1] && create_if_block_2(ctx);
+    	let if_block1 = !/*loading*/ ctx[1] && create_if_block_1$1(ctx);
+    	let if_block2 = !/*loading*/ ctx[1] && create_if_block$1(ctx);
+
+    	return {
+    		c() {
+    			form = element("form");
+    			div0 = element("div");
+    			h3 = element("h3");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			if (if_block0) if_block0.c();
+    			t2 = space();
+    			div1 = element("div");
+    			if (if_block1) if_block1.c();
+    			t3 = space();
+    			div2 = element("div");
+    			button = element("button");
+    			button.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Cancel")}`;
+    			t5 = space();
+    			if (if_block2) if_block2.c();
+    			attr(div0, "class", "urledit");
+    			attr(div1, "class", "oc-dialog-buttonrow onebutton urlvisit");
+    			attr(button, "type", "reset");
+    			attr(button, "class", "cancel");
+    			attr(div2, "class", "oc-dialog-buttonrow twobutton");
+    			attr(form, "action", form_action_value = /*OC*/ ctx[3].generateUrl("/"));
+    			attr(form, "method", "post");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, form, anchor);
+    			append(form, div0);
+    			append(div0, h3);
+    			append(h3, t0);
+    			append(div0, t1);
+    			if (if_block0) if_block0.m(div0, null);
+    			append(form, t2);
+    			append(form, div1);
+    			if (if_block1) if_block1.m(div1, null);
+    			append(form, t3);
+    			append(form, div2);
+    			append(div2, button);
+    			append(div2, t5);
+    			if (if_block2) if_block2.m(div2, null);
+    			if (remount) run_all(dispose);
+
+    			dispose = [
+    				listen(button, "click", prevent_default(/*click_handler*/ ctx[7])),
+    				listen(form, "submit", prevent_default(/*save*/ ctx[4]))
+    			];
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*file*/ 1 && t0_value !== (t0_value = /*file*/ ctx[0].name + "")) set_data(t0, t0_value);
+
+    			if (!/*loading*/ ctx[1]) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_2(ctx);
+    					if_block0.c();
+    					if_block0.m(div0, null);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (!/*loading*/ ctx[1]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block_1$1(ctx);
+    					if_block1.c();
+    					if_block1.m(div1, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (!/*loading*/ ctx[1]) {
+    				if (if_block2) {
+    					if_block2.p(ctx, dirty);
+    				} else {
+    					if_block2 = create_if_block$1(ctx);
+    					if_block2.c();
+    					if_block2.m(div2, null);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(form);
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function create_fragment$2(ctx) {
+    	let current;
+
+    	const overlay = new Overlay({
+    			props: {
+    				loading: /*loading*/ ctx[1],
+    				$$slots: { default: [create_default_slot$1] },
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(overlay.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(overlay, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			const overlay_changes = {};
+    			if (dirty & /*loading*/ 2) overlay_changes.loading = /*loading*/ ctx[1];
+
+    			if (dirty & /*$$scope, loading, file*/ 259) {
+    				overlay_changes.$$scope = { dirty, ctx };
+    			}
+
+    			overlay.$set(overlay_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(overlay.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(overlay.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(overlay, detaching);
+    		}
+    	};
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	const t = window.t;
+    	const OC = window.OC;
+    	let unsubscribe;
+
+    	onMount(() => {
+    		// Subscribe to changes of the current file
+    		unsubscribe = currentFile.subscribe(fileUpdate => {
+    			$$invalidate(0, file = fileUpdate);
+
+    			if (file.isLoaded || file.isNew) {
+    				$$invalidate(1, loading = false);
+    			}
+    		});
+    	});
+
+    	onDestroy(() => {
+    		// Unsubscribe from store to avoid memory leaks
+    		unsubscribe();
+    	});
+
+    	const save = () => {
+    		$$invalidate(1, loading = true);
+
+    		if (file.isNew && file.onCreate) {
+    			file.onCreate({ ...file });
+    		} else {
+    			LinkeditorService.saveAndChangeViewMode({ ...file });
+    		}
+    	};
+
+    	function input_input_handler() {
+    		file.url = this.value;
+    		$$invalidate(0, file);
+    	}
+
+    	const click_handler = () => {
+    		viewMode.update(() => "none");
+    	};
+
+    	let file;
+    	let loading;
+    	 $$invalidate(0, file = FileService.getFileConfig());
+    	 $$invalidate(1, loading = true);
+    	return [file, loading, t, OC, save, unsubscribe, input_input_handler, click_handler];
+    }
+
+    class Editor extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
+    	}
+    }
+
+    /* js/templates/App.svelte generated by Svelte v3.22.2 */
+
+    function create_if_block_1$2(ctx) {
+    	let current;
+    	const viewer = new Viewer({});
+
+    	return {
+    		c() {
+    			create_component(viewer.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(viewer, target, anchor);
+    			current = true;
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(viewer.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(viewer.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(viewer, detaching);
+    		}
+    	};
+    }
+
+    // (25:0) {#if viewMode === 'edit'}
+    function create_if_block$2(ctx) {
+    	let current;
+    	const editor = new Editor({});
+
+    	return {
+    		c() {
+    			create_component(editor.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(editor, target, anchor);
+    			current = true;
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(editor.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(editor.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(editor, detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$3(ctx) {
+    	let t;
+    	let if_block1_anchor;
+    	let current;
+    	let if_block0 = /*viewMode*/ ctx[0] === "view" && create_if_block_1$2();
+    	let if_block1 = /*viewMode*/ ctx[0] === "edit" && create_if_block$2();
+
+    	return {
+    		c() {
+    			if (if_block0) if_block0.c();
+    			t = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			if (/*viewMode*/ ctx[0] === "view") {
+    				if (if_block0) {
+    					if (dirty & /*viewMode*/ 1) {
+    						transition_in(if_block0, 1);
+    					}
+    				} else {
+    					if_block0 = create_if_block_1$2();
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(t.parentNode, t);
+    				}
+    			} else if (if_block0) {
+    				group_outros();
+
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
+    				});
+
+    				check_outros();
+    			}
+
+    			if (/*viewMode*/ ctx[0] === "edit") {
+    				if (if_block1) {
+    					if (dirty & /*viewMode*/ 1) {
+    						transition_in(if_block1, 1);
+    					}
+    				} else {
+    					if_block1 = create_if_block$2();
+    					if_block1.c();
+    					transition_in(if_block1, 1);
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				}
+    			} else if (if_block1) {
+    				group_outros();
+
+    				transition_out(if_block1, 1, 1, () => {
+    					if_block1 = null;
+    				});
+
+    				check_outros();
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(if_block0);
+    			transition_in(if_block1);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(if_block0);
+    			transition_out(if_block1);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (if_block0) if_block0.d(detaching);
+    			if (detaching) detach(t);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach(if_block1_anchor);
+    		}
+    	};
+    }
+
+    function instance$3($$self, $$props, $$invalidate) {
+    	let unsubscribe;
+
+    	onMount(() => {
+    		// Subscribe to changes of the viewmode
+    		unsubscribe = viewMode.subscribe(mode => {
+    			$$invalidate(0, viewMode$1 = mode);
+    		});
+    	});
+
+    	onDestroy(() => {
+    		// Unsubscribe from store to avoid memory leaks
+    		unsubscribe();
+    	});
+
+    	let viewMode$1;
+    	 $$invalidate(0, viewMode$1 = "");
+    	return [viewMode$1];
+    }
+
+    class App extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+    	}
+    }
 
     var components = [];
     components.push(new App({

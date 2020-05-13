@@ -3,6 +3,7 @@
 	import { viewMode, currentFile } from "../store";
 	import { onDestroy, onMount } from "svelte";
 	import { FileService } from "../File.service";
+	import { LinkeditorService } from "../Linkeditor.service";
 	const t = window.t;
 	const OC = window.OC;
 
@@ -13,7 +14,7 @@
 		// Subscribe to changes of the current file
 		unsubscribe = currentFile.subscribe((fileUpdate) => {
 			file = fileUpdate;
-			if (file.url && file.url !== "about:blank") {
+			if (file.isLoaded || file.isNew) {
 				loading = false;
 			}
 		});
@@ -22,13 +23,20 @@
 	onDestroy(() => {
 		// Unsubscribe from store to avoid memory leaks
 		unsubscribe();
-  });
+	});
 
-  // @TODO: Add saving
+	const save = () => {
+		loading = true;
+		if (file.isNew && file.onCreate) {
+			file.onCreate({ ...file });
+		} else {
+			LinkeditorService.saveAndChangeViewMode({ ...file });
+		}
+	};
 </script>
 
 <Overlay {loading}>
-	<form action={OC.generateUrl('/')} method="post" id="linkeditor_form">
+	<form action={OC.generateUrl('/')} on:submit|preventDefault={save} method="post">
 		<div class="urledit">
 			<h3>{file.name}</h3>
 			{#if !loading}
@@ -39,7 +47,8 @@
 						type="text"
 						style="width: 100%;"
 						class="input-wide"
-						value={file.url}
+						bind:value={file.url}
+						autofocus
 						placeholder={t('files_linkeditor', 'e.g. https://example.org')} />
 				</label>
 			{/if}
@@ -59,7 +68,7 @@
 				{t('files_linkeditor', 'Cancel')}
 			</button>
 			{#if !loading}
-				<button type="submit" id="linkeditor_save" class="primary">{t('files_linkeditor', 'Save')}</button>
+				<button type="submit" on:click|preventDefault={save} class="primary">{t('files_linkeditor', 'Save')}</button>
 			{/if}
 		</div>
 	</form>
