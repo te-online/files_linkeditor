@@ -51,14 +51,10 @@
 						autofocus
 						placeholder={t('files_linkeditor', 'e.g. https://example.org')} />
 				</label>
-				<label>
-					<input type="checkbox" bind:checked={file.sameWindow} />
-					{t('files_linkeditor', 'Open in same window')}
-				</label>
-				<label>
-					<input type="checkbox" bind:checked={file.skipConfirmation} />
-					{t('files_linkeditor', 'Skip navigation confirmation dialog')}
-				</label>
+				<input type="checkbox" bind:checked={file.sameWindow} id="linkeditor_sameWindow" class="checkbox" />
+				<label for="linkeditor_sameWindow" class="space-top">{t('files_linkeditor', 'Open in same window')}</label>
+				<input type="checkbox" bind:checked={file.skipConfirmation} id="linkeditor_skipConfirmation" class="checkbox" />
+				<label for="linkeditor_skipConfirmation">{t('files_linkeditor', 'Skip confirmation dialog before open')}</label>
 			{/if}
 		</div>
 		<div class="oc-dialog-buttonrow onebutton urlvisit">

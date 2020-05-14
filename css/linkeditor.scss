@@ -17,6 +17,10 @@
 	}
 
 	label {
-		display: block;
-	}
+    display: block;
+
+    &.space-top {
+      margin-top: 5px;
+    }
+  }
 }

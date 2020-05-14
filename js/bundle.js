@@ -5365,7 +5365,7 @@
     			input2 = element("input");
     			t7 = space();
     			label2 = element("label");
-    			label2.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Skip navigation confirmation dialog")}`;
+    			label2.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Skip confirmation dialog before open")}`;
     			attr(input0, "type", "text");
     			set_style(input0, "width", "100%");
     			attr(input0, "class", "input-wide");
