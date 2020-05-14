@@ -25,7 +25,7 @@ export class Parser {
 			newContent = oldContent.replace(new RegExp("URL=.*", "gm"), `URL=${sanitizeUrl(url)}`);
 		} else {
 			// Okay, let's create a new file.
-			newContent = `[InternetShortcut]\r\nURL=${sanitizeUrl(url)}\r\n`;
+			newContent = `[InternetShortcut]\r\nURL=${sanitizeUrl(url)}`;
 		}
 		// Adjust same window property
 		if (!sameWindow && newContent.indexOf(extraFields.sameWindow) !== -1) {
@@ -41,7 +41,10 @@ export class Parser {
 			newContent = `${newContent}\r\n${extraFields.skipConfirmation}`;
 		}
 
-		return newContent;
+		// Remove blank new lines
+		newContent = newContent.replace(/\r\n\r\n/gm, "\r\n").trim();
+		// Add a newline at the end
+		return `${newContent}\r\n`;
 	}
 
 	/**

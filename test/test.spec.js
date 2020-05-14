@@ -19,10 +19,11 @@ describe("Sanitizer", function () {
 	});
 });
 
-describe(".webloc parser", function () {
-	it("creates a .webloc file with just a URL", function () {
-		const url = "https://example.org";
-		expect(Parser.generateWeblocFileContent("", url)).toEqual(`<?xml version="1.0" encoding="UTF-8"?>
+describe("Parser", function () {
+	describe(".webloc files", function () {
+		it("creates a .webloc file with just a URL", function () {
+			const url = "https://example.org";
+			expect(Parser.generateWeblocFileContent("", url)).toEqual(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -30,12 +31,12 @@ describe(".webloc parser", function () {
 <string>${url}</string>
 </dict>
 </plist>`);
-	});
+		});
 
-	it("creates a .webloc file with a URL and the newWindow option", function () {
-		const url = "https://example.org";
-		const sameWindow = true;
-		expect(Parser.generateWeblocFileContent("", url, sameWindow)).toEqual(`<?xml version="1.0" encoding="UTF-8"?>
+		it("creates a .webloc file with a URL and the newWindow option", function () {
+			const url = "https://example.org";
+			const sameWindow = true;
+			expect(Parser.generateWeblocFileContent("", url, sameWindow)).toEqual(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -47,14 +48,14 @@ describe(".webloc parser", function () {
 <string>_self</string>
 </extra> -->
 </plist>`);
-	});
+		});
 
-	it("creates a .webloc file with a URL, the newWindow option and the skipConfirmation option", function () {
-		const url = "https://example.org";
-		const sameWindow = true;
-		const skipConfirmation = true;
-		expect(Parser.generateWeblocFileContent("", url, sameWindow, skipConfirmation))
-			.toEqual(`<?xml version="1.0" encoding="UTF-8"?>
+		it("creates a .webloc file with a URL, the newWindow option and the skipConfirmation option", function () {
+			const url = "https://example.org";
+			const sameWindow = true;
+			const skipConfirmation = true;
+			expect(Parser.generateWeblocFileContent("", url, sameWindow, skipConfirmation))
+				.toEqual(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -70,11 +71,11 @@ describe(".webloc parser", function () {
 <string>1</string>
 </extra> -->
 </plist>`);
-	});
+		});
 
-	it("updates a .webloc file removing the newWindow option and keeping the skipConfirmation option", function () {
-		const url = "https://example.org";
-		const previousFile = `<?xml version="1.0" encoding="UTF-8"?>
+		it("updates a .webloc file removing the newWindow option and keeping the skipConfirmation option", function () {
+			const url = "https://example.org";
+			const previousFile = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -92,10 +93,10 @@ describe(".webloc parser", function () {
 <string>1</string>
 </extra> -->
 </plist>`;
-		const sameWindow = false;
-		const skipConfirmation = true;
-		expect(Parser.generateWeblocFileContent(previousFile, url, sameWindow, skipConfirmation))
-			.toEqual(`<?xml version="1.0" encoding="UTF-8"?>
+			const sameWindow = false;
+			const skipConfirmation = true;
+			expect(Parser.generateWeblocFileContent(previousFile, url, sameWindow, skipConfirmation))
+				.toEqual(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -107,11 +108,11 @@ describe(".webloc parser", function () {
 <string>1</string>
 </extra> -->
 </plist>`);
-	});
+		});
 
-	it("updates a .webloc file removing the skipConfirmation option, keeping an unknown option and adding sameWindow option", function () {
-		const url = "https://example.org";
-		const previousFile = `<?xml version="1.0" encoding="UTF-8"?>
+		it("updates a .webloc file removing the skipConfirmation option, keeping an unknown option and adding sameWindow option", function () {
+			const url = "https://example.org";
+			const previousFile = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -129,10 +130,10 @@ describe(".webloc parser", function () {
 <string>1</string>
 </extra> -->
 </plist>`;
-		const sameWindow = true;
-		const skipConfirmation = false;
-		expect(Parser.generateWeblocFileContent(previousFile, url, sameWindow, skipConfirmation))
-			.toEqual(`<?xml version="1.0" encoding="UTF-8"?>
+			const sameWindow = true;
+			const skipConfirmation = false;
+			expect(Parser.generateWeblocFileContent(previousFile, url, sameWindow, skipConfirmation))
+				.toEqual(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -148,16 +149,16 @@ describe(".webloc parser", function () {
 <string>_self</string>
 </extra> -->
 </plist>`);
-	});
+		});
 
-	it("reads a .weblock file with a link", function () {
-		const file = {
-			url: "https://example.org",
-			sameWindow: false,
-			skipConfirmation: false,
-		};
-		expect(
-			Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
+		it("reads a .weblock file with a link", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: false,
+				skipConfirmation: false,
+			};
+			expect(
+				Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -165,17 +166,17 @@ describe(".webloc parser", function () {
 <string>${file.url}</string>
 </dict>
 </plist>`)
-		).toEqual(file);
-	});
+			).toEqual(file);
+		});
 
-	it("reads a .weblock file with a link and a sameWindow field", function () {
-		const file = {
-			url: "https://example.org",
-			sameWindow: true,
-			skipConfirmation: false,
-		};
-		expect(
-			Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
+		it("reads a .weblock file with a link and a sameWindow field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: true,
+				skipConfirmation: false,
+			};
+			expect(
+				Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -187,17 +188,17 @@ describe(".webloc parser", function () {
 <string>_self</string>
 </extra> -->
 </plist>`)
-		).toEqual(file);
-	});
+			).toEqual(file);
+		});
 
-	it("reads a .weblock file with a link, a sameWindow field and a skipConfirmation field", function () {
-		const file = {
-			url: "https://example.org",
-			sameWindow: true,
-			skipConfirmation: true,
-		};
-		expect(
-			Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
+		it("reads a .weblock file with a link, a sameWindow field and a skipConfirmation field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: true,
+				skipConfirmation: true,
+			};
+			expect(
+				Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -213,17 +214,17 @@ describe(".webloc parser", function () {
 <string>_self</string>
 </extra> -->
 </plist>`)
-		).toEqual(file);
-	});
+			).toEqual(file);
+		});
 
-	it("reads a .weblock file with a link, and a skipConfirmation field", function () {
-		const file = {
-			url: "https://example.org",
-			sameWindow: false,
-			skipConfirmation: true,
-		};
-		expect(
-			Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
+		it("reads a .weblock file with a link, and a skipConfirmation field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: false,
+				skipConfirmation: true,
+			};
+			expect(
+				Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -235,17 +236,17 @@ describe(".webloc parser", function () {
 <string>1</string>
 </extra> -->
 </plist>`)
-		).toEqual(file);
-	});
+			).toEqual(file);
+		});
 
-	it("reads a .weblock file with a link, an unknown field and a sameWindow field", function () {
-		const file = {
-			url: "https://example.org",
-			sameWindow: true,
-			skipConfirmation: false,
-		};
-		expect(
-			Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
+		it("reads a .weblock file with a link, an unknown field and a sameWindow field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: true,
+				skipConfirmation: false,
+			};
+			expect(
+				Parser.parseWeblocFile(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -261,6 +262,135 @@ describe(".webloc parser", function () {
 <string>_self</string>
 </extra> -->
 </plist>`)
-		).toEqual(file);
+			).toEqual(file);
+		});
+	});
+
+	describe(".URL files", function () {
+		it("creates a .URL file with just a URL", function () {
+			const url = "https://example.org";
+			expect(Parser.generateURLFileContent("", url)).toEqual(`[InternetShortcut]\r
+URL=${url}\r
+`);
+		});
+
+		it("creates a .URL file with a URL and the newWindow option", function () {
+			const url = "https://example.org";
+			const sameWindow = true;
+			expect(Parser.generateURLFileContent("", url, sameWindow)).toEqual(`[InternetShortcut]\r
+URL=${url}\r
+X-Target=_self\r
+`);
+		});
+
+		it("creates a .URL file with a URL, the newWindow option and the skipConfirmation option", function () {
+			const url = "https://example.org";
+			const sameWindow = true;
+			const skipConfirmation = true;
+			expect(Parser.generateURLFileContent("", url, sameWindow, skipConfirmation)).toEqual(`[InternetShortcut]\r
+URL=${url}\r
+X-Target=_self\r
+X-Skip-Confirm-Navigation=1\r
+`);
+		});
+
+		it("updates a .URL file removing the newWindow option and keeping the skipConfirmation option", function () {
+			const url = "https://example.org";
+			const previousFile = `[InternetShortcut]\r
+URL=${url}\r
+X-Target=_self\r
+X-Skip-Confirm-Navigation=1\r
+`;
+			const sameWindow = false;
+			const skipConfirmation = true;
+			expect(Parser.generateURLFileContent(previousFile, url, sameWindow, skipConfirmation))
+				.toEqual(`[InternetShortcut]\r
+URL=${url}\r
+X-Skip-Confirm-Navigation=1\r
+`);
+		});
+
+		it("updates a .URL file removing the skipConfirmation option, keeping an unknown option and adding sameWindow option", function () {
+			const url = "https://example.org";
+			const previousFile = `[InternetShortcut]\r
+URL=${url}\r
+X-Skip-Confirm-Navigation=1\r
+X-It's-Fine=I'm fine\r
+`;
+			const sameWindow = true;
+			const skipConfirmation = false;
+			expect(Parser.generateURLFileContent(previousFile, url, sameWindow, skipConfirmation))
+				.toEqual(`[InternetShortcut]\r
+URL=${url}\r
+X-It's-Fine=I'm fine\r
+X-Target=_self\r
+`);
+		});
+
+		it("reads a .URL file with a link", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: false,
+				skipConfirmation: false,
+			};
+			expect(
+				Parser.parseURLFile(`[InternetShortcut]
+URL=${file.url}`)
+			).toEqual(file);
+		});
+
+		it("reads a .URL file with a link and a sameWindow field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: true,
+				skipConfirmation: false,
+			};
+			expect(
+				Parser.parseURLFile(`[InternetShortcut]
+URL=${file.url}
+X-Target=_self`)
+			).toEqual(file);
+		});
+
+		it("reads a .URL file with a link, a sameWindow field and a skipConfirmation field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: true,
+				skipConfirmation: true,
+			};
+			expect(
+				Parser.parseURLFile(`[InternetShortcut]
+URL=${file.url}
+X-Skip-Confirm-Navigation=1
+X-Target=_self`)
+			).toEqual(file);
+		});
+
+		it("reads a .URL file with a link, and a skipConfirmation field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: false,
+				skipConfirmation: true,
+			};
+			expect(
+				Parser.parseURLFile(`[InternetShortcut]
+URL=${file.url}
+X-Skip-Confirm-Navigation=1`)
+			).toEqual(file);
+		});
+
+		it("reads a .URL file with a link, an unknown field and a sameWindow field", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: true,
+				skipConfirmation: false,
+			};
+			expect(
+				Parser.parseURLFile(`[InternetShortcut]
+URL=${file.url}
+X-It's-Fine=I'm fine
+X-Target=_self`)
+			).toEqual(file);
+		});
 	});
 });

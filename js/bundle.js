@@ -4589,7 +4589,7 @@
             newContent = oldContent.replace(new RegExp("URL=.*", "gm"), "URL=".concat(sanitizeUrl(url)));
           } else {
             // Okay, let's create a new file.
-            newContent = "[InternetShortcut]\r\nURL=".concat(sanitizeUrl(url), "\r\n");
+            newContent = "[InternetShortcut]\r\nURL=".concat(sanitizeUrl(url));
           } // Adjust same window property
 
 
@@ -4604,9 +4604,12 @@
             newContent = newContent.replace(extraFields.skipConfirmation, "");
           } else if (skipConfirmation && newContent.indexOf(extraFields.skipConfirmation) === -1) {
             newContent = "".concat(newContent, "\r\n").concat(extraFields.skipConfirmation);
-          }
+          } // Remove blank new lines
 
-          return newContent;
+
+          newContent = newContent.replace(/\r\n\r\n/gm, "\r\n").trim(); // Add a newline at the end
+
+          return "".concat(newContent, "\r\n");
         }
         /**
          * Parse a URL file.
@@ -5336,17 +5339,13 @@
     	let input0;
     	let input0_placeholder_value;
     	let t3;
-    	let label1;
     	let input1;
     	let t4;
-    	let t5_value = /*t*/ ctx[2]("files_linkeditor", "Open in same window") + "";
-    	let t5;
+    	let label1;
     	let t6;
-    	let label2;
     	let input2;
     	let t7;
-    	let t8_value = /*t*/ ctx[2]("files_linkeditor", "Skip navigation confirmation dialog") + "";
-    	let t8;
+    	let label2;
     	let dispose;
 
     	return {
@@ -5358,22 +5357,29 @@
     			t2 = space();
     			input0 = element("input");
     			t3 = space();
-    			label1 = element("label");
     			input1 = element("input");
     			t4 = space();
-    			t5 = text(t5_value);
+    			label1 = element("label");
+    			label1.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Open in same window")}`;
     			t6 = space();
-    			label2 = element("label");
     			input2 = element("input");
     			t7 = space();
-    			t8 = text(t8_value);
+    			label2 = element("label");
+    			label2.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Skip navigation confirmation dialog")}`;
     			attr(input0, "type", "text");
     			set_style(input0, "width", "100%");
     			attr(input0, "class", "input-wide");
     			input0.autofocus = true;
     			attr(input0, "placeholder", input0_placeholder_value = /*t*/ ctx[2]("files_linkeditor", "e.g. https://example.org"));
     			attr(input1, "type", "checkbox");
+    			attr(input1, "id", "linkeditor_sameWindow");
+    			attr(input1, "class", "checkbox");
+    			attr(label1, "for", "linkeditor_sameWindow");
+    			attr(label1, "class", "space-top");
     			attr(input2, "type", "checkbox");
+    			attr(input2, "id", "linkeditor_skipConfirmation");
+    			attr(input2, "class", "checkbox");
+    			attr(label2, "for", "linkeditor_skipConfirmation");
     		},
     		m(target, anchor, remount) {
     			insert(target, label0, anchor);
@@ -5384,17 +5390,15 @@
     			append(label0, input0);
     			set_input_value(input0, /*file*/ ctx[0].url);
     			insert(target, t3, anchor);
-    			insert(target, label1, anchor);
-    			append(label1, input1);
+    			insert(target, input1, anchor);
     			input1.checked = /*file*/ ctx[0].sameWindow;
-    			append(label1, t4);
-    			append(label1, t5);
+    			insert(target, t4, anchor);
+    			insert(target, label1, anchor);
     			insert(target, t6, anchor);
-    			insert(target, label2, anchor);
-    			append(label2, input2);
+    			insert(target, input2, anchor);
     			input2.checked = /*file*/ ctx[0].skipConfirmation;
-    			append(label2, t7);
-    			append(label2, t8);
+    			insert(target, t7, anchor);
+    			insert(target, label2, anchor);
     			input0.focus();
     			if (remount) run_all(dispose);
 
@@ -5420,15 +5424,19 @@
     		d(detaching) {
     			if (detaching) detach(label0);
     			if (detaching) detach(t3);
+    			if (detaching) detach(input1);
+    			if (detaching) detach(t4);
     			if (detaching) detach(label1);
     			if (detaching) detach(t6);
+    			if (detaching) detach(input2);
+    			if (detaching) detach(t7);
     			if (detaching) detach(label2);
     			run_all(dispose);
     		}
     	};
     }
 
-    // (65:3) {#if !loading}
+    // (61:3) {#if !loading}
     function create_if_block_1$1(ctx) {
     	let a;
     	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Visit link") + "";
@@ -5458,7 +5466,7 @@
     	};
     }
 
-    // (78:3) {#if !loading}
+    // (74:3) {#if !loading}
     function create_if_block$1(ctx) {
     	let button;
     	let dispose;
