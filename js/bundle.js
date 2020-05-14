@@ -3006,6 +3006,94 @@
       return target;
     }
 
+    function _toConsumableArray(arr) {
+      return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+    }
+
+    function _arrayWithoutHoles(arr) {
+      if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+    }
+
+    function _iterableToArray(iter) {
+      if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    }
+
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      if (n === "Object" && o.constructor) n = o.constructor.name;
+      if (n === "Map" || n === "Set") return Array.from(o);
+      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+
+    function _arrayLikeToArray(arr, len) {
+      if (len == null || len > arr.length) len = arr.length;
+
+      for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+      return arr2;
+    }
+
+    function _nonIterableSpread() {
+      throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    function _createForOfIteratorHelper(o) {
+      if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+        if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+          var i = 0;
+
+          var F = function () {};
+
+          return {
+            s: F,
+            n: function () {
+              if (i >= o.length) return {
+                done: true
+              };
+              return {
+                done: false,
+                value: o[i++]
+              };
+            },
+            e: function (e) {
+              throw e;
+            },
+            f: F
+          };
+        }
+
+        throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+      }
+
+      var it,
+          normalCompletion = true,
+          didErr = false,
+          err;
+      return {
+        s: function () {
+          it = o[Symbol.iterator]();
+        },
+        n: function () {
+          var step = it.next();
+          normalCompletion = step.done;
+          return step;
+        },
+        e: function (e) {
+          didErr = true;
+          err = e;
+        },
+        f: function () {
+          try {
+            if (!normalCompletion && it.return != null) it.return();
+          } finally {
+            if (didErr) throw err;
+          }
+        }
+      };
+    }
+
     var arrayMethodIsStrict = function (METHOD_NAME, argument) {
       var method = [][METHOD_NAME];
       return !!method && fails(function () {
@@ -3618,7 +3706,9 @@
               onCreate = _ref.onCreate,
               fileModifiedTime = _ref.fileModifiedTime,
               isNew = _ref.isNew,
-              isLoaded = _ref.isLoaded;
+              isLoaded = _ref.isLoaded,
+              sameWindow = _ref.sameWindow,
+              skipConfirmation = _ref.skipConfirmation;
 
           return {
             name: name || "?",
@@ -3629,7 +3719,9 @@
             onCreate: onCreate,
             fileModifiedTime: fileModifiedTime || null,
             isNew: isNew || false,
-            isLoaded: isLoaded || false
+            isLoaded: isLoaded || false,
+            sameWindow: sameWindow || false,
+            skipConfirmation: skipConfirmation || false
           };
         }
       }, {
@@ -4464,17 +4556,17 @@
     });
 
     var extraFields = {
-      skipConfirmNavigation: "X-Skip-Confirm-Navigation=1",
+      skipConfirmation: "X-Skip-Confirm-Navigation=1",
       sameWindow: "X-Target=_self"
     };
     var extraFieldNames = {
-      skipConfirmNavigation: "X-Skip-Confirm-Navigation",
+      skipConfirmation: "X-Skip-Confirm-Navigation",
       sameWindow: "X-Target"
     };
     var emptyFile = {
       url: "",
       sameWindow: false,
-      skipConfirmNavigation: true
+      skipConfirmation: false
     };
     var Parser = /*#__PURE__*/function () {
       function Parser() {
@@ -4489,7 +4581,7 @@
          */
         value: function generateURLFileContent(oldContent, url) {
           var sameWindow = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-          var skipConfirmNavigation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+          var skipConfirmation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
           var newContent = ""; // Find if this is already a shortcut file.
 
           if (oldContent && oldContent.indexOf("[InternetShortcut]") !== -1 && oldContent.indexOf("URL=") !== -1) {
@@ -4508,10 +4600,10 @@
           } // Adjust skip navigation confirmation property
 
 
-          if (!skipConfirmNavigation && newContent.indexOf(extraFields.skipConfirmNavigation) !== -1) {
-            newContent = newContent.replace(extraFields.skipConfirmNavigation, "");
-          } else if (skipConfirmNavigation && newContent.indexOf(extraFields.skipConfirmNavigation) === -1) {
-            newContent = "".concat(newContent, "\r\n").concat(extraFields.skipConfirmNavigation);
+          if (!skipConfirmation && newContent.indexOf(extraFields.skipConfirmation) !== -1) {
+            newContent = newContent.replace(extraFields.skipConfirmation, "");
+          } else if (skipConfirmation && newContent.indexOf(extraFields.skipConfirmation) === -1) {
+            newContent = "".concat(newContent, "\r\n").concat(extraFields.skipConfirmation);
           }
 
           return newContent;
@@ -4537,8 +4629,8 @@
             } // If this extra field is present, we skip the navigation confirmation view
 
 
-            if (filecontent.indexOf(extraFields.skipConfirmNavigation) !== -1) {
-              result.skipConfirmNavigation = true;
+            if (filecontent.indexOf(extraFields.skipConfirmation) !== -1) {
+              result.skipConfirmation = true;
             } // If this extra field is present, the link opens in the same window
 
 
@@ -4557,35 +4649,118 @@
         key: "generateWeblocFileContent",
         value: function generateWeblocFileContent(oldcontent, url) {
           var sameWindow = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-          var skipConfirmNavigation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-          // Find if this is already a shortcut file.
-          var newContent = ""; // Match for URL line.
+          var skipConfirmation = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+          var newContent = "";
+          var urlMatch = false; // Editing existing file
 
-          var urlmatch = oldcontent.match("<key>URL</key>\n.<string>(.*)</string>");
-          var sameWindowMatch = oldcontent.indexOf("<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>")) !== -1;
-          var skipConfirmNavigationMatch = oldcontent.indexOf("<dict><key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string></dict>")) !== -1; // See if at least two matches were found (the whole expression and the url itself).
+          if (oldcontent) {
+            // Parse XML file
+            var parser = new window.DOMParser(); // Remove comment characters around extra fields
 
-          if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
-            // Seems like it, replace the url.
-            newContent = oldcontent.replace(urlmatch[1], sanitizeUrl(url)); // Check for same window property
+            var xmlContent = uncommentExtraFields(oldcontent);
+            var xmlDoc = parser.parseFromString(xmlContent, "text/xml"); // There can be <dict> and <extra> tags on the root <plist>
 
-            if (!sameWindow && sameWindowMatch) {
-              newContent = newContent.replace("<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>"), "");
-            } else if (sameWindow && !sameWindowMatch) {
-              newContent = newContent.replace("</plist>", "<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>\n</plist>"));
-            } // Check for skip confirm navigation property
+            var elements = [].concat(_toConsumableArray(xmlDoc.getElementsByTagName("dict")), _toConsumableArray(xmlDoc.getElementsByTagName("extra")));
+            var skipConfirmationMatch = false;
+            var sameWindowMatch = false; // Map over all child elements
+
+            if (elements && elements.length) {
+              var _iterator = _createForOfIteratorHelper(elements),
+                  _step;
+
+              try {
+                for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                  var element = _step.value;
+                  var key = element.getElementsByTagName("key");
+                  var string = element.getElementsByTagName("string"); // Match for URL line
+
+                  if (getXMLTagValue(key) === "URL") {
+                    setXMLTagValue(string, sanitizeUrl(url));
+                    urlMatch = true;
+                  } // If this extra field is present, the link opens in the same window
 
 
-            if (!skipConfirmNavigation && skipConfirmNavigationMatch) {
-              newContent = newContent.replace("<dict>\n<key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string>\n</dict>"), "");
-            } else if (skipConfirmNavigation && !skipConfirmNavigationMatch) {
-              newContent = newContent.replace("</plist>", "<dict>\n<key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string>\n</dict>\n</plist>"));
-            }
-          } else {
+                  if (getXMLTagValue(key) === extraFieldNames.sameWindow && getXMLTagValue(string) === "_self") {
+                    if (sameWindow) {
+                      // Update sameWindow field
+                      setXMLTagValue(string, "_self");
+                    } else {
+                      // Remove field
+                      xmlDoc.getElementsByTagName("plist")[0].removeChild(element);
+                    }
+
+                    sameWindowMatch = true;
+                  } // If this extra field is present, we skip the navigation confirmation view
+
+
+                  if (getXMLTagValue(key) === extraFieldNames.skipConfirmation && getXMLTagValue(string) === "1") {
+                    if (skipConfirmation) {
+                      // Update skipNavigation field
+                      setXMLTagValue(string, "1");
+                    } else {
+                      // Remove field
+                      xmlDoc.getElementsByTagName("plist")[0].removeChild(element);
+                    }
+
+                    skipConfirmationMatch = true;
+                  }
+                }
+              } catch (err) {
+                _iterator.e(err);
+              } finally {
+                _iterator.f();
+              }
+            } // The sameWindow field is not present, but needs to be added
+
+
+            if (sameWindow && !sameWindowMatch) {
+              var sameWindowElement = createExtraElement(xmlDoc, extraFieldNames.sameWindow, "_self");
+              xmlDoc.getElementsByTagName("plist")[0].appendChild(sameWindowElement);
+            } // The skipConfirmation field is not present, but needs to be added
+
+
+            if (skipConfirmation && !skipConfirmationMatch) {
+              var skipConfirmationElement = createExtraElement(xmlDoc, extraFieldNames.skipConfirmation, "1");
+              xmlDoc.getElementsByTagName("plist")[0].appendChild(skipConfirmationElement);
+            } // Instantiate XML serializer
+
+
+            var serializer = new window.XMLSerializer(); // Add XML header, serialize
+
+            newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t".concat(serializer.serializeToString(xmlDoc));
+
+            if (newContent.indexOf("parsererror") > -1) {
+              // Bail if parse error was "thrown"
+              console.error("Parse error", newContent);
+              newContent = "";
+            } // pretty print XML
+
+
+            newContent = formatXml(newContent);
+          } // No content or URL not found in content
+
+
+          if (!newContent || !urlMatch) {
             // Okay, let's create a new file.
-            newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t<plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(sanitizeUrl(url), "</string>\n\t\t\t\t\t</dict>\n\t\t\t\t\t").concat(sameWindow ? "\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>".concat(extraFieldNames.sameWindow, "</key>\n\t\t\t\t\t\t<string>_self</string>\n\t\t\t\t\t</dict>") : "", "\n\t\t\t\t\t").concat(skipConfirmNavigation ? "\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n\t\t\t\t\t\t<string>1</string>\n\t\t\t\t\t</dict>") : "", "\n\t\t\t\t</plist>").replace(/(\n|\b)\t+/g, "$1").trim();
-          }
+            newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t<plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(sanitizeUrl(url), "</string>\n\t\t\t\t\t</dict>");
 
+            if (sameWindow) {
+              newContent = "".concat(newContent, "\n\t\t\t\t<extra>\n\t\t\t\t\t<key>").concat(extraFieldNames.sameWindow, "</key>\n\t\t\t\t\t<string>_self</string>\n\t\t\t\t</extra>");
+            }
+
+            if (skipConfirmation) {
+              newContent = "".concat(newContent, "\n\t\t\t\t<extra>\n\t\t\t\t\t<key>").concat(extraFieldNames.skipConfirmation, "</key>\n\t\t\t\t\t<string>1</string>\n\t\t\t\t</extra>");
+            }
+
+            newContent = "".concat(newContent, "\n\t\t\t</plist>");
+          } // Comment extra fields
+
+
+          newContent = commentExtraFields(newContent); // Trim and remove indentation
+
+          newContent = newContent.replace(/(\n|\b)\t+/g, "$1").trim(); // Remove empty newlines
+
+          newContent = newContent.replace(/^\s*$(?:\r\n?|\n)/gm, "").trim();
           return newContent;
         }
         /**
@@ -4598,26 +4773,43 @@
           var result = _objectSpread2({}, emptyFile);
 
           if (filecontent) {
-            // Match for URL line.
-            var urlmatch = filecontent.replace(/(\n|\b)\t+/g, "$1").trim().match("<key>URL</key>\n\t\t\t\t\t<string>(.*)</string>\n\t\t\t\t\t".replace(/(\n|\b)\t+/g, "$1").trim()); // See if at least two matches were found (the whole expression and the url itself).
+            var parser = new window.DOMParser(); // Remove comment characters around extra fields
 
-            if (urlmatch && Array.isArray(urlmatch) && urlmatch.length > 1) {
-              // Let's use the first match.
-              result.url = sanitizeUrl(urlmatch[1]);
-            } // If this extra field is present, we skip the navigation confirmation view
+            var xmlContent = uncommentExtraFields(filecontent); // Parse XML file
+
+            var xmlDoc = parser.parseFromString(xmlContent, "text/xml"); // There can be <dict> and <extra> tags on the root <plist>
+
+            var elements = [].concat(_toConsumableArray(xmlDoc.getElementsByTagName("dict")), _toConsumableArray(xmlDoc.getElementsByTagName("extra"))); // Map over all child elements
+
+            if (elements && elements.length) {
+              var _iterator2 = _createForOfIteratorHelper(elements),
+                  _step2;
+
+              try {
+                for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+                  var element = _step2.value;
+                  var key = element.getElementsByTagName("key");
+                  var string = element.getElementsByTagName("string"); // Match for URL line
+
+                  if (getXMLTagValue(key) === "URL") {
+                    result.url = sanitizeUrl(getXMLTagValue(string));
+                  } // If this extra field is present, the link opens in the same window
 
 
-            var sameWindowMatch = filecontent.indexOf("<dict>\n<key>".concat(extraFieldNames.sameWindow, "</key>\n.<string>_self</string>\n</dict>")) !== -1;
-
-            if (sameWindowMatch) {
-              result.sameWindow = true;
-            } // If this extra field is present, the link opens in the same window
+                  if (getXMLTagValue(key) === extraFieldNames.sameWindow && getXMLTagValue(string) === "_self") {
+                    result.sameWindow = true;
+                  } // If this extra field is present, we skip the navigation confirmation view
 
 
-            var skipConfirmNavigationMatch = filecontent.indexOf("<dict><key>".concat(extraFieldNames.skipConfirmNavigation, "</key>\n.<string>1</string></dict>")) !== -1;
-
-            if (skipConfirmNavigationMatch) {
-              result.skipConfirmNavigation = true;
+                  if (getXMLTagValue(key) === extraFieldNames.skipConfirmation && getXMLTagValue(string) === "1") {
+                    result.skipConfirmation = true;
+                  }
+                }
+              } catch (err) {
+                _iterator2.e(err);
+              } finally {
+                _iterator2.f();
+              }
             }
           }
 
@@ -4649,7 +4841,46 @@
       }]);
 
       return Parser;
-    }();
+    }(); // Get the actual value of an XML node
+
+    var getXMLTagValue = function getXMLTagValue(element) {
+      if (element && element.length > 0 && element[0].childNodes && element[0].childNodes.length > 0 && element[0].childNodes[0]) {
+        return element[0].childNodes[0].nodeValue;
+      }
+
+      return "";
+    }; // Set the value of an XML node
+
+
+    var setXMLTagValue = function setXMLTagValue(element, value) {
+      if (element && element.length > 0 && element[0].childNodes && element[0].childNodes.length > 0 && element[0].childNodes[0]) {
+        element[0].childNodes[0].nodeValue = value;
+      }
+    }; // Creates an <extra> XML element
+
+
+    var createExtraElement = function createExtraElement(xmlDoc, keyValue, stringValue) {
+      var extra = xmlDoc.createElement("extra");
+      var key = xmlDoc.createElement("key");
+      key.appendChild(xmlDoc.createTextNode(keyValue));
+      extra.appendChild(key);
+      var string = xmlDoc.createElement("string");
+      string.appendChild(xmlDoc.createTextNode(stringValue));
+      extra.appendChild(string);
+      return extra;
+    };
+
+    var formatXml = function formatXml(xml) {
+      return xml.replace(/></g, ">\n<");
+    };
+
+    var commentExtraFields = function commentExtraFields(xml) {
+      return xml.replace(/<extra>/g, "<!-- <extra>").replace(/<\/extra>/g, "</extra> -->");
+    };
+
+    var uncommentExtraFields = function uncommentExtraFields(xml) {
+      return xml.replace(/<!-- <extra>/g, "<extra>").replace(/<\/extra> -->/g, "</extra>");
+    };
 
     /* js/views/PublicButton.svelte generated by Svelte v3.22.2 */
 
@@ -4952,7 +5183,7 @@
         key: "loadAndChangeViewMode",
         value: function () {
           var _loadAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref2) {
-            var fileName, context, nextViewMode, publicUser, downloadUrl, currentUrl, file, extension, url;
+            var fileName, context, nextViewMode, publicUser, downloadUrl, currentUrl, file, extension, parsedFile;
             return regeneratorRuntime.wrap(function _callee4$(_context4) {
               while (1) {
                 switch (_context4.prev = _context4.next) {
@@ -5005,18 +5236,17 @@
                       // Read extension and run fitting parser.
                       extension = Parser.getExtension(fileName); // Parse the filecontent to get to the URL.
 
-                      url = "";
+                      parsedFile = {};
 
                       if (extension === "webloc") {
-                        url = Parser.parseWeblocFile(file.filecontents).url;
+                        parsedFile = Parser.parseWeblocFile(file.filecontents);
                       } else {
-                        url = Parser.parseURLFile(file.filecontents).url;
+                        parsedFile = Parser.parseURLFile(file.filecontents);
                       } // Update file info in store
 
 
                       currentFile.update(function (fileConfig) {
-                        return FileService.getFileConfig(_objectSpread2(_objectSpread2({}, fileConfig), {}, {
-                          url: url,
+                        return FileService.getFileConfig(_objectSpread2(_objectSpread2(_objectSpread2({}, fileConfig), parsedFile), {}, {
                           fileModifiedTime: file.mtime,
                           isLoaded: true
                         }));
@@ -5043,21 +5273,21 @@
         key: "saveAndChangeViewMode",
         value: function () {
           var _saveAndChangeViewMode = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(_ref3) {
-            var name, dir, url, fileModifiedTime, extension, fileContent;
+            var name, dir, url, fileModifiedTime, sameWindow, skipConfirmation, extension, fileContent;
             return regeneratorRuntime.wrap(function _callee5$(_context5) {
               while (1) {
                 switch (_context5.prev = _context5.next) {
                   case 0:
-                    name = _ref3.name, dir = _ref3.dir, url = _ref3.url, fileModifiedTime = _ref3.fileModifiedTime;
+                    name = _ref3.name, dir = _ref3.dir, url = _ref3.url, fileModifiedTime = _ref3.fileModifiedTime, sameWindow = _ref3.sameWindow, skipConfirmation = _ref3.skipConfirmation;
                     // Read extension and run fitting parser.
                     extension = Parser.getExtension(name); // Parse the filecontent to get to the URL.
 
                     fileContent = "";
 
                     if (extension === "webloc") {
-                      fileContent = Parser.generateWeblocFileContent("", url);
+                      fileContent = Parser.generateWeblocFileContent("", url, sameWindow, skipConfirmation);
                     } else {
-                      fileContent = Parser.generateURLFileContent("", url);
+                      fileContent = Parser.generateURLFileContent("", url, sameWindow, skipConfirmation);
                     } // Save file
 
 
@@ -5097,55 +5327,108 @@
     /* js/views/Editor.svelte generated by Svelte v3.22.2 */
 
     function create_if_block_2$1(ctx) {
-    	let label;
+    	let label0;
     	let t0_value = /*t*/ ctx[2]("files_linkeditor", "Link target URL") + "";
     	let t0;
     	let t1;
     	let br;
     	let t2;
-    	let input;
-    	let input_placeholder_value;
+    	let input0;
+    	let input0_placeholder_value;
+    	let t3;
+    	let label1;
+    	let input1;
+    	let t4;
+    	let t5_value = /*t*/ ctx[2]("files_linkeditor", "Open in same window") + "";
+    	let t5;
+    	let t6;
+    	let label2;
+    	let input2;
+    	let t7;
+    	let t8_value = /*t*/ ctx[2]("files_linkeditor", "Skip navigation confirmation dialog") + "";
+    	let t8;
     	let dispose;
 
     	return {
     		c() {
-    			label = element("label");
+    			label0 = element("label");
     			t0 = text(t0_value);
     			t1 = space();
     			br = element("br");
     			t2 = space();
-    			input = element("input");
-    			attr(input, "type", "text");
-    			set_style(input, "width", "100%");
-    			attr(input, "class", "input-wide");
-    			input.autofocus = true;
-    			attr(input, "placeholder", input_placeholder_value = /*t*/ ctx[2]("files_linkeditor", "e.g. https://example.org"));
+    			input0 = element("input");
+    			t3 = space();
+    			label1 = element("label");
+    			input1 = element("input");
+    			t4 = space();
+    			t5 = text(t5_value);
+    			t6 = space();
+    			label2 = element("label");
+    			input2 = element("input");
+    			t7 = space();
+    			t8 = text(t8_value);
+    			attr(input0, "type", "text");
+    			set_style(input0, "width", "100%");
+    			attr(input0, "class", "input-wide");
+    			input0.autofocus = true;
+    			attr(input0, "placeholder", input0_placeholder_value = /*t*/ ctx[2]("files_linkeditor", "e.g. https://example.org"));
+    			attr(input1, "type", "checkbox");
+    			attr(input2, "type", "checkbox");
     		},
     		m(target, anchor, remount) {
-    			insert(target, label, anchor);
-    			append(label, t0);
-    			append(label, t1);
-    			append(label, br);
-    			append(label, t2);
-    			append(label, input);
-    			set_input_value(input, /*file*/ ctx[0].url);
-    			input.focus();
-    			if (remount) dispose();
-    			dispose = listen(input, "input", /*input_input_handler*/ ctx[6]);
+    			insert(target, label0, anchor);
+    			append(label0, t0);
+    			append(label0, t1);
+    			append(label0, br);
+    			append(label0, t2);
+    			append(label0, input0);
+    			set_input_value(input0, /*file*/ ctx[0].url);
+    			insert(target, t3, anchor);
+    			insert(target, label1, anchor);
+    			append(label1, input1);
+    			input1.checked = /*file*/ ctx[0].sameWindow;
+    			append(label1, t4);
+    			append(label1, t5);
+    			insert(target, t6, anchor);
+    			insert(target, label2, anchor);
+    			append(label2, input2);
+    			input2.checked = /*file*/ ctx[0].skipConfirmation;
+    			append(label2, t7);
+    			append(label2, t8);
+    			input0.focus();
+    			if (remount) run_all(dispose);
+
+    			dispose = [
+    				listen(input0, "input", /*input0_input_handler*/ ctx[6]),
+    				listen(input1, "change", /*input1_change_handler*/ ctx[7]),
+    				listen(input2, "change", /*input2_change_handler*/ ctx[8])
+    			];
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*file*/ 1 && input.value !== /*file*/ ctx[0].url) {
-    				set_input_value(input, /*file*/ ctx[0].url);
+    			if (dirty & /*file*/ 1 && input0.value !== /*file*/ ctx[0].url) {
+    				set_input_value(input0, /*file*/ ctx[0].url);
+    			}
+
+    			if (dirty & /*file*/ 1) {
+    				input1.checked = /*file*/ ctx[0].sameWindow;
+    			}
+
+    			if (dirty & /*file*/ 1) {
+    				input2.checked = /*file*/ ctx[0].skipConfirmation;
     			}
     		},
     		d(detaching) {
-    			if (detaching) detach(label);
-    			dispose();
+    			if (detaching) detach(label0);
+    			if (detaching) detach(t3);
+    			if (detaching) detach(label1);
+    			if (detaching) detach(t6);
+    			if (detaching) detach(label2);
+    			run_all(dispose);
     		}
     	};
     }
 
-    // (57:3) {#if !loading}
+    // (65:3) {#if !loading}
     function create_if_block_1$1(ctx) {
     	let a;
     	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Visit link") + "";
@@ -5175,7 +5458,7 @@
     	};
     }
 
-    // (70:3) {#if !loading}
+    // (78:3) {#if !loading}
     function create_if_block$1(ctx) {
     	let button;
     	let dispose;
@@ -5263,7 +5546,7 @@
     			if (remount) run_all(dispose);
 
     			dispose = [
-    				listen(button, "click", prevent_default(/*click_handler*/ ctx[7])),
+    				listen(button, "click", prevent_default(/*click_handler*/ ctx[9])),
     				listen(form, "submit", prevent_default(/*save*/ ctx[4]))
     			];
     		},
@@ -5342,7 +5625,7 @@
     			const overlay_changes = {};
     			if (dirty & /*loading*/ 2) overlay_changes.loading = /*loading*/ ctx[1];
 
-    			if (dirty & /*$$scope, loading, file*/ 259) {
+    			if (dirty & /*$$scope, loading, file*/ 1027) {
     				overlay_changes.$$scope = { dirty, ctx };
     			}
 
@@ -5394,8 +5677,18 @@
     		}
     	};
 
-    	function input_input_handler() {
+    	function input0_input_handler() {
     		file.url = this.value;
+    		$$invalidate(0, file);
+    	}
+
+    	function input1_change_handler() {
+    		file.sameWindow = this.checked;
+    		$$invalidate(0, file);
+    	}
+
+    	function input2_change_handler() {
+    		file.skipConfirmation = this.checked;
     		$$invalidate(0, file);
     	}
 
@@ -5407,7 +5700,19 @@
     	let loading;
     	 $$invalidate(0, file = FileService.getFileConfig());
     	 $$invalidate(1, loading = true);
-    	return [file, loading, t, OC, save, unsubscribe, input_input_handler, click_handler];
+
+    	return [
+    		file,
+    		loading,
+    		t,
+    		OC,
+    		save,
+    		unsubscribe,
+    		input0_input_handler,
+    		input1_change_handler,
+    		input2_change_handler,
+    		click_handler
+    	];
     }
 
     class Editor extends SvelteComponent {

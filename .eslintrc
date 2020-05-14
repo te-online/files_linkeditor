@@ -4,7 +4,9 @@
     "t": true,
     "OC": true,
     "OCA": true,
-    "$": true
+    "describe": true,
+    "it": true,
+    "expect": true
   },
   "extends": [
     "standard",
