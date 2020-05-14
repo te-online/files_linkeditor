@@ -1,7 +1,19 @@
 import { sanitizeUrl } from "./sanitizeUrl";
 
 export class FileService {
-	static getFileConfig({ name, url, downloadUrl, currentUrl, dir, onCreate, fileModifiedTime, isNew, isLoaded } = {}) {
+	static getFileConfig({
+		name,
+		url,
+		downloadUrl,
+		currentUrl,
+		dir,
+		onCreate,
+		fileModifiedTime,
+		isNew,
+		isLoaded,
+		sameWindow,
+		skipConfirmation,
+	} = {}) {
 		return {
 			name: name || "?",
 			downloadUrl: downloadUrl || "",
@@ -12,6 +24,8 @@ export class FileService {
 			fileModifiedTime: fileModifiedTime || null,
 			isNew: isNew || false,
 			isLoaded: isLoaded || false,
+			sameWindow: sameWindow || false,
+			skipConfirmation: skipConfirmation || false,
 		};
 	}
 

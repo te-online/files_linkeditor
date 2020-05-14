@@ -157,30 +157,30 @@ export class LinkeditorService {
 			// Read extension and run fitting parser.
 			const extension = Parser.getExtension(fileName);
 			// Parse the filecontent to get to the URL.
-			let url = "";
+			let parsedFile = {};
 			if (extension === "webloc") {
-				url = Parser.parseWeblocFile(file.filecontents).url;
+				parsedFile = Parser.parseWeblocFile(file.filecontents);
 			} else {
-				url = Parser.parseURLFile(file.filecontents).url;
+				parsedFile = Parser.parseURLFile(file.filecontents);
 			}
 			// Update file info in store
 			currentFile.update((fileConfig) =>
-				FileService.getFileConfig({ ...fileConfig, url, fileModifiedTime: file.mtime, isLoaded: true })
+				FileService.getFileConfig({ ...fileConfig, ...parsedFile, fileModifiedTime: file.mtime, isLoaded: true })
 			);
 		} else {
 			window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 		}
 	}
 
-	static async saveAndChangeViewMode({ name, dir, url, fileModifiedTime }) {
+	static async saveAndChangeViewMode({ name, dir, url, fileModifiedTime, sameWindow, skipConfirmation }) {
 		// Read extension and run fitting parser.
 		const extension = Parser.getExtension(name);
 		// Parse the filecontent to get to the URL.
 		let fileContent = "";
 		if (extension === "webloc") {
-			fileContent = Parser.generateWeblocFileContent("", url);
+			fileContent = Parser.generateWeblocFileContent("", url, sameWindow, skipConfirmation);
 		} else {
-			fileContent = Parser.generateURLFileContent("", url);
+			fileContent = Parser.generateURLFileContent("", url, sameWindow, skipConfirmation);
 		}
 		// Save file
 		await FileService.save({ fileContent, name, dir, fileModifiedTime });
