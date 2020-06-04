@@ -3926,6 +3926,7 @@
     	let t2_value = /*file*/ ctx[0].url + "";
     	let t2;
     	let a_href_value;
+    	let a_target_value;
 
     	return {
     		c() {
@@ -3936,7 +3937,7 @@
     			a = element("a");
     			t2 = text(t2_value);
     			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
-    			attr(a, "target", "_blank");
+    			attr(a, "target", a_target_value = /*file*/ ctx[0].sameWindow ? "_self" : "_blank");
     			attr(p, "class", "urldisplay");
     		},
     		m(target, anchor) {
@@ -3953,6 +3954,10 @@
     			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
     				attr(a, "href", a_href_value);
     			}
+
+    			if (dirty & /*file*/ 1 && a_target_value !== (a_target_value = /*file*/ ctx[0].sameWindow ? "_self" : "_blank")) {
+    				attr(a, "target", a_target_value);
+    			}
     		},
     		d(detaching) {
     			if (detaching) detach(p);
@@ -3960,7 +3965,7 @@
     	};
     }
 
-    // (55:2) {#if !loading}
+    // (62:2) {#if !loading}
     function create_if_block(ctx) {
     	let show_if = FileService.userCanEdit();
     	let t0;
@@ -3968,6 +3973,7 @@
     	let t1_value = /*t*/ ctx[2]("files_linkeditor", "Visit link") + "";
     	let t1;
     	let a_href_value;
+    	let a_target_value;
     	let if_block = show_if && create_if_block_1(ctx);
 
     	return {
@@ -3977,7 +3983,7 @@
     			a = element("a");
     			t1 = text(t1_value);
     			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
-    			attr(a, "target", "_blank");
+    			attr(a, "target", a_target_value = /*file*/ ctx[0].sameWindow ? "_self" : "_blank");
     			attr(a, "class", "button primary");
     		},
     		m(target, anchor) {
@@ -3992,6 +3998,10 @@
     			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
     				attr(a, "href", a_href_value);
     			}
+
+    			if (dirty & /*file*/ 1 && a_target_value !== (a_target_value = /*file*/ ctx[0].sameWindow ? "_self" : "_blank")) {
+    				attr(a, "target", a_target_value);
+    			}
     		},
     		d(detaching) {
     			if (if_block) if_block.d(detaching);
@@ -4001,7 +4011,7 @@
     	};
     }
 
-    // (56:3) {#if FileService.userCanEdit()}
+    // (63:3) {#if FileService.userCanEdit()}
     function create_if_block_1(ctx) {
     	let a;
     	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Edit link") + "";
@@ -4034,7 +4044,7 @@
     	};
     }
 
-    // (34:0) <Overlay {loading}>
+    // (41:0) <Overlay {loading}>
     function create_default_slot(ctx) {
     	let div0;
     	let h3;
@@ -4182,12 +4192,21 @@
     		unsubscribe = currentFile.subscribe(async fileUpdate => {
     			$$invalidate(0, file = fileUpdate);
 
-    			if (file.isLoaded) {
+    			if (file && file.isLoaded) {
     				$$invalidate(1, loading = false);
 
     				// Show error when url is permanently empty (or maybe show editor?)
     				if (!file.url) {
     					OC.dialogs.alert(t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."), t("files_linkeditor", "A slight problem"));
+    					return;
+    				}
+
+    				// Open the link without confirmation
+    				if (file.skipConfirmation && file.sameWindow) {
+    					window.location.href = file.url;
+
+    					// Hide viewer
+    					viewMode.update(() => "none");
     				}
     			}
     		});
@@ -5344,6 +5363,7 @@
     	let label1;
     	let t6;
     	let input2;
+    	let input2_disabled_value;
     	let t7;
     	let label2;
     	let dispose;
@@ -5365,7 +5385,7 @@
     			input2 = element("input");
     			t7 = space();
     			label2 = element("label");
-    			label2.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Skip confirmation dialog before open")}`;
+    			label2.textContent = `${/*t*/ ctx[2]("files_linkeditor", "Skip confirmation dialog before open (has to open in same window)")}`;
     			attr(input0, "type", "text");
     			set_style(input0, "width", "100%");
     			attr(input0, "class", "input-wide");
@@ -5377,6 +5397,7 @@
     			attr(label1, "for", "linkeditor_sameWindow");
     			attr(label1, "class", "space-top");
     			attr(input2, "type", "checkbox");
+    			input2.disabled = input2_disabled_value = !/*file*/ ctx[0].sameWindow;
     			attr(input2, "id", "linkeditor_skipConfirmation");
     			attr(input2, "class", "checkbox");
     			attr(label2, "for", "linkeditor_skipConfirmation");
@@ -5415,6 +5436,10 @@
 
     			if (dirty & /*file*/ 1) {
     				input1.checked = /*file*/ ctx[0].sameWindow;
+    			}
+
+    			if (dirty & /*file*/ 1 && input2_disabled_value !== (input2_disabled_value = !/*file*/ ctx[0].sameWindow)) {
+    				input2.disabled = input2_disabled_value;
     			}
 
     			if (dirty & /*file*/ 1) {
@@ -5664,7 +5689,7 @@
     		unsubscribe = currentFile.subscribe(fileUpdate => {
     			$$invalidate(0, file = fileUpdate);
 
-    			if (file.isLoaded || file.isNew) {
+    			if (file && (file.isLoaded || file.isNew)) {
     				$$invalidate(1, loading = false);
     			}
     		});

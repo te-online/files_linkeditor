@@ -14,7 +14,7 @@
 		// Subscribe to changes of the current file
 		unsubscribe = currentFile.subscribe((fileUpdate) => {
 			file = fileUpdate;
-			if (file.isLoaded || file.isNew) {
+			if (file && (file.isLoaded || file.isNew)) {
 				loading = false;
 			}
 		});
@@ -53,8 +53,8 @@
 				</label>
 				<input type="checkbox" bind:checked={file.sameWindow} id="linkeditor_sameWindow" class="checkbox" />
 				<label for="linkeditor_sameWindow" class="space-top">{t('files_linkeditor', 'Open in same window')}</label>
-				<input type="checkbox" bind:checked={file.skipConfirmation} id="linkeditor_skipConfirmation" class="checkbox" />
-				<label for="linkeditor_skipConfirmation">{t('files_linkeditor', 'Skip confirmation dialog before open')}</label>
+				<input type="checkbox" disabled={!file.sameWindow} bind:checked={file.skipConfirmation} id="linkeditor_skipConfirmation" class="checkbox" />
+				<label for="linkeditor_skipConfirmation">{t('files_linkeditor', 'Skip confirmation dialog before open (has to open in same window)')}</label>
 			{/if}
 		</div>
 		<div class="oc-dialog-buttonrow onebutton urlvisit">

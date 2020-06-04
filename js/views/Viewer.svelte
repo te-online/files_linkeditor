@@ -12,7 +12,7 @@
 		// Subscribe to changes of the current file
 		unsubscribe = currentFile.subscribe(async (fileUpdate) => {
 			file = fileUpdate;
-			if (file.isLoaded) {
+			if (file && file.isLoaded) {
 				loading = false;
 				// Show error when url is permanently empty (or maybe show editor?)
 				if (!file.url) {
@@ -20,6 +20,13 @@
 						t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."),
 						t("files_linkeditor", "A slight problem")
 					);
+					return;
+				}
+				// Open the link without confirmation
+				if (file.skipConfirmation && file.sameWindow) {
+					window.location.href = file.url;
+					// Hide viewer
+					viewMode.update(() => "none");
 				}
 			}
 		});
@@ -38,7 +45,7 @@
 			<p class="urldisplay">
 				{t('files_linkeditor', 'You are about to visit:')}
 				<em>
-					<a href={file.url} target="_blank">{file.url}</a>
+					<a href={file.url} target={file.sameWindow ? '_self' : '_blank'}>{file.url}</a>
 				</em>
 			</p>
 		{/if}
@@ -63,7 +70,9 @@
 					{t('files_linkeditor', 'Edit link')}
 				</a>
 			{/if}
-			<a href={file.url} target="_blank" class="button primary">{t('files_linkeditor', 'Visit link')}</a>
+			<a href={file.url} target={file.sameWindow ? '_self' : '_blank'} class="button primary">
+				{t('files_linkeditor', 'Visit link')}
+			</a>
 		{/if}
 	</div>
 </Overlay>
