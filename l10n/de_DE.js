@@ -16,6 +16,6 @@ OC.L10N.register(
 		'New link': 'Neuer Link',
 		'Link.URL': 'Link.URL',
 		'Open in same window': 'Im gleichen Fenster öffnen',
-		'Skip confirmation dialog before open': 'Bestätigunsdialog vor Öffnen überspringen'
+		'Skip confirmation dialog before open (has to open in same window)': 'Bestätigunsdialog vor Öffnen überspringen (muss im gleichen Fenster öffnen)'
 	},
 'nplurals=2; plural=(n != 1);');
