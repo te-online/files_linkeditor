@@ -653,126 +653,10 @@
       }
   }
 
-  var fails = function (exec) {
-    try {
-      return !!exec();
-    } catch (error) {
-      return true;
-    }
-  };
-
-  // Thank's IE8 for his funny defineProperty
-
-
-  var descriptors = !fails(function () {
-    return Object.defineProperty({}, 1, {
-      get: function () {
-        return 7;
-      }
-    })[1] != 7;
-  });
-
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
-  }
-
-  var check = function (it) {
-    return it && it.Math == Math && it;
-  }; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-
-
-  var global_1 = // eslint-disable-next-line no-undef
-  check(typeof globalThis == 'object' && globalThis) || check(typeof window == 'object' && window) || check(typeof self == 'object' && self) || check(typeof commonjsGlobal == 'object' && commonjsGlobal) || // eslint-disable-next-line no-new-func
-  Function('return this')();
-
-  var isObject = function (it) {
-    return typeof it === 'object' ? it !== null : typeof it === 'function';
-  };
-
-  var document$1 = global_1.document; // typeof document.createElement is 'object' in old IE
-
-  var EXISTS = isObject(document$1) && isObject(document$1.createElement);
-
-  var documentCreateElement = function (it) {
-    return EXISTS ? document$1.createElement(it) : {};
-  };
-
-  // Thank's IE8 for his funny defineProperty
-
-
-  var ie8DomDefine = !descriptors && !fails(function () {
-    return Object.defineProperty(documentCreateElement('div'), 'a', {
-      get: function () {
-        return 7;
-      }
-    }).a != 7;
-  });
-
-  var anObject = function (it) {
-    if (!isObject(it)) {
-      throw TypeError(String(it) + ' is not an object');
-    }
-
-    return it;
-  };
-
-  // `ToPrimitive` abstract operation
-  // https://tc39.github.io/ecma262/#sec-toprimitive
-  // instead of the ES6 spec version, we didn't implement @@toPrimitive case
-  // and the second argument - flag - preferred type is a string
-
-
-  var toPrimitive = function (input, PREFERRED_STRING) {
-    if (!isObject(input)) return input;
-    var fn, val;
-    if (PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
-    if (typeof (fn = input.valueOf) == 'function' && !isObject(val = fn.call(input))) return val;
-    if (!PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
-    throw TypeError("Can't convert object to primitive value");
-  };
-
-  var nativeDefineProperty = Object.defineProperty; // `Object.defineProperty` method
-  // https://tc39.github.io/ecma262/#sec-object.defineproperty
-
-  var f = descriptors ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
-    anObject(O);
-    P = toPrimitive(P, true);
-    anObject(Attributes);
-    if (ie8DomDefine) try {
-      return nativeDefineProperty(O, P, Attributes);
-    } catch (error) {
-      /* empty */
-    }
-    if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported');
-    if ('value' in Attributes) O[P] = Attributes.value;
-    return O;
-  };
-
-  var objectDefineProperty = {
-  	f: f
-  };
-
-  var defineProperty = objectDefineProperty.f;
-
-  var FunctionPrototype = Function.prototype;
-  var FunctionPrototypeToString = FunctionPrototype.toString;
-  var nameRE = /^\s*function ([^ (]*)/;
-  var NAME = 'name'; // Function instances `.name` property
-  // https://tc39.github.io/ecma262/#sec-function-instances-name
-
-  if (descriptors && !(NAME in FunctionPrototype)) {
-    defineProperty(FunctionPrototype, NAME, {
-      configurable: true,
-      get: function () {
-        try {
-          return FunctionPrototypeToString.call(this).match(nameRE)[1];
-        } catch (error) {
-          return '';
-        }
-      }
-    });
   }
 
   var runtime_1 = createCommonjsModule(function (module) {
@@ -1496,7 +1380,7 @@
     /*$$scope*/
     ctx[1], null);
     return {
-      c: function c() {
+      c() {
         div0 = element("div");
         t = space();
         div1 = element("div");
@@ -1507,7 +1391,8 @@
         ctx[0] ? "icon-loading" : ""));
         set_style(div1, "position", "fixed");
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         insert(target, div0, anchor);
         insert(target, t, anchor);
         insert(target, div1, anchor);
@@ -1518,7 +1403,8 @@
 
         current = true;
       },
-      p: function p(ctx, _ref) {
+
+      p(ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
             dirty = _ref2[0];
 
@@ -1542,21 +1428,25 @@
           attr(div1, "class", div1_class_value);
         }
       },
-      i: function i(local) {
+
+      i(local) {
         if (current) return;
         transition_in(default_slot, local);
         current = true;
       },
-      o: function o(local) {
+
+      o(local) {
         transition_out(default_slot, local);
         current = false;
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(div0);
         if (detaching) detach(t);
         if (detaching) detach(div1);
         if (default_slot) default_slot.d(detaching);
       }
+
     };
   }
 
@@ -1647,6 +1537,34 @@
       return { set, update, subscribe };
   }
 
+  var check = function (it) {
+    return it && it.Math == Math && it;
+  }; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+
+
+  var global_1 = // eslint-disable-next-line no-undef
+  check(typeof globalThis == 'object' && globalThis) || check(typeof window == 'object' && window) || check(typeof self == 'object' && self) || check(typeof commonjsGlobal == 'object' && commonjsGlobal) || // eslint-disable-next-line no-new-func
+  Function('return this')();
+
+  var fails = function (exec) {
+    try {
+      return !!exec();
+    } catch (error) {
+      return true;
+    }
+  };
+
+  // Thank's IE8 for his funny defineProperty
+
+
+  var descriptors = !fails(function () {
+    return Object.defineProperty({}, 1, {
+      get: function () {
+        return 7;
+      }
+    })[1] != 7;
+  });
+
   var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
   var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor; // Nashorn ~ JDK8 bug
 
@@ -1655,13 +1573,13 @@
   }, 1); // `Object.prototype.propertyIsEnumerable` method implementation
   // https://tc39.github.io/ecma262/#sec-object.prototype.propertyisenumerable
 
-  var f$1 = NASHORN_BUG ? function propertyIsEnumerable(V) {
+  var f = NASHORN_BUG ? function propertyIsEnumerable(V) {
     var descriptor = getOwnPropertyDescriptor(this, V);
     return !!descriptor && descriptor.enumerable;
   } : nativePropertyIsEnumerable;
 
   var objectPropertyIsEnumerable = {
-  	f: f$1
+  	f: f
   };
 
   var createPropertyDescriptor = function (bitmap, value) {
@@ -1705,16 +1623,54 @@
     return indexedObject(requireObjectCoercible(it));
   };
 
+  var isObject = function (it) {
+    return typeof it === 'object' ? it !== null : typeof it === 'function';
+  };
+
+  // `ToPrimitive` abstract operation
+  // https://tc39.github.io/ecma262/#sec-toprimitive
+  // instead of the ES6 spec version, we didn't implement @@toPrimitive case
+  // and the second argument - flag - preferred type is a string
+
+
+  var toPrimitive = function (input, PREFERRED_STRING) {
+    if (!isObject(input)) return input;
+    var fn, val;
+    if (PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
+    if (typeof (fn = input.valueOf) == 'function' && !isObject(val = fn.call(input))) return val;
+    if (!PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
+    throw TypeError("Can't convert object to primitive value");
+  };
+
   var hasOwnProperty = {}.hasOwnProperty;
 
   var has = function (it, key) {
     return hasOwnProperty.call(it, key);
   };
 
+  var document$1 = global_1.document; // typeof document.createElement is 'object' in old IE
+
+  var EXISTS = isObject(document$1) && isObject(document$1.createElement);
+
+  var documentCreateElement = function (it) {
+    return EXISTS ? document$1.createElement(it) : {};
+  };
+
+  // Thank's IE8 for his funny defineProperty
+
+
+  var ie8DomDefine = !descriptors && !fails(function () {
+    return Object.defineProperty(documentCreateElement('div'), 'a', {
+      get: function () {
+        return 7;
+      }
+    }).a != 7;
+  });
+
   var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor; // `Object.getOwnPropertyDescriptor` method
   // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
 
-  var f$2 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
+  var f$1 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
     O = toIndexedObject(O);
     P = toPrimitive(P, true);
     if (ie8DomDefine) try {
@@ -1726,6 +1682,35 @@
   };
 
   var objectGetOwnPropertyDescriptor = {
+  	f: f$1
+  };
+
+  var anObject = function (it) {
+    if (!isObject(it)) {
+      throw TypeError(String(it) + ' is not an object');
+    }
+
+    return it;
+  };
+
+  var nativeDefineProperty = Object.defineProperty; // `Object.defineProperty` method
+  // https://tc39.github.io/ecma262/#sec-object.defineproperty
+
+  var f$2 = descriptors ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
+    anObject(O);
+    P = toPrimitive(P, true);
+    anObject(Attributes);
+    if (ie8DomDefine) try {
+      return nativeDefineProperty(O, P, Attributes);
+    } catch (error) {
+      /* empty */
+    }
+    if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported');
+    if ('value' in Attributes) O[P] = Attributes.value;
+    return O;
+  };
+
+  var objectDefineProperty = {
   	f: f$2
   };
 
@@ -2298,7 +2283,7 @@
     return target;
   };
 
-  var defineProperty$1 = objectDefineProperty.f;
+  var defineProperty = objectDefineProperty.f;
 
 
 
@@ -2308,7 +2293,7 @@
 
   var setToStringTag = function (it, TAG, STATIC) {
     if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG$2)) {
-      defineProperty$1(it, TO_STRING_TAG$2, {
+      defineProperty(it, TO_STRING_TAG$2, {
         configurable: true,
         value: TAG
       });
@@ -3179,7 +3164,7 @@
     });
   };
 
-  var defineProperty$2 = Object.defineProperty;
+  var defineProperty$1 = Object.defineProperty;
   var cache = {};
 
   var thrower = function (it) {
@@ -3198,7 +3183,7 @@
       var O = {
         length: -1
       };
-      if (ACCESSORS) defineProperty$2(O, 1, {
+      if (ACCESSORS) defineProperty$1(O, 1, {
         enumerable: true,
         get: thrower
       });else O[1] = 1;
@@ -3939,7 +3924,7 @@
                     method: "PUT",
                     body: JSON.stringify({
                       filecontents: fileContent,
-                      path: path,
+                      path,
                       mtime: fileModifiedTime
                     }),
                     headers: {
@@ -4005,7 +3990,7 @@
     var a_href_value;
     var a_target_value;
     return {
-      c: function c() {
+      c() {
         p = element("p");
         t0 = text(t0_value);
         t1 = space();
@@ -4020,7 +4005,8 @@
         ctx[0].sameWindow ? "_self" : "_blank");
         attr(p, "class", "urldisplay");
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         insert(target, p, anchor);
         append(p, t0);
         append(p, t1);
@@ -4028,7 +4014,8 @@
         append(em, a);
         append(a, t2);
       },
-      p: function p(ctx, dirty) {
+
+      p(ctx, dirty) {
         if (dirty &
         /*file*/
         1 && t2_value !== (t2_value =
@@ -4051,9 +4038,11 @@
           attr(a, "target", a_target_value);
         }
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(p);
       }
+
     };
   } // (63:2) {#if !loading}
 
@@ -4070,7 +4059,7 @@
     var a_target_value;
     var if_block = show_if && create_if_block_1(ctx);
     return {
-      c: function c() {
+      c() {
         if (if_block) if_block.c();
         t0 = space();
         a = element("a");
@@ -4083,13 +4072,15 @@
         ctx[0].sameWindow ? "_self" : "_blank");
         attr(a, "class", "button primary");
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         if (if_block) if_block.m(target, anchor);
         insert(target, t0, anchor);
         insert(target, a, anchor);
         append(a, t1);
       },
-      p: function p(ctx, dirty) {
+
+      p(ctx, dirty) {
         if (show_if) if_block.p(ctx, dirty);
 
         if (dirty &
@@ -4108,11 +4099,13 @@
           attr(a, "target", a_target_value);
         }
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (if_block) if_block.d(detaching);
         if (detaching) detach(t0);
         if (detaching) detach(a);
       }
+
     };
   } // (64:3) {#if FileService.userCanEdit()}
 
@@ -4126,7 +4119,7 @@
     var a_href_value;
     var dispose;
     return {
-      c: function c() {
+      c() {
         a = element("a");
         t_1 = text(t_1_value);
         attr(a, "href", a_href_value =
@@ -4134,7 +4127,8 @@
         ctx[0].currentUrl);
         attr(a, "class", "button");
       },
-      m: function m(target, anchor, remount) {
+
+      m(target, anchor, remount) {
         insert(target, a, anchor);
         append(a, t_1);
         if (remount) dispose();
@@ -4142,7 +4136,8 @@
         /*click_handler_1*/
         ctx[5]));
       },
-      p: function p(ctx, dirty) {
+
+      p(ctx, dirty) {
         if (dirty &
         /*file*/
         1 && a_href_value !== (a_href_value =
@@ -4151,10 +4146,12 @@
           attr(a, "href", a_href_value);
         }
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(a);
         dispose();
       }
+
     };
   } // (42:0) <Overlay {loading}>
 
@@ -4184,7 +4181,7 @@
     /*loading*/
     ctx[1] && create_if_block(ctx);
     return {
-      c: function c() {
+      c() {
         div0 = element("div");
         h3 = element("h3");
         t0 = text(t0_value);
@@ -4203,7 +4200,8 @@
         attr(a, "class", "button");
         attr(div1, "class", "oc-dialog-buttonrow twobuttons");
       },
-      m: function m(target, anchor, remount) {
+
+      m(target, anchor, remount) {
         insert(target, div0, anchor);
         append(div0, h3);
         append(h3, t0);
@@ -4220,7 +4218,8 @@
         /*click_handler*/
         ctx[4]));
       },
-      p: function p(ctx, dirty) {
+
+      p(ctx, dirty) {
         if (dirty &
         /*file*/
         1 && t0_value !== (t0_value =
@@ -4265,7 +4264,8 @@
           if_block1 = null;
         }
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(div0);
         if (if_block0) if_block0.d();
         if (detaching) detach(t2);
@@ -4273,6 +4273,7 @@
         if (if_block1) if_block1.d();
         dispose();
       }
+
     };
   }
 
@@ -4287,19 +4288,21 @@
           default: [create_default_slot]
         },
         $$scope: {
-          ctx: ctx
+          ctx
         }
       }
     });
     return {
-      c: function c() {
+      c() {
         create_component(overlay.$$.fragment);
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         mount_component(overlay, target, anchor);
         current = true;
       },
-      p: function p(ctx, _ref) {
+
+      p(ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
             dirty = _ref2[0];
 
@@ -4314,25 +4317,29 @@
         /*$$scope, file, loading*/
         67) {
           overlay_changes.$$scope = {
-            dirty: dirty,
-            ctx: ctx
+            dirty,
+            ctx
           };
         }
 
         overlay.$set(overlay_changes);
       },
-      i: function i(local) {
+
+      i(local) {
         if (current) return;
         transition_in(overlay.$$.fragment, local);
         current = true;
       },
-      o: function o(local) {
+
+      o(local) {
         transition_out(overlay.$$.fragment, local);
         current = false;
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         destroy_component(overlay, detaching);
       }
+
     };
   }
 
@@ -4487,7 +4494,7 @@
     return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
   };
 
-  var defineProperty$3 = objectDefineProperty.f;
+  var defineProperty$2 = objectDefineProperty.f;
 
   var getOwnPropertyNames = objectGetOwnPropertyNames.f;
 
@@ -4553,7 +4560,7 @@
     };
 
     var proxy = function (key) {
-      key in RegExpWrapper || defineProperty$3(RegExpWrapper, key, {
+      key in RegExpWrapper || defineProperty$2(RegExpWrapper, key, {
         configurable: true,
         get: function () {
           return NativeRegExp[key];
@@ -5108,7 +5115,7 @@
     var t1;
     var dispose;
     return {
-      c: function c() {
+      c() {
         div = element("div");
         a = element("a");
         span = element("span");
@@ -5120,7 +5127,8 @@
         attr(a, "id", "downloadFile");
         attr(div, "class", "directDownload");
       },
-      m: function m(target, anchor, remount) {
+
+      m(target, anchor, remount) {
         insert(target, div, anchor);
         append(div, a);
         append(a, span);
@@ -5135,18 +5143,22 @@
             ctx[0].apply(this, arguments);
         }));
       },
-      p: function p(new_ctx, _ref) {
+
+      p(new_ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
             dirty = _ref2[0];
 
         ctx = new_ctx;
       },
+
       i: noop,
       o: noop,
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(div);
         dispose();
       }
+
     };
   }
 
@@ -5208,8 +5220,8 @@
                     case 0:
                       _context.next = 2;
                       return LinkeditorService.loadAndChangeViewMode({
-                        fileName: fileName,
-                        context: context,
+                        fileName,
+                        context,
                         nextViewMode: "edit"
                       });
 
@@ -5251,8 +5263,8 @@
 
                       _context2.next = 3;
                       return LinkeditorService.loadAndChangeViewMode({
-                        fileName: fileName,
-                        context: context,
+                        fileName,
+                        context,
                         nextViewMode: "view"
                       });
 
@@ -5263,8 +5275,8 @@
                     case 5:
                       _context2.next = 7;
                       return LinkeditorService.loadAndChangeViewMode({
-                        fileName: fileName,
-                        context: context,
+                        fileName,
+                        context,
                         nextViewMode: "view",
                         downloadUrl: context.fileList.getDownloadUrl(fileName),
                         publicUser: true
@@ -5303,9 +5315,9 @@
                   templateName = _ref.templateName;
               // Register the new menu entry
               menu.addMenuEntry({
-                id: id,
-                displayName: displayName,
-                templateName: templateName,
+                id,
+                displayName,
+                templateName,
                 iconClass: "icon-link",
                 fileType: supportedMimetype,
                 actionHandler: function actionHandler(name) {
@@ -5316,8 +5328,8 @@
                   });
                   currentFile.update(function () {
                     return FileService.getFileConfig({
-                      name: name,
-                      dir: dir,
+                      name,
+                      dir,
                       isNew: true,
                       onCreate: function () {
                         var _onCreate = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(file) {
@@ -5335,7 +5347,7 @@
                                   _context3.next = 4;
                                   return FileService.load({
                                     fileName: name,
-                                    dir: dir
+                                    dir
                                   });
 
                                 case 4:
@@ -5404,7 +5416,7 @@
                     fileName: filename,
                     nextViewMode: "view",
                     publicUser: true,
-                    downloadUrl: downloadUrl
+                    downloadUrl
                   });
                 }
               }
@@ -5432,7 +5444,7 @@
                   currentFile.update(function () {
                     return FileService.getFileConfig({
                       name: fileName,
-                      currentUrl: currentUrl,
+                      currentUrl,
                       dir: context ? context.dir : ""
                     });
                   }); // Load file from backend
@@ -5446,7 +5458,7 @@
 
                   _context4.next = 8;
                   return FileService.loadPublic({
-                    downloadUrl: downloadUrl
+                    downloadUrl
                   });
 
                 case 8:
@@ -5457,7 +5469,7 @@
                 case 11:
                   _context4.next = 13;
                   return FileService.load({
-                    fileName: fileName,
+                    fileName,
                     dir: context.dir
                   });
 
@@ -5526,10 +5538,10 @@
 
                   _context5.next = 6;
                   return FileService.save({
-                    fileContent: fileContent,
-                    name: name,
-                    dir: dir,
-                    fileModifiedTime: fileModifiedTime
+                    fileContent,
+                    name,
+                    dir,
+                    fileModifiedTime
                   });
 
                 case 6:
@@ -5579,7 +5591,7 @@
     var label2;
     var dispose;
     return {
-      c: function c() {
+      c() {
         label0 = element("label");
         t0 = text(t0_value);
         t1 = space();
@@ -5620,7 +5632,8 @@
         attr(input2, "class", "checkbox");
         attr(label2, "for", "linkeditor_skipConfirmation");
       },
-      m: function m(target, anchor, remount) {
+
+      m(target, anchor, remount) {
         insert(target, label0, anchor);
         append(label0, t0);
         append(label0, t1);
@@ -5654,7 +5667,8 @@
         /*input2_change_handler*/
         ctx[8])];
       },
-      p: function p(ctx, dirty) {
+
+      p(ctx, dirty) {
         if (dirty &
         /*file*/
         1 && input0.value !==
@@ -5689,7 +5703,8 @@
           ctx[0].skipConfirmation;
         }
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(label0);
         if (detaching) detach(t3);
         if (detaching) detach(input1);
@@ -5701,6 +5716,7 @@
         if (detaching) detach(label2);
         run_all(dispose);
       }
+
     };
   } // (69:3) {#if !loading}
 
@@ -5713,7 +5729,7 @@
     var t_1;
     var a_href_value;
     return {
-      c: function c() {
+      c() {
         a = element("a");
         t_1 = text(t_1_value);
         attr(a, "href", a_href_value = sanitizeUrl(
@@ -5722,11 +5738,13 @@
         attr(a, "target", "_blank");
         attr(a, "class", "button");
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         insert(target, a, anchor);
         append(a, t_1);
       },
-      p: function p(ctx, dirty) {
+
+      p(ctx, dirty) {
         if (dirty &
         /*file*/
         1 && a_href_value !== (a_href_value = sanitizeUrl(
@@ -5735,9 +5753,11 @@
           attr(a, "href", a_href_value);
         }
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(a);
       }
+
     };
   } // (82:3) {#if !loading}
 
@@ -5746,7 +5766,7 @@
     var button;
     var dispose;
     return {
-      c: function c() {
+      c() {
         button = element("button");
         button.textContent = "".concat(
         /*t*/
@@ -5754,18 +5774,22 @@
         attr(button, "type", "submit");
         attr(button, "class", "primary");
       },
-      m: function m(target, anchor, remount) {
+
+      m(target, anchor, remount) {
         insert(target, button, anchor);
         if (remount) dispose();
         dispose = listen(button, "click", prevent_default(
         /*save*/
         ctx[4]));
       },
+
       p: noop,
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(button);
         dispose();
       }
+
     };
   } // (39:0) <Overlay {loading}>
 
@@ -5797,7 +5821,7 @@
     /*loading*/
     ctx[1] && create_if_block$1(ctx);
     return {
-      c: function c() {
+      c() {
         form = element("form");
         div0 = element("div");
         h3 = element("h3");
@@ -5825,7 +5849,8 @@
         ctx[3].generateUrl("/"));
         attr(form, "method", "post");
       },
-      m: function m(target, anchor, remount) {
+
+      m(target, anchor, remount) {
         insert(target, form, anchor);
         append(form, div0);
         append(div0, h3);
@@ -5847,7 +5872,8 @@
         /*save*/
         ctx[4]))];
       },
-      p: function p(ctx, dirty) {
+
+      p(ctx, dirty) {
         if (dirty &
         /*file*/
         1 && t0_value !== (t0_value =
@@ -5899,13 +5925,15 @@
           if_block2 = null;
         }
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (detaching) detach(form);
         if (if_block0) if_block0.d();
         if (if_block1) if_block1.d();
         if (if_block2) if_block2.d();
         run_all(dispose);
       }
+
     };
   }
 
@@ -5920,19 +5948,21 @@
           default: [create_default_slot$1]
         },
         $$scope: {
-          ctx: ctx
+          ctx
         }
       }
     });
     return {
-      c: function c() {
+      c() {
         create_component(overlay.$$.fragment);
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         mount_component(overlay, target, anchor);
         current = true;
       },
-      p: function p(ctx, _ref) {
+
+      p(ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
             dirty = _ref2[0];
 
@@ -5947,25 +5977,29 @@
         /*$$scope, loading, file*/
         1027) {
           overlay_changes.$$scope = {
-            dirty: dirty,
-            ctx: ctx
+            dirty,
+            ctx
           };
         }
 
         overlay.$set(overlay_changes);
       },
-      i: function i(local) {
+
+      i(local) {
         if (current) return;
         transition_in(overlay.$$.fragment, local);
         current = true;
       },
-      o: function o(local) {
+
+      o(local) {
         transition_out(overlay.$$.fragment, local);
         current = false;
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         destroy_component(overlay, detaching);
       }
+
     };
   }
 
@@ -6051,25 +6085,30 @@
     var current;
     var viewer = new Viewer({});
     return {
-      c: function c() {
+      c() {
         create_component(viewer.$$.fragment);
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         mount_component(viewer, target, anchor);
         current = true;
       },
-      i: function i(local) {
+
+      i(local) {
         if (current) return;
         transition_in(viewer.$$.fragment, local);
         current = true;
       },
-      o: function o(local) {
+
+      o(local) {
         transition_out(viewer.$$.fragment, local);
         current = false;
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         destroy_component(viewer, detaching);
       }
+
     };
   } // (25:0) {#if viewMode === 'edit'}
 
@@ -6078,25 +6117,30 @@
     var current;
     var editor = new Editor({});
     return {
-      c: function c() {
+      c() {
         create_component(editor.$$.fragment);
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         mount_component(editor, target, anchor);
         current = true;
       },
-      i: function i(local) {
+
+      i(local) {
         if (current) return;
         transition_in(editor.$$.fragment, local);
         current = true;
       },
-      o: function o(local) {
+
+      o(local) {
         transition_out(editor.$$.fragment, local);
         current = false;
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         destroy_component(editor, detaching);
       }
+
     };
   }
 
@@ -6111,20 +6155,22 @@
     /*viewMode*/
     ctx[0] === "edit" && create_if_block$2();
     return {
-      c: function c() {
+      c() {
         if (if_block0) if_block0.c();
         t = space();
         if (if_block1) if_block1.c();
         if_block1_anchor = empty();
       },
-      m: function m(target, anchor) {
+
+      m(target, anchor) {
         if (if_block0) if_block0.m(target, anchor);
         insert(target, t, anchor);
         if (if_block1) if_block1.m(target, anchor);
         insert(target, if_block1_anchor, anchor);
         current = true;
       },
-      p: function p(ctx, _ref) {
+
+      p(ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
             dirty = _ref2[0];
 
@@ -6174,23 +6220,27 @@
           check_outros();
         }
       },
-      i: function i(local) {
+
+      i(local) {
         if (current) return;
         transition_in(if_block0);
         transition_in(if_block1);
         current = true;
       },
-      o: function o(local) {
+
+      o(local) {
         transition_out(if_block0);
         transition_out(if_block1);
         current = false;
       },
-      d: function d(detaching) {
+
+      d(detaching) {
         if (if_block0) if_block0.d(detaching);
         if (detaching) detach(t);
         if (if_block1) if_block1.d(detaching);
         if (detaching) detach(if_block1_anchor);
       }
+
     };
   }
 
