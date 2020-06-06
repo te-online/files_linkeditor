@@ -19,14 +19,14 @@
   },
   "homepage": "https://github.com/te-online/files_linkeditor#readme",
   "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/plugin-transform-async-to-generator": "^7.8.3",
-    "@babel/plugin-transform-classes": "^7.9.5",
-    "@babel/preset-env": "^7.9.6",
-    "@prettier/plugin-php": "^0.14.0",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-async-to-generator": "^7.10.1",
+    "@babel/plugin-transform-classes": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "@prettier/plugin-php": "^0.14.2",
     "babel-eslint": "^10.1.0",
     "core-js": "^3.6.5",
-    "eslint": "^7.0.0",
+    "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
@@ -36,12 +36,12 @@
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
-    "rollup": "^2.9.1",
+    "rollup": "^2.13.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-svelte": "^5.2.1",
-    "svelte": "^3.22.2"
+    "rollup-plugin-svelte": "^5.2.2",
+    "svelte": "^3.23.0"
   },
   "dependencies": {}
 }

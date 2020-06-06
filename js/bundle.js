@@ -171,7 +171,7 @@
   function _createSuper(Derived) {
     var hasNativeReflectConstruct = _isNativeReflectConstruct();
 
-    return function () {
+    return function _createSuperInternal() {
       var Super = _getPrototypeOf(Derived),
           result;
 
@@ -259,9 +259,12 @@
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
-  function _createForOfIteratorHelper(o) {
+  function _createForOfIteratorHelper(o, allowArrayLike) {
+    var it;
+
     if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-      if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+        if (it) o = it;
         var i = 0;
 
         var F = function () {};
@@ -287,8 +290,7 @@
       throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
 
-    var it,
-        normalCompletion = true,
+    var normalCompletion = true,
         didErr = false,
         err;
     return {
@@ -365,6 +367,13 @@
       }
       return $$scope.dirty;
   }
+  function update_slot(slot, slot_definition, ctx, $$scope, dirty, get_slot_changes_fn, get_slot_context_fn) {
+      const slot_changes = get_slot_changes(slot_definition, $$scope, dirty, get_slot_changes_fn);
+      if (slot_changes) {
+          const slot_context = get_slot_context(slot_definition, ctx, $$scope, get_slot_context_fn);
+          slot.p(slot_context, slot_changes);
+      }
+  }
 
   function append(target, node) {
       target.appendChild(node);
@@ -413,9 +422,7 @@
           text.data = data;
   }
   function set_input_value(input, value) {
-      if (value != null || input.value) {
-          input.value = value;
-      }
+      input.value = value == null ? '' : value;
   }
   function set_style(node, key, value, important) {
       node.style.setProperty(key, value, important ? 'important' : '');
@@ -1412,11 +1419,9 @@
           if (default_slot.p && dirty &
           /*$$scope*/
           2) {
-            default_slot.p(get_slot_context(default_slot_template, ctx,
+            update_slot(default_slot, default_slot_template, ctx,
             /*$$scope*/
-            ctx[1], null), get_slot_changes(default_slot_template,
-            /*$$scope*/
-            ctx[1], dirty, null));
+            ctx[1], dirty, null, null);
           }
         }
 
@@ -4117,6 +4122,7 @@
     ctx[2]("files_linkeditor", "Edit link") + "";
     var t_1;
     var a_href_value;
+    var mounted;
     var dispose;
     return {
       c() {
@@ -4128,13 +4134,16 @@
         attr(a, "class", "button");
       },
 
-      m(target, anchor, remount) {
+      m(target, anchor) {
         insert(target, a, anchor);
         append(a, t_1);
-        if (remount) dispose();
-        dispose = listen(a, "click", prevent_default(
-        /*click_handler_1*/
-        ctx[5]));
+
+        if (!mounted) {
+          dispose = listen(a, "click", prevent_default(
+          /*click_handler_1*/
+          ctx[5]));
+          mounted = true;
+        }
       },
 
       p(ctx, dirty) {
@@ -4149,6 +4158,7 @@
 
       d(detaching) {
         if (detaching) detach(a);
+        mounted = false;
         dispose();
       }
 
@@ -4173,6 +4183,7 @@
     var t3;
     var a_href_value;
     var t4;
+    var mounted;
     var dispose;
     var if_block0 = !
     /*loading*/
@@ -4201,7 +4212,7 @@
         attr(div1, "class", "oc-dialog-buttonrow twobuttons");
       },
 
-      m(target, anchor, remount) {
+      m(target, anchor) {
         insert(target, div0, anchor);
         append(div0, h3);
         append(h3, t0);
@@ -4213,10 +4224,13 @@
         append(a, t3);
         append(div1, t4);
         if (if_block1) if_block1.m(div1, null);
-        if (remount) dispose();
-        dispose = listen(a, "click", prevent_default(
-        /*click_handler*/
-        ctx[4]));
+
+        if (!mounted) {
+          dispose = listen(a, "click", prevent_default(
+          /*click_handler*/
+          ctx[4]));
+          mounted = true;
+        }
       },
 
       p(ctx, dirty) {
@@ -4271,6 +4285,7 @@
         if (detaching) detach(t2);
         if (detaching) detach(div1);
         if (if_block1) if_block1.d();
+        mounted = false;
         dispose();
       }
 
@@ -5113,6 +5128,7 @@
     /*t*/
     ctx[1]("files_linkeditor", "View link") + "";
     var t1;
+    var mounted;
     var dispose;
     return {
       c() {
@@ -5128,20 +5144,23 @@
         attr(div, "class", "directDownload");
       },
 
-      m(target, anchor, remount) {
+      m(target, anchor) {
         insert(target, div, anchor);
         append(div, a);
         append(a, span);
         append(a, t0);
         append(a, t1);
-        if (remount) dispose();
-        dispose = listen(a, "click", prevent_default(function () {
-          if (is_function(
-          /*onClick*/
-          ctx[0]))
+
+        if (!mounted) {
+          dispose = listen(a, "click", prevent_default(function () {
+            if (is_function(
             /*onClick*/
-            ctx[0].apply(this, arguments);
-        }));
+            ctx[0]))
+              /*onClick*/
+              ctx[0].apply(this, arguments);
+          }));
+          mounted = true;
+        }
       },
 
       p(new_ctx, _ref) {
@@ -5156,6 +5175,7 @@
 
       d(detaching) {
         if (detaching) detach(div);
+        mounted = false;
         dispose();
       }
 
@@ -5589,6 +5609,7 @@
     var input2_disabled_value;
     var t7;
     var label2;
+    var mounted;
     var dispose;
     return {
       c() {
@@ -5633,7 +5654,7 @@
         attr(label2, "for", "linkeditor_skipConfirmation");
       },
 
-      m(target, anchor, remount) {
+      m(target, anchor) {
         insert(target, label0, anchor);
         append(label0, t0);
         append(label0, t1);
@@ -5658,14 +5679,17 @@
         insert(target, t7, anchor);
         insert(target, label2, anchor);
         input0.focus();
-        if (remount) run_all(dispose);
-        dispose = [listen(input0, "input",
-        /*input0_input_handler*/
-        ctx[6]), listen(input1, "change",
-        /*input1_change_handler*/
-        ctx[7]), listen(input2, "change",
-        /*input2_change_handler*/
-        ctx[8])];
+
+        if (!mounted) {
+          dispose = [listen(input0, "input",
+          /*input0_input_handler*/
+          ctx[6]), listen(input1, "change",
+          /*input1_change_handler*/
+          ctx[7]), listen(input2, "change",
+          /*input2_change_handler*/
+          ctx[8])];
+          mounted = true;
+        }
       },
 
       p(ctx, dirty) {
@@ -5714,6 +5738,7 @@
         if (detaching) detach(input2);
         if (detaching) detach(t7);
         if (detaching) detach(label2);
+        mounted = false;
         run_all(dispose);
       }
 
@@ -5764,6 +5789,7 @@
 
   function create_if_block$1(ctx) {
     var button;
+    var mounted;
     var dispose;
     return {
       c() {
@@ -5775,18 +5801,22 @@
         attr(button, "class", "primary");
       },
 
-      m(target, anchor, remount) {
+      m(target, anchor) {
         insert(target, button, anchor);
-        if (remount) dispose();
-        dispose = listen(button, "click", prevent_default(
-        /*save*/
-        ctx[4]));
+
+        if (!mounted) {
+          dispose = listen(button, "click", prevent_default(
+          /*save*/
+          ctx[4]));
+          mounted = true;
+        }
       },
 
       p: noop,
 
       d(detaching) {
         if (detaching) detach(button);
+        mounted = false;
         dispose();
       }
 
@@ -5810,6 +5840,7 @@
     var button;
     var t5;
     var form_action_value;
+    var mounted;
     var dispose;
     var if_block0 = !
     /*loading*/
@@ -5850,7 +5881,7 @@
         attr(form, "method", "post");
       },
 
-      m(target, anchor, remount) {
+      m(target, anchor) {
         insert(target, form, anchor);
         append(form, div0);
         append(div0, h3);
@@ -5865,12 +5896,15 @@
         append(div2, button);
         append(div2, t5);
         if (if_block2) if_block2.m(div2, null);
-        if (remount) run_all(dispose);
-        dispose = [listen(button, "click", prevent_default(
-        /*click_handler*/
-        ctx[9])), listen(form, "submit", prevent_default(
-        /*save*/
-        ctx[4]))];
+
+        if (!mounted) {
+          dispose = [listen(button, "click", prevent_default(
+          /*click_handler*/
+          ctx[9])), listen(form, "submit", prevent_default(
+          /*save*/
+          ctx[4]))];
+          mounted = true;
+        }
       },
 
       p(ctx, dirty) {
@@ -5931,6 +5965,7 @@
         if (if_block0) if_block0.d();
         if (if_block1) if_block1.d();
         if (if_block2) if_block2.d();
+        mounted = false;
         run_all(dispose);
       }
 
