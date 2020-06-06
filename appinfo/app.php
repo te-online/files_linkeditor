@@ -25,14 +25,14 @@ $eventDispatcher = \OC::$server->getEventDispatcher();
 $eventDispatcher->addListener(
 	'OCA\Files::loadAdditionalScripts',
 	function () {
-		OCP\Util::addScript('files_linkeditor', 'merged');
-		OCP\Util::addStyle('files_linkeditor', 'merged');
+		OCP\Util::addScript('files_linkeditor', 'linkeditor');
+		OCP\Util::addStyle('files_linkeditor', 'linkeditor');
 	});
 
 
 $eventDispatcher->addListener(
 	'OCA\Files_Sharing::loadAdditionalScripts',
 	function () {
-		OCP\Util::addScript('files_linkeditor', 'merged');
-		OCP\Util::addStyle('files_linkeditor', 'merged');
+		OCP\Util::addScript('files_linkeditor', 'linkeditor');
+		OCP\Util::addStyle('files_linkeditor', 'linkeditor');
 	});
