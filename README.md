@@ -37,6 +37,9 @@ Before building or development, dependencies need to be installed once, by runni
 - Add configurable option to open link without confirmation if they open in the same window (thanks to for the suggestion @noerw)
 - Rewrite .webloc file parser by using the browser's XML parser
 
+### 1.0.14, 20. May 2020
+- Add compatibility for Nextcloud 19.
+
 ### 1.0.13, 9. Mar 2020
 - Add Basque translation (thanks to @aldatsa).
 
