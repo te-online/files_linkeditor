@@ -71,16 +71,18 @@
 			{/if}
 		</div>
 		<div class="oc-dialog-buttonrow twobuttons">
-			<button
-				type="reset"
+			<a
+				href={file.currentUrl}
 				on:click|preventDefault={() => {
 					viewMode.update(() => 'none');
 				}}
-				class="cancel">
+				class="cancel button">
 				{t('files_linkeditor', 'Cancel')}
-			</button>
+			</a>
 			{#if !loading}
-				<button type="submit" on:click|preventDefault={save} class="primary">{t('files_linkeditor', 'Save')}</button>
+				<a href={file.currentUrl} on:click|preventDefault={save} class="primary button">
+					{t('files_linkeditor', 'Save')}
+				</a>
 			{/if}
 		</div>
 	</form>

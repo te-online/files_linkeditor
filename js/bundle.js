@@ -5788,34 +5788,48 @@
 
 
   function create_if_block$1(ctx) {
-    var button;
+    var a;
+    var t_1_value =
+    /*t*/
+    ctx[2]("files_linkeditor", "Save") + "";
+    var t_1;
+    var a_href_value;
     var mounted;
     var dispose;
     return {
       c() {
-        button = element("button");
-        button.textContent = "".concat(
-        /*t*/
-        ctx[2]("files_linkeditor", "Save"));
-        attr(button, "type", "submit");
-        attr(button, "class", "primary");
+        a = element("a");
+        t_1 = text(t_1_value);
+        attr(a, "href", a_href_value =
+        /*file*/
+        ctx[0].currentUrl);
+        attr(a, "class", "primary button");
       },
 
       m(target, anchor) {
-        insert(target, button, anchor);
+        insert(target, a, anchor);
+        append(a, t_1);
 
         if (!mounted) {
-          dispose = listen(button, "click", prevent_default(
+          dispose = listen(a, "click", prevent_default(
           /*save*/
           ctx[4]));
           mounted = true;
         }
       },
 
-      p: noop,
+      p(ctx, dirty) {
+        if (dirty &
+        /*file*/
+        1 && a_href_value !== (a_href_value =
+        /*file*/
+        ctx[0].currentUrl)) {
+          attr(a, "href", a_href_value);
+        }
+      },
 
       d(detaching) {
-        if (detaching) detach(button);
+        if (detaching) detach(a);
         mounted = false;
         dispose();
       }
@@ -5837,7 +5851,12 @@
     var div1;
     var t3;
     var div2;
-    var button;
+    var a;
+    var t4_value =
+    /*t*/
+    ctx[2]("files_linkeditor", "Cancel") + "";
+    var t4;
+    var a_href_value;
     var t5;
     var form_action_value;
     var mounted;
@@ -5864,16 +5883,16 @@
         if (if_block1) if_block1.c();
         t3 = space();
         div2 = element("div");
-        button = element("button");
-        button.textContent = "".concat(
-        /*t*/
-        ctx[2]("files_linkeditor", "Cancel"));
+        a = element("a");
+        t4 = text(t4_value);
         t5 = space();
         if (if_block2) if_block2.c();
         attr(div0, "class", "urledit");
         attr(div1, "class", "oc-dialog-buttonrow onebutton urlvisit");
-        attr(button, "type", "reset");
-        attr(button, "class", "cancel");
+        attr(a, "href", a_href_value =
+        /*file*/
+        ctx[0].currentUrl);
+        attr(a, "class", "cancel button");
         attr(div2, "class", "oc-dialog-buttonrow twobuttons");
         attr(form, "action", form_action_value =
         /*OC*/
@@ -5893,12 +5912,13 @@
         if (if_block1) if_block1.m(div1, null);
         append(form, t3);
         append(form, div2);
-        append(div2, button);
+        append(div2, a);
+        append(a, t4);
         append(div2, t5);
         if (if_block2) if_block2.m(div2, null);
 
         if (!mounted) {
-          dispose = [listen(button, "click", prevent_default(
+          dispose = [listen(a, "click", prevent_default(
           /*click_handler*/
           ctx[9])), listen(form, "submit", prevent_default(
           /*save*/
@@ -5942,6 +5962,14 @@
         } else if (if_block1) {
           if_block1.d(1);
           if_block1 = null;
+        }
+
+        if (dirty &
+        /*file*/
+        1 && a_href_value !== (a_href_value =
+        /*file*/
+        ctx[0].currentUrl)) {
+          attr(a, "href", a_href_value);
         }
 
         if (!
@@ -6009,7 +6037,7 @@
         ctx[1];
 
         if (dirty &
-        /*$$scope, loading, file*/
+        /*$$scope, file, loading*/
         1027) {
           overlay_changes.$$scope = {
             dirty,
