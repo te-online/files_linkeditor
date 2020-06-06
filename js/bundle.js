@@ -3936,7 +3936,7 @@
     			em = element("em");
     			a = element("a");
     			t2 = text(t2_value);
-    			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
+    			attr(a, "href", a_href_value = sanitizeUrl(/*file*/ ctx[0].url));
     			attr(a, "target", a_target_value = /*file*/ ctx[0].sameWindow ? "_self" : "_blank");
     			attr(p, "class", "urldisplay");
     		},
@@ -3951,7 +3951,7 @@
     		p(ctx, dirty) {
     			if (dirty & /*file*/ 1 && t2_value !== (t2_value = /*file*/ ctx[0].url + "")) set_data(t2, t2_value);
 
-    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
+    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = sanitizeUrl(/*file*/ ctx[0].url))) {
     				attr(a, "href", a_href_value);
     			}
 
@@ -3965,7 +3965,7 @@
     	};
     }
 
-    // (62:2) {#if !loading}
+    // (63:2) {#if !loading}
     function create_if_block(ctx) {
     	let show_if = FileService.userCanEdit();
     	let t0;
@@ -3982,7 +3982,7 @@
     			t0 = space();
     			a = element("a");
     			t1 = text(t1_value);
-    			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
+    			attr(a, "href", a_href_value = sanitizeUrl(/*file*/ ctx[0].url));
     			attr(a, "target", a_target_value = /*file*/ ctx[0].sameWindow ? "_self" : "_blank");
     			attr(a, "class", "button primary");
     		},
@@ -3995,7 +3995,7 @@
     		p(ctx, dirty) {
     			if (show_if) if_block.p(ctx, dirty);
 
-    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
+    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = sanitizeUrl(/*file*/ ctx[0].url))) {
     				attr(a, "href", a_href_value);
     			}
 
@@ -4011,7 +4011,7 @@
     	};
     }
 
-    // (63:3) {#if FileService.userCanEdit()}
+    // (64:3) {#if FileService.userCanEdit()}
     function create_if_block_1(ctx) {
     	let a;
     	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Edit link") + "";
@@ -4044,7 +4044,7 @@
     	};
     }
 
-    // (41:0) <Overlay {loading}>
+    // (42:0) <Overlay {loading}>
     function create_default_slot(ctx) {
     	let div0;
     	let h3;
@@ -5461,7 +5461,7 @@
     	};
     }
 
-    // (61:3) {#if !loading}
+    // (69:3) {#if !loading}
     function create_if_block_1$1(ctx) {
     	let a;
     	let t_1_value = /*t*/ ctx[2]("files_linkeditor", "Visit link") + "";
@@ -5472,7 +5472,7 @@
     		c() {
     			a = element("a");
     			t_1 = text(t_1_value);
-    			attr(a, "href", a_href_value = /*file*/ ctx[0].url);
+    			attr(a, "href", a_href_value = sanitizeUrl(/*file*/ ctx[0].url));
     			attr(a, "target", "_blank");
     			attr(a, "class", "button");
     		},
@@ -5481,7 +5481,7 @@
     			append(a, t_1);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = /*file*/ ctx[0].url)) {
+    			if (dirty & /*file*/ 1 && a_href_value !== (a_href_value = sanitizeUrl(/*file*/ ctx[0].url))) {
     				attr(a, "href", a_href_value);
     			}
     		},
@@ -5491,7 +5491,7 @@
     	};
     }
 
-    // (74:3) {#if !loading}
+    // (82:3) {#if !loading}
     function create_if_block$1(ctx) {
     	let button;
     	let dispose;
@@ -5516,7 +5516,7 @@
     	};
     }
 
-    // (38:0) <Overlay {loading}>
+    // (39:0) <Overlay {loading}>
     function create_default_slot$1(ctx) {
     	let form;
     	let div0;

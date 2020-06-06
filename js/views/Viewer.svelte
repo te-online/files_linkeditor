@@ -3,6 +3,7 @@
 	import { viewMode, currentFile } from "../lib/store";
 	import { onDestroy, onMount } from "svelte";
 	import { FileService } from "../lib/File.service";
+	import { sanitizeUrl } from "../lib/sanitizeUrl";
 	const t = window.t;
 
 	$: file = FileService.getFileConfig();
@@ -45,7 +46,7 @@
 			<p class="urldisplay">
 				{t('files_linkeditor', 'You are about to visit:')}
 				<em>
-					<a href={file.url} target={file.sameWindow ? '_self' : '_blank'}>{file.url}</a>
+					<a href={sanitizeUrl(file.url)} target={file.sameWindow ? '_self' : '_blank'}>{file.url}</a>
 				</em>
 			</p>
 		{/if}
@@ -70,7 +71,7 @@
 					{t('files_linkeditor', 'Edit link')}
 				</a>
 			{/if}
-			<a href={file.url} target={file.sameWindow ? '_self' : '_blank'} class="button primary">
+			<a href={sanitizeUrl(file.url)} target={file.sameWindow ? '_self' : '_blank'} class="button primary">
 				{t('files_linkeditor', 'Visit link')}
 			</a>
 		{/if}
