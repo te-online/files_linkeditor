@@ -24,18 +24,19 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
-### 1.1.0, xx. May 2020
+### 1.1.0, 6. June 2020
 - Rewrite client-side JavaScript in ES6 and with use of [Svelte](https://svelte.dev) components
 - Add autofocus to URL input field when editing a link file
 - Enable creation of .webloc files from the filelist
 - New file: Don't save an empty file if editing is canceled
-- Fix loading spinner on top of text
-- Fix displayed link was not wrapped in anchor tag
-- Add button to change to edit modal from viewer modal
-- Add ability to create .webloc files from create menu on file list
+- Fix loading spinner sitting on top of text
+- Fix displayed link not wrapped in anchor tag
+- Add button to change to edit mode from view mode
 - Add configurable option to open link in the same window
-- Add configurable option to open link without confirmation if they open in the same window (thanks to for the suggestion @noerw)
+- Add configurable option to open link without confirmation if it is configured to open in the same window (thanks for the suggestion to @noerw)
 - Rewrite .webloc file parser by using the browser's XML parser
+- Remove support for Internet Explorer
+- Remove dependency on jQuery
 
 ### 1.0.14, 20. May 2020
 - Add compatibility for Nextcloud 19.
