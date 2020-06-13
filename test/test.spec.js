@@ -2,6 +2,7 @@
 
 import { sanitizeUrl } from "../js/lib/sanitizeUrl";
 import { Parser } from "../js/lib/Parser";
+import fs from "fs";
 
 describe("Sanitizer", function () {
 	it("replaces javascript urls with about:blank", function () {
@@ -151,7 +152,7 @@ describe("Parser", function () {
 </plist>`);
 		});
 
-		it("reads a .weblock file with a link", function () {
+		it("reads a .webloc file with a link", function () {
 			const file = {
 				url: "https://example.org",
 				sameWindow: false,
@@ -169,7 +170,7 @@ describe("Parser", function () {
 			).toEqual(file);
 		});
 
-		it("reads a .weblock file with a link and a sameWindow field", function () {
+		it("reads a .webloc file with a link and a sameWindow field", function () {
 			const file = {
 				url: "https://example.org",
 				sameWindow: true,
@@ -191,7 +192,7 @@ describe("Parser", function () {
 			).toEqual(file);
 		});
 
-		it("reads a .weblock file with a link, a sameWindow field and a skipConfirmation field", function () {
+		it("reads a .webloc file with a link, a sameWindow field and a skipConfirmation field", function () {
 			const file = {
 				url: "https://example.org",
 				sameWindow: true,
@@ -217,7 +218,7 @@ describe("Parser", function () {
 			).toEqual(file);
 		});
 
-		it("reads a .weblock file with a link, and a skipConfirmation field", function () {
+		it("reads a .webloc file with a link, and a skipConfirmation field", function () {
 			const file = {
 				url: "https://example.org",
 				sameWindow: false,
@@ -239,7 +240,7 @@ describe("Parser", function () {
 			).toEqual(file);
 		});
 
-		it("reads a .weblock file with a link, an unknown field and a sameWindow field", function () {
+		it("reads a .webloc file with a link, an unknown field and a sameWindow field", function () {
 			const file = {
 				url: "https://example.org",
 				sameWindow: true,
@@ -263,6 +264,17 @@ describe("Parser", function () {
 </extra> -->
 </plist>`)
 			).toEqual(file);
+		});
+
+		it("reads a .webloc file that is a binary plist file", function () {
+			const file = {
+				url: "https://example.org",
+				sameWindow: false,
+				skipConfirmation: false,
+			};
+			// expect(Parser.parseWeblocFile("bplist00ÑSURL_1https://packages.debian.org/buster/libplist-utilsC")).toEqual(file);
+			// console.log(fs.readFileSync("./test/Example Domain.webloc", "utf8"));
+			expect(Parser.parseWeblocFile(fs.readFileSync("./test/Example Domain.webloc", "utf8"))).toEqual(file);
 		});
 	});
 

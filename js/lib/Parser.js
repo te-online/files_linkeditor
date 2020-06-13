@@ -1,4 +1,6 @@
 import { sanitizeUrl } from "./sanitizeUrl";
+import { BinaryPlistParserService } from "./bplistParser";
+const binaryPlistParser = new BinaryPlistParserService();
 
 const extraFields = {
 	skipConfirmation: "X-Skip-Confirm-Navigation=1",
@@ -202,30 +204,45 @@ export class Parser {
 		const result = { ...emptyFile };
 
 		if (filecontent) {
-			const parser = new window.DOMParser();
-			// Remove comment characters around extra fields
-			const xmlContent = uncommentExtraFields(filecontent);
-			// Parse XML file
-			const xmlDoc = parser.parseFromString(xmlContent, "text/xml");
-			// There can be <dict> and <extra> tags on the root <plist>
-			const elements = [...xmlDoc.getElementsByTagName("dict"), ...xmlDoc.getElementsByTagName("extra")];
+			if (filecontent.substring(0, 6) === "bplist") {
+				// Try parsing as binary file
+				try {
+					const parsed = binaryPlistParser.parse64Content(window.btoa(filecontent));
+					// Was able to parse and has URL
+					if (parsed && parsed.length && parsed[0].URL) {
+						// Return URL, no custom metadata can be saved to the binary file
+						result.url = parsed[0].URL;
+					}
+				} catch (error) {
+					console.info(error);
+				}
+			} else {
+				// Try parsing a XML file
+				const parser = new window.DOMParser();
+				// Remove comment characters around extra fields
+				const xmlContent = uncommentExtraFields(filecontent);
+				// Parse XML file
+				const xmlDoc = parser.parseFromString(xmlContent, "text/xml");
+				// There can be <dict> and <extra> tags on the root <plist>
+				const elements = [...xmlDoc.getElementsByTagName("dict"), ...xmlDoc.getElementsByTagName("extra")];
 
-			// Map over all child elements
-			if (elements && elements.length) {
-				for (const element of elements) {
-					const key = element.getElementsByTagName("key");
-					const string = element.getElementsByTagName("string");
-					// Match for URL line
-					if (getXMLTagValue(key) === "URL") {
-						result.url = sanitizeUrl(getXMLTagValue(string));
-					}
-					// If this extra field is present, the link opens in the same window
-					if (getXMLTagValue(key) === extraFieldNames.sameWindow && getXMLTagValue(string) === "_self") {
-						result.sameWindow = true;
-					}
-					// If this extra field is present, we skip the navigation confirmation view
-					if (getXMLTagValue(key) === extraFieldNames.skipConfirmation && getXMLTagValue(string) === "1") {
-						result.skipConfirmation = true;
+				// Map over all child elements
+				if (elements && elements.length) {
+					for (const element of elements) {
+						const key = element.getElementsByTagName("key");
+						const string = element.getElementsByTagName("string");
+						// Match for URL line
+						if (getXMLTagValue(key) === "URL") {
+							result.url = sanitizeUrl(getXMLTagValue(string));
+						}
+						// If this extra field is present, the link opens in the same window
+						if (getXMLTagValue(key) === extraFieldNames.sameWindow && getXMLTagValue(string) === "_self") {
+							result.sameWindow = true;
+						}
+						// If this extra field is present, we skip the navigation confirmation view
+						if (getXMLTagValue(key) === extraFieldNames.skipConfirmation && getXMLTagValue(string) === "1") {
+							result.skipConfirmation = true;
+						}
 					}
 				}
 			}
