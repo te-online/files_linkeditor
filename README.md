@@ -24,6 +24,9 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
+### 1.1.1, 13. June 2020
+- Add parser for reading binary plist `.webloc` files, see [Propery list, Wikipedia](https://en.wikipedia.org/wiki/Property_list) and [#34](https://github.com/te-online/files_linkeditor/issues/34).
+
 ### 1.1.0, 6. June 2020
 - Rewrite client-side JavaScript in ES6 and with use of [Svelte](https://svelte.dev) components
 - Add autofocus to URL input field when editing a link file
