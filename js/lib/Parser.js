@@ -209,7 +209,7 @@ export class Parser {
 				try {
 					const parsed = binaryPlistParser.parse64Content(window.btoa(filecontent));
 					// Was able to parse and has URL
-					if (parsed && parsed.length && parsed[0].URL) {
+					if (parsed && parsed.length && parsed[0] && parsed[0].URL) {
 						// Return URL, no custom metadata can be saved to the binary file
 						result.url = parsed[0].URL;
 					}
