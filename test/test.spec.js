@@ -268,13 +268,12 @@ describe("Parser", function () {
 
 		it("reads a .webloc file that is a binary plist file", function () {
 			const file = {
-				url: "https://example.org",
+				url: "https://example.org/",
 				sameWindow: false,
 				skipConfirmation: false,
 			};
-			// expect(Parser.parseWeblocFile("bplist00ÑSURL_1https://packages.debian.org/buster/libplist-utilsC")).toEqual(file);
-			// console.log(fs.readFileSync("./test/Example Domain.webloc", "utf8"));
-			expect(Parser.parseWeblocFile(fs.readFileSync("./test/Example Domain.webloc", "utf8"))).toEqual(file);
+			const binaryContent = fs.readFileSync("./test/Example Domain.webloc", "binary");
+			expect(Parser.parseWeblocFile(binaryContent)).toEqual(file);
 		});
 	});
 
