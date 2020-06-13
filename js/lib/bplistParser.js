@@ -6,7 +6,7 @@ import bigInt from "big-integer";
 import { Buffer as BrowserBuffer } from "buffer/";
 
 export const maxObjectSize = 100 * 1000 * 1000; // 100Meg
-export const maxObjectCount = 1768058988;
+export const maxObjectCount = 32768;
 
 // EPOCH = new SimpleDateFormat("yyyy MM dd zzz").parse("2001 01 01 GMT").getTime();
 // ...but that's annoying in a static initializer because it can throw exceptions, ick.
