@@ -22,7 +22,7 @@ export class UID {
 
 export class BinaryPlistParserService {
 	constructor() {
-		this.debug = true;
+		this.debug = false;
 	}
 
 	parse64Content(base64Content) {
