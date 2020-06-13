@@ -8677,7 +8677,7 @@
 
   var maxObjectSize = 100 * 1000 * 1000; // 100Meg
 
-  var maxObjectCount = 1768058988; // EPOCH = new SimpleDateFormat("yyyy MM dd zzz").parse("2001 01 01 GMT").getTime();
+  var maxObjectCount = 32768; // EPOCH = new SimpleDateFormat("yyyy MM dd zzz").parse("2001 01 01 GMT").getTime();
   // ...but that's annoying in a static initializer because it can throw exceptions, ick.
   // So we just hardcode the correct value.
 
@@ -8694,7 +8694,7 @@
     function BinaryPlistParserService() {
       _classCallCheck(this, BinaryPlistParserService);
 
-      this.debug = true;
+      this.debug = false;
     }
 
     _createClass(BinaryPlistParserService, [{
@@ -9341,7 +9341,7 @@
             try {
               var parsed = binaryPlistParser.parse64Content(window.btoa(filecontent)); // Was able to parse and has URL
 
-              if (parsed && parsed.length && parsed[0].URL) {
+              if (parsed && parsed.length && parsed[0] && parsed[0].URL) {
                 // Return URL, no custom metadata can be saved to the binary file
                 result.url = parsed[0].URL;
               }
