@@ -24,6 +24,10 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
+### 1.1.2, 28. August 2020
+- Replace URL sanitizer to fix removal of special characters (#36).
+- Update French translation, thanks @Ravinou
+
 ### 1.1.1, 13. June 2020
 - Add parser for reading binary plist `.webloc` files, see [Propery list, Wikipedia](https://en.wikipedia.org/wiki/Property_list) and [#34](https://github.com/te-online/files_linkeditor/issues/34).
 

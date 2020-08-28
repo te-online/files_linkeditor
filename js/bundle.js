@@ -338,6 +338,9 @@
   function safe_not_equal(a, b) {
       return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
   }
+  function is_empty(obj) {
+      return Object.keys(obj).length === 0;
+  }
   function create_slot(definition, ctx, $$scope, fn) {
       if (definition) {
           const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
@@ -418,7 +421,7 @@
   }
   function set_data(text, data) {
       data = '' + data;
-      if (text.data !== data)
+      if (text.wholeText !== data)
           text.data = data;
   }
   function set_input_value(input, value) {
@@ -603,14 +606,15 @@
           context: new Map(parent_component ? parent_component.$$.context : []),
           // everything else
           callbacks: blank_object(),
-          dirty
+          dirty,
+          skip_bound: false
       };
       let ready = false;
       $$.ctx = instance
           ? instance(component, prop_values, (i, ret, ...rest) => {
               const value = rest.length ? rest[0] : ret;
               if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
-                  if ($$.bound[i])
+                  if (!$$.skip_bound && $$.bound[i])
                       $$.bound[i](value);
                   if (ready)
                       make_dirty(component, i);
@@ -655,12 +659,20 @@
                   callbacks.splice(index, 1);
           };
       }
-      $set() {
-          // overridden by instance, if it has props
+      $set($$props) {
+          if (this.$$set && !is_empty($$props)) {
+              this.$$.skip_bound = true;
+              this.$$set($$props);
+              this.$$.skip_bound = false;
+          }
       }
   }
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+  function unwrapExports (x) {
+  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+  }
 
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -683,6 +695,25 @@
     var iteratorSymbol = $Symbol.iterator || "@@iterator";
     var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
     var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+    function define(obj, key, value) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+      return obj[key];
+    }
+
+    try {
+      // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+      define({}, "");
+    } catch (err) {
+      define = function (obj, key, value) {
+        return obj[key] = value;
+      };
+    }
 
     function wrap(innerFn, outerFn, self, tryLocsList) {
       // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
@@ -757,14 +788,14 @@
     var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
     GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
     GeneratorFunctionPrototype.constructor = GeneratorFunction;
-    GeneratorFunctionPrototype[toStringTagSymbol] = GeneratorFunction.displayName = "GeneratorFunction"; // Helper for defining the .next, .throw, and .return methods of the
+    GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"); // Helper for defining the .next, .throw, and .return methods of the
     // Iterator interface in terms of a single ._invoke method.
 
     function defineIteratorMethods(prototype) {
       ["next", "throw", "return"].forEach(function (method) {
-        prototype[method] = function (arg) {
+        define(prototype, method, function (arg) {
           return this._invoke(method, arg);
-        };
+        });
       });
     }
 
@@ -780,10 +811,7 @@
         Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
       } else {
         genFun.__proto__ = GeneratorFunctionPrototype;
-
-        if (!(toStringTagSymbol in genFun)) {
-          genFun[toStringTagSymbol] = "GeneratorFunction";
-        }
+        define(genFun, toStringTagSymbol, "GeneratorFunction");
       }
 
       genFun.prototype = Object.create(Gp);
@@ -1039,7 +1067,7 @@
 
 
     defineIteratorMethods(Gp);
-    Gp[toStringTagSymbol] = "Generator"; // A Generator should always return itself as the iterator object when the
+    define(Gp, toStringTagSymbol, "Generator"); // A Generator should always return itself as the iterator object when the
     // @@iterator function is called on it. Some browsers' implementations of the
     // iterator prototype chain incorrectly implement this, causing the Generator
     // object to not be returned from this call. This ensures that doesn't happen.
@@ -1462,7 +1490,7 @@
         $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
         $$scope = $$props.$$scope;
 
-    $$self.$set = function ($$props) {
+    $$self.$$set = function ($$props) {
       if ("loading" in $$props) $$invalidate(0, loading = $$props.loading);
       if ("$$scope" in $$props) $$invalidate(1, $$scope = $$props.$$scope);
     };
@@ -3159,6 +3187,754 @@
     }
   });
 
+  var dist = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.sanitizeUrl = void 0;
+  var invalidProtocolRegex = /^(%20|\s)*(javascript|data)/im;
+  var ctrlCharactersRegex = /[^\x20-\x7EÀ-ž]/gim;
+  var urlSchemeRegex = /^([^:]+):/gm;
+  var relativeFirstCharacters = [".", "/"];
+
+  function isRelativeUrlWithoutProtocol(url) {
+    return relativeFirstCharacters.indexOf(url[0]) > -1;
+  }
+
+  function sanitizeUrl(url) {
+    if (!url) {
+      return "about:blank";
+    }
+
+    var sanitizedUrl = url.replace(ctrlCharactersRegex, "").trim();
+
+    if (isRelativeUrlWithoutProtocol(sanitizedUrl)) {
+      return sanitizedUrl;
+    }
+
+    var urlSchemeParseResults = sanitizedUrl.match(urlSchemeRegex);
+
+    if (!urlSchemeParseResults) {
+      return sanitizedUrl;
+    }
+
+    var urlScheme = urlSchemeParseResults[0];
+
+    if (invalidProtocolRegex.test(urlScheme)) {
+      return "about:blank";
+    }
+
+    return sanitizedUrl;
+  }
+
+  exports.sanitizeUrl = sanitizeUrl;
+  });
+
+  unwrapExports(dist);
+  var dist_1 = dist.sanitizeUrl;
+
+  var FileService = /*#__PURE__*/function () {
+    function FileService() {
+      _classCallCheck(this, FileService);
+    }
+
+    _createClass(FileService, null, [{
+      key: "getFileConfig",
+      value: function getFileConfig() {
+        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            name = _ref.name,
+            url = _ref.url,
+            downloadUrl = _ref.downloadUrl,
+            currentUrl = _ref.currentUrl,
+            dir = _ref.dir,
+            onCreate = _ref.onCreate,
+            fileModifiedTime = _ref.fileModifiedTime,
+            isNew = _ref.isNew,
+            isLoaded = _ref.isLoaded,
+            sameWindow = _ref.sameWindow,
+            skipConfirmation = _ref.skipConfirmation;
+
+        return {
+          name: name || "?",
+          downloadUrl: downloadUrl || "",
+          url: url ? dist_1(url) : "",
+          dir: dir || "",
+          currentUrl: currentUrl || "",
+          onCreate: onCreate,
+          fileModifiedTime: fileModifiedTime || null,
+          isNew: isNew || false,
+          isLoaded: isLoaded || false,
+          sameWindow: sameWindow || false,
+          skipConfirmation: skipConfirmation || false
+        };
+      }
+    }, {
+      key: "load",
+      value: function () {
+        var _load = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+          var _ref2,
+              fileName,
+              dir,
+              result,
+              _args = arguments;
+
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _ref2 = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, fileName = _ref2.fileName, dir = _ref2.dir;
+                  _context.next = 3;
+                  return window.fetch("".concat(window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile"), "?filename=").concat(encodeURIComponent(fileName), "&dir=").concat(encodeURIComponent(dir)), {
+                    method: "GET",
+                    headers: {
+                      requesttoken: window.OC.requestToken
+                    }
+                  });
+
+                case 3:
+                  result = _context.sent;
+
+                  if (!(result && result.ok)) {
+                    _context.next = 8;
+                    break;
+                  }
+
+                  _context.next = 7;
+                  return result.json();
+
+                case 7:
+                  return _context.abrupt("return", _context.sent);
+
+                case 8:
+                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+
+                case 9:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        function load() {
+          return _load.apply(this, arguments);
+        }
+
+        return load;
+      }()
+    }, {
+      key: "loadPublic",
+      value: function () {
+        var _loadPublic = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          var _ref3,
+              downloadUrl,
+              result,
+              _args2 = arguments;
+
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _ref3 = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {}, downloadUrl = _ref3.downloadUrl;
+                  _context2.next = 3;
+                  return window.fetch(downloadUrl, {
+                    method: "GET",
+                    headers: {
+                      requesttoken: window.OC.requestToken
+                    }
+                  });
+
+                case 3:
+                  result = _context2.sent;
+
+                  if (!(result && result.ok)) {
+                    _context2.next = 9;
+                    break;
+                  }
+
+                  _context2.next = 7;
+                  return result.text();
+
+                case 7:
+                  _context2.t0 = _context2.sent;
+                  return _context2.abrupt("return", {
+                    filecontents: _context2.t0
+                  });
+
+                case 9:
+                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+
+                case 10:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2);
+        }));
+
+        function loadPublic() {
+          return _loadPublic.apply(this, arguments);
+        }
+
+        return loadPublic;
+      }()
+    }, {
+      key: "save",
+      value: function () {
+        var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+          var _ref4,
+              fileContent,
+              name,
+              fileModifiedTime,
+              dir,
+              path,
+              result,
+              _args3 = arguments;
+
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _ref4 = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {}, fileContent = _ref4.fileContent, name = _ref4.name, fileModifiedTime = _ref4.fileModifiedTime, dir = _ref4.dir;
+                  // Send the PUT request
+                  path = "".concat(dir).concat(name);
+
+                  if (dir !== "/") {
+                    path = "".concat(dir, "/").concat(name);
+                  }
+
+                  _context3.next = 5;
+                  return window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
+                    method: "PUT",
+                    body: JSON.stringify({
+                      filecontents: fileContent,
+                      path,
+                      mtime: fileModifiedTime
+                    }),
+                    headers: {
+                      requesttoken: window.OC.requestToken,
+                      "Content-Type": "application/json"
+                    }
+                  });
+
+                case 5:
+                  result = _context3.sent;
+
+                  if (!(result && result.ok)) {
+                    _context3.next = 8;
+                    break;
+                  }
+
+                  return _context3.abrupt("return", true);
+
+                case 8:
+                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+
+                case 9:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3);
+        }));
+
+        function save() {
+          return _save.apply(this, arguments);
+        }
+
+        return save;
+      }()
+    }, {
+      key: "userCanEdit",
+      value: function userCanEdit() {
+        return window.FileList && window.OC && (window.OC.PERMISSION_ALL === window.FileList.getDirectoryPermissions() || window.OC.PERMISSION_UPDATE === window.FileList.getDirectoryPermissions());
+      }
+    }]);
+
+    return FileService;
+  }();
+
+  var viewMode = writable(""); // 'edit' or 'view'
+
+  var currentFile = writable(FileService.getFileConfig());
+
+  function create_if_block_2(ctx) {
+    var p;
+    var t0_value =
+    /*t*/
+    ctx[2]("files_linkeditor", "You are about to visit:") + "";
+    var t0;
+    var t1;
+    var em;
+    var a;
+    var t2_value =
+    /*file*/
+    ctx[0].url + "";
+    var t2;
+    var a_href_value;
+    var a_target_value;
+    return {
+      c() {
+        p = element("p");
+        t0 = text(t0_value);
+        t1 = space();
+        em = element("em");
+        a = element("a");
+        t2 = text(t2_value);
+        attr(a, "href", a_href_value = dist_1(
+        /*file*/
+        ctx[0].url));
+        attr(a, "target", a_target_value =
+        /*file*/
+        ctx[0].sameWindow ? "_self" : "_blank");
+        attr(p, "class", "urldisplay");
+      },
+
+      m(target, anchor) {
+        insert(target, p, anchor);
+        append(p, t0);
+        append(p, t1);
+        append(p, em);
+        append(em, a);
+        append(a, t2);
+      },
+
+      p(ctx, dirty) {
+        if (dirty &
+        /*file*/
+        1 && t2_value !== (t2_value =
+        /*file*/
+        ctx[0].url + "")) set_data(t2, t2_value);
+
+        if (dirty &
+        /*file*/
+        1 && a_href_value !== (a_href_value = dist_1(
+        /*file*/
+        ctx[0].url))) {
+          attr(a, "href", a_href_value);
+        }
+
+        if (dirty &
+        /*file*/
+        1 && a_target_value !== (a_target_value =
+        /*file*/
+        ctx[0].sameWindow ? "_self" : "_blank")) {
+          attr(a, "target", a_target_value);
+        }
+      },
+
+      d(detaching) {
+        if (detaching) detach(p);
+      }
+
+    };
+  } // (63:2) {#if !loading}
+
+
+  function create_if_block(ctx) {
+    var show_if = FileService.userCanEdit();
+    var t0;
+    var a;
+    var t1_value =
+    /*t*/
+    ctx[2]("files_linkeditor", "Visit link") + "";
+    var t1;
+    var a_href_value;
+    var a_target_value;
+    var if_block = show_if && create_if_block_1(ctx);
+    return {
+      c() {
+        if (if_block) if_block.c();
+        t0 = space();
+        a = element("a");
+        t1 = text(t1_value);
+        attr(a, "href", a_href_value = dist_1(
+        /*file*/
+        ctx[0].url));
+        attr(a, "target", a_target_value =
+        /*file*/
+        ctx[0].sameWindow ? "_self" : "_blank");
+        attr(a, "class", "button primary");
+      },
+
+      m(target, anchor) {
+        if (if_block) if_block.m(target, anchor);
+        insert(target, t0, anchor);
+        insert(target, a, anchor);
+        append(a, t1);
+      },
+
+      p(ctx, dirty) {
+        if (show_if) if_block.p(ctx, dirty);
+
+        if (dirty &
+        /*file*/
+        1 && a_href_value !== (a_href_value = dist_1(
+        /*file*/
+        ctx[0].url))) {
+          attr(a, "href", a_href_value);
+        }
+
+        if (dirty &
+        /*file*/
+        1 && a_target_value !== (a_target_value =
+        /*file*/
+        ctx[0].sameWindow ? "_self" : "_blank")) {
+          attr(a, "target", a_target_value);
+        }
+      },
+
+      d(detaching) {
+        if (if_block) if_block.d(detaching);
+        if (detaching) detach(t0);
+        if (detaching) detach(a);
+      }
+
+    };
+  } // (64:3) {#if FileService.userCanEdit()}
+
+
+  function create_if_block_1(ctx) {
+    var a;
+    var t_1_value =
+    /*t*/
+    ctx[2]("files_linkeditor", "Edit link") + "";
+    var t_1;
+    var a_href_value;
+    var mounted;
+    var dispose;
+    return {
+      c() {
+        a = element("a");
+        t_1 = text(t_1_value);
+        attr(a, "href", a_href_value =
+        /*file*/
+        ctx[0].currentUrl);
+        attr(a, "class", "button");
+      },
+
+      m(target, anchor) {
+        insert(target, a, anchor);
+        append(a, t_1);
+
+        if (!mounted) {
+          dispose = listen(a, "click", prevent_default(
+          /*click_handler_1*/
+          ctx[4]));
+          mounted = true;
+        }
+      },
+
+      p(ctx, dirty) {
+        if (dirty &
+        /*file*/
+        1 && a_href_value !== (a_href_value =
+        /*file*/
+        ctx[0].currentUrl)) {
+          attr(a, "href", a_href_value);
+        }
+      },
+
+      d(detaching) {
+        if (detaching) detach(a);
+        mounted = false;
+        dispose();
+      }
+
+    };
+  } // (42:0) <Overlay {loading}>
+
+
+  function create_default_slot(ctx) {
+    var div0;
+    var h3;
+    var t0_value =
+    /*file*/
+    ctx[0].name + "";
+    var t0;
+    var t1;
+    var t2;
+    var div1;
+    var a;
+    var t3_value =
+    /*t*/
+    ctx[2]("files_linkeditor", "Cancel") + "";
+    var t3;
+    var a_href_value;
+    var t4;
+    var mounted;
+    var dispose;
+    var if_block0 = !
+    /*loading*/
+    ctx[1] && create_if_block_2(ctx);
+    var if_block1 = !
+    /*loading*/
+    ctx[1] && create_if_block(ctx);
+    return {
+      c() {
+        div0 = element("div");
+        h3 = element("h3");
+        t0 = text(t0_value);
+        t1 = space();
+        if (if_block0) if_block0.c();
+        t2 = space();
+        div1 = element("div");
+        a = element("a");
+        t3 = text(t3_value);
+        t4 = space();
+        if (if_block1) if_block1.c();
+        attr(div0, "class", "urledit push-bottom");
+        attr(a, "href", a_href_value =
+        /*file*/
+        ctx[0].currentUrl);
+        attr(a, "class", "button");
+        attr(div1, "class", "oc-dialog-buttonrow twobuttons");
+      },
+
+      m(target, anchor) {
+        insert(target, div0, anchor);
+        append(div0, h3);
+        append(h3, t0);
+        append(div0, t1);
+        if (if_block0) if_block0.m(div0, null);
+        insert(target, t2, anchor);
+        insert(target, div1, anchor);
+        append(div1, a);
+        append(a, t3);
+        append(div1, t4);
+        if (if_block1) if_block1.m(div1, null);
+
+        if (!mounted) {
+          dispose = listen(a, "click", prevent_default(
+          /*click_handler*/
+          ctx[3]));
+          mounted = true;
+        }
+      },
+
+      p(ctx, dirty) {
+        if (dirty &
+        /*file*/
+        1 && t0_value !== (t0_value =
+        /*file*/
+        ctx[0].name + "")) set_data(t0, t0_value);
+
+        if (!
+        /*loading*/
+        ctx[1]) {
+          if (if_block0) {
+            if_block0.p(ctx, dirty);
+          } else {
+            if_block0 = create_if_block_2(ctx);
+            if_block0.c();
+            if_block0.m(div0, null);
+          }
+        } else if (if_block0) {
+          if_block0.d(1);
+          if_block0 = null;
+        }
+
+        if (dirty &
+        /*file*/
+        1 && a_href_value !== (a_href_value =
+        /*file*/
+        ctx[0].currentUrl)) {
+          attr(a, "href", a_href_value);
+        }
+
+        if (!
+        /*loading*/
+        ctx[1]) {
+          if (if_block1) {
+            if_block1.p(ctx, dirty);
+          } else {
+            if_block1 = create_if_block(ctx);
+            if_block1.c();
+            if_block1.m(div1, null);
+          }
+        } else if (if_block1) {
+          if_block1.d(1);
+          if_block1 = null;
+        }
+      },
+
+      d(detaching) {
+        if (detaching) detach(div0);
+        if (if_block0) if_block0.d();
+        if (detaching) detach(t2);
+        if (detaching) detach(div1);
+        if (if_block1) if_block1.d();
+        mounted = false;
+        dispose();
+      }
+
+    };
+  }
+
+  function create_fragment$1(ctx) {
+    var overlay;
+    var current;
+    overlay = new Overlay({
+      props: {
+        loading:
+        /*loading*/
+        ctx[1],
+        $$slots: {
+          default: [create_default_slot]
+        },
+        $$scope: {
+          ctx
+        }
+      }
+    });
+    return {
+      c() {
+        create_component(overlay.$$.fragment);
+      },
+
+      m(target, anchor) {
+        mount_component(overlay, target, anchor);
+        current = true;
+      },
+
+      p(ctx, _ref) {
+        var _ref2 = _slicedToArray(_ref, 1),
+            dirty = _ref2[0];
+
+        var overlay_changes = {};
+        if (dirty &
+        /*loading*/
+        2) overlay_changes.loading =
+        /*loading*/
+        ctx[1];
+
+        if (dirty &
+        /*$$scope, file, loading*/
+        67) {
+          overlay_changes.$$scope = {
+            dirty,
+            ctx
+          };
+        }
+
+        overlay.$set(overlay_changes);
+      },
+
+      i(local) {
+        if (current) return;
+        transition_in(overlay.$$.fragment, local);
+        current = true;
+      },
+
+      o(local) {
+        transition_out(overlay.$$.fragment, local);
+        current = false;
+      },
+
+      d(detaching) {
+        destroy_component(overlay, detaching);
+      }
+
+    };
+  }
+
+  function instance$1($$self, $$props, $$invalidate) {
+    var t = window.t;
+    var unsubscribe;
+    onMount(function () {
+      // Subscribe to changes of the current file
+      unsubscribe = currentFile.subscribe( /*#__PURE__*/function () {
+        var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileUpdate) {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  $$invalidate(0, file = fileUpdate);
+
+                  if (!(file && file.isLoaded)) {
+                    _context.next = 7;
+                    break;
+                  }
+
+                  $$invalidate(1, loading = false); // Show error when url is permanently empty (or maybe show editor?)
+
+                  if (file.url) {
+                    _context.next = 6;
+                    break;
+                  }
+
+                  OC.dialogs.alert(t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."), t("files_linkeditor", "A slight problem"));
+                  return _context.abrupt("return");
+
+                case 6:
+                  // Open the link without confirmation
+                  if (file.skipConfirmation && file.sameWindow) {
+                    window.location.href = file.url; // Hide viewer
+
+                    viewMode.update(function () {
+                      return "none";
+                    });
+                  }
+
+                case 7:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        return function (_x) {
+          return _ref3.apply(this, arguments);
+        };
+      }());
+    });
+    onDestroy(function () {
+      // Unsubscribe from store to avoid memory leaks
+      unsubscribe();
+    });
+
+    var click_handler = function click_handler() {
+      viewMode.update(function () {
+        return "none";
+      });
+    };
+
+    var click_handler_1 = function click_handler_1() {
+      viewMode.update(function () {
+        return "edit";
+      });
+    };
+
+    var file;
+    var loading;
+
+     $$invalidate(0, file = FileService.getFileConfig());
+
+     $$invalidate(1, loading = true);
+
+    return [file, loading, t, click_handler, click_handler_1];
+  }
+
+  var Viewer = /*#__PURE__*/function (_SvelteComponent) {
+    _inherits(Viewer, _SvelteComponent);
+
+    var _super = _createSuper(Viewer);
+
+    function Viewer(options) {
+      var _this;
+
+      _classCallCheck(this, Viewer);
+
+      _this = _super.call(this);
+      init(_assertThisInitialized(_this), options, instance$1, create_fragment$1, safe_not_equal, {});
+      return _this;
+    }
+
+    return Viewer;
+  }(SvelteComponent);
+
   var arrayMethodIsStrict = function (METHOD_NAME, argument) {
     var method = [][METHOD_NAME];
     return !!method && fails(function () {
@@ -3224,6 +4000,61 @@
     }
   });
 
+  var aPossiblePrototype = function (it) {
+    if (!isObject(it) && it !== null) {
+      throw TypeError("Can't set " + String(it) + ' as a prototype');
+    }
+
+    return it;
+  };
+
+  // `Object.setPrototypeOf` method
+  // https://tc39.github.io/ecma262/#sec-object.setprototypeof
+  // Works with __proto__ only. Old v8 can't work with null proto objects.
+
+  /* eslint-disable no-proto */
+
+
+  var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
+    var CORRECT_SETTER = false;
+    var test = {};
+    var setter;
+
+    try {
+      setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
+      setter.call(test, []);
+      CORRECT_SETTER = test instanceof Array;
+    } catch (error) {
+      /* empty */
+    }
+
+    return function setPrototypeOf(O, proto) {
+      anObject(O);
+      aPossiblePrototype(proto);
+      if (CORRECT_SETTER) setter.call(O, proto);else O.__proto__ = proto;
+      return O;
+    };
+  }() : undefined);
+
+  // makes subclassing work correct for wrapped built-ins
+
+
+  var inheritIfRequired = function ($this, dummy, Wrapper) {
+    var NewTarget, NewTargetPrototype;
+    if ( // it can work only with native `setPrototypeOf`
+    objectSetPrototypeOf && // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
+    typeof (NewTarget = dummy.constructor) == 'function' && NewTarget !== Wrapper && isObject(NewTargetPrototype = NewTarget.prototype) && NewTargetPrototype !== Wrapper.prototype) objectSetPrototypeOf($this, NewTargetPrototype);
+    return $this;
+  };
+
+  var MATCH = wellKnownSymbol('match'); // `IsRegExp` abstract operation
+  // https://tc39.github.io/ecma262/#sec-isregexp
+
+  var isRegexp = function (it) {
+    var isRegExp;
+    return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
+  };
+
   // `RegExp.prototype.flags` getter implementation
   // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
 
@@ -3266,6 +4097,96 @@
   	BROKEN_CARET: BROKEN_CARET
   };
 
+  var defineProperty$2 = objectDefineProperty.f;
+
+  var getOwnPropertyNames = objectGetOwnPropertyNames.f;
+
+
+
+
+
+
+
+
+
+
+
+  var setInternalState$1 = internalState.set;
+
+
+
+
+
+  var MATCH$1 = wellKnownSymbol('match');
+  var NativeRegExp = global_1.RegExp;
+  var RegExpPrototype = NativeRegExp.prototype;
+  var re1 = /a/g;
+  var re2 = /a/g; // "new" should create a new object, old webkit bug
+
+  var CORRECT_NEW = new NativeRegExp(re1) !== re1;
+  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y;
+  var FORCED$2 = descriptors && isForced_1('RegExp', !CORRECT_NEW || UNSUPPORTED_Y$1 || fails(function () {
+    re2[MATCH$1] = false; // RegExp constructor can alter flags and IsRegExp works correct with @@match
+
+    return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
+  })); // `RegExp` constructor
+  // https://tc39.github.io/ecma262/#sec-regexp-constructor
+
+  if (FORCED$2) {
+    var RegExpWrapper = function RegExp(pattern, flags) {
+      var thisIsRegExp = this instanceof RegExpWrapper;
+      var patternIsRegExp = isRegexp(pattern);
+      var flagsAreUndefined = flags === undefined;
+      var sticky;
+
+      if (!thisIsRegExp && patternIsRegExp && pattern.constructor === RegExpWrapper && flagsAreUndefined) {
+        return pattern;
+      }
+
+      if (CORRECT_NEW) {
+        if (patternIsRegExp && !flagsAreUndefined) pattern = pattern.source;
+      } else if (pattern instanceof RegExpWrapper) {
+        if (flagsAreUndefined) flags = regexpFlags.call(pattern);
+        pattern = pattern.source;
+      }
+
+      if (UNSUPPORTED_Y$1) {
+        sticky = !!flags && flags.indexOf('y') > -1;
+        if (sticky) flags = flags.replace(/y/g, '');
+      }
+
+      var result = inheritIfRequired(CORRECT_NEW ? new NativeRegExp(pattern, flags) : NativeRegExp(pattern, flags), thisIsRegExp ? this : RegExpPrototype, RegExpWrapper);
+      if (UNSUPPORTED_Y$1 && sticky) setInternalState$1(result, {
+        sticky: sticky
+      });
+      return result;
+    };
+
+    var proxy = function (key) {
+      key in RegExpWrapper || defineProperty$2(RegExpWrapper, key, {
+        configurable: true,
+        get: function () {
+          return NativeRegExp[key];
+        },
+        set: function (it) {
+          NativeRegExp[key] = it;
+        }
+      });
+    };
+
+    var keys$1 = getOwnPropertyNames(NativeRegExp);
+    var index = 0;
+
+    while (keys$1.length > index) proxy(keys$1[index++]);
+
+    RegExpPrototype.constructor = RegExpWrapper;
+    RegExpWrapper.prototype = RegExpPrototype;
+    redefine(global_1, 'RegExp', RegExpWrapper);
+  } // https://tc39.github.io/ecma262/#sec-get-regexp-@@species
+
+
+  setSpecies('RegExp');
+
   var nativeExec = RegExp.prototype.exec; // This always refers to the native implementation, because the
   // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
   // which loads this file before patching the method.
@@ -3281,16 +4202,16 @@
     return re1.lastIndex !== 0 || re2.lastIndex !== 0;
   }();
 
-  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET; // nonparticipating capturing group, copied from es5-shim's String#split patch.
+  var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET; // nonparticipating capturing group, copied from es5-shim's String#split patch.
 
   var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
-  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
+  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$2;
 
   if (PATCH) {
     patchedExec = function exec(str) {
       var re = this;
       var lastIndex, reCopy, match, i;
-      var sticky = UNSUPPORTED_Y$1 && re.sticky;
+      var sticky = UNSUPPORTED_Y$2 && re.sticky;
       var flags = regexpFlags.call(re);
       var source = re.source;
       var charsAdded = 0;
@@ -3357,6 +4278,31 @@
   }, {
     exec: regexpExec
   });
+
+  var TO_STRING = 'toString';
+  var RegExpPrototype$1 = RegExp.prototype;
+  var nativeToString = RegExpPrototype$1[TO_STRING];
+  var NOT_GENERIC = fails(function () {
+    return nativeToString.call({
+      source: 'a',
+      flags: 'b'
+    }) != '/a/b';
+  }); // FF44- RegExp#toString has a wrong name
+
+  var INCORRECT_NAME = nativeToString.name != TO_STRING; // `RegExp.prototype.toString` method
+  // https://tc39.github.io/ecma262/#sec-regexp.prototype.tostring
+
+  if (NOT_GENERIC || INCORRECT_NAME) {
+    redefine(RegExp.prototype, TO_STRING, function toString() {
+      var R = anObject(this);
+      var p = String(R.source);
+      var rf = R.flags;
+      var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype$1) ? regexpFlags.call(R) : rf);
+      return '/' + p + '/' + f;
+    }, {
+      unsafe: true
+    });
+  }
 
   var SPECIES$5 = wellKnownSymbol('species');
   var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
@@ -3717,912 +4663,6 @@
       });
     }
   });
-
-  /**
-  /*
-  /* from https://github.com/braintree/sanitize-url,
-  /* assumed MIT license
-  /*
-  **/
-  var invalidPrototcolRegex = /^(%20|\s)*(javascript|data)/im;
-  var ctrlCharactersRegex = /[^\x20-\x7E]/gim;
-  var urlSchemeRegex = /^([^:]+):/gm;
-  var relativeFirstCharacters = [".", "/"];
-  function isRelativeUrl(url) {
-    return relativeFirstCharacters.indexOf(url[0]) > -1;
-  }
-  function sanitizeUrl(url) {
-    var urlScheme, urlSchemeParseResults;
-    var sanitizedUrl = url.replace(ctrlCharactersRegex, "");
-
-    if (isRelativeUrl(sanitizedUrl)) {
-      return sanitizedUrl;
-    }
-
-    urlSchemeParseResults = sanitizedUrl.match(urlSchemeRegex);
-
-    if (!urlSchemeParseResults) {
-      return "about:blank";
-    }
-
-    urlScheme = urlSchemeParseResults[0];
-
-    if (invalidPrototcolRegex.test(urlScheme)) {
-      return "about:blank";
-    }
-
-    return sanitizedUrl;
-  }
-
-  var FileService = /*#__PURE__*/function () {
-    function FileService() {
-      _classCallCheck(this, FileService);
-    }
-
-    _createClass(FileService, null, [{
-      key: "getFileConfig",
-      value: function getFileConfig() {
-        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            name = _ref.name,
-            url = _ref.url,
-            downloadUrl = _ref.downloadUrl,
-            currentUrl = _ref.currentUrl,
-            dir = _ref.dir,
-            onCreate = _ref.onCreate,
-            fileModifiedTime = _ref.fileModifiedTime,
-            isNew = _ref.isNew,
-            isLoaded = _ref.isLoaded,
-            sameWindow = _ref.sameWindow,
-            skipConfirmation = _ref.skipConfirmation;
-
-        return {
-          name: name || "?",
-          downloadUrl: downloadUrl || "",
-          url: url ? sanitizeUrl(url) : "",
-          dir: dir || "",
-          currentUrl: currentUrl || "",
-          onCreate: onCreate,
-          fileModifiedTime: fileModifiedTime || null,
-          isNew: isNew || false,
-          isLoaded: isLoaded || false,
-          sameWindow: sameWindow || false,
-          skipConfirmation: skipConfirmation || false
-        };
-      }
-    }, {
-      key: "load",
-      value: function () {
-        var _load = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-          var _ref2,
-              fileName,
-              dir,
-              result,
-              _args = arguments;
-
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _ref2 = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, fileName = _ref2.fileName, dir = _ref2.dir;
-                  _context.next = 3;
-                  return window.fetch("".concat(window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile"), "?filename=").concat(encodeURIComponent(fileName), "&dir=").concat(encodeURIComponent(dir)), {
-                    method: "GET",
-                    headers: {
-                      requesttoken: window.OC.requestToken
-                    }
-                  });
-
-                case 3:
-                  result = _context.sent;
-
-                  if (!(result && result.ok)) {
-                    _context.next = 8;
-                    break;
-                  }
-
-                  _context.next = 7;
-                  return result.json();
-
-                case 7:
-                  return _context.abrupt("return", _context.sent);
-
-                case 8:
-                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
-
-                case 9:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee);
-        }));
-
-        function load() {
-          return _load.apply(this, arguments);
-        }
-
-        return load;
-      }()
-    }, {
-      key: "loadPublic",
-      value: function () {
-        var _loadPublic = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-          var _ref3,
-              downloadUrl,
-              result,
-              _args2 = arguments;
-
-          return regeneratorRuntime.wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  _ref3 = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {}, downloadUrl = _ref3.downloadUrl;
-                  _context2.next = 3;
-                  return window.fetch(downloadUrl, {
-                    method: "GET",
-                    headers: {
-                      requesttoken: window.OC.requestToken
-                    }
-                  });
-
-                case 3:
-                  result = _context2.sent;
-
-                  if (!(result && result.ok)) {
-                    _context2.next = 9;
-                    break;
-                  }
-
-                  _context2.next = 7;
-                  return result.text();
-
-                case 7:
-                  _context2.t0 = _context2.sent;
-                  return _context2.abrupt("return", {
-                    filecontents: _context2.t0
-                  });
-
-                case 9:
-                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
-
-                case 10:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee2);
-        }));
-
-        function loadPublic() {
-          return _loadPublic.apply(this, arguments);
-        }
-
-        return loadPublic;
-      }()
-    }, {
-      key: "save",
-      value: function () {
-        var _save = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-          var _ref4,
-              fileContent,
-              name,
-              fileModifiedTime,
-              dir,
-              path,
-              result,
-              _args3 = arguments;
-
-          return regeneratorRuntime.wrap(function _callee3$(_context3) {
-            while (1) {
-              switch (_context3.prev = _context3.next) {
-                case 0:
-                  _ref4 = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {}, fileContent = _ref4.fileContent, name = _ref4.name, fileModifiedTime = _ref4.fileModifiedTime, dir = _ref4.dir;
-                  // Send the PUT request
-                  path = "".concat(dir).concat(name);
-
-                  if (dir !== "/") {
-                    path = "".concat(dir, "/").concat(name);
-                  }
-
-                  _context3.next = 5;
-                  return window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
-                    method: "PUT",
-                    body: JSON.stringify({
-                      filecontents: fileContent,
-                      path,
-                      mtime: fileModifiedTime
-                    }),
-                    headers: {
-                      requesttoken: window.OC.requestToken,
-                      "Content-Type": "application/json"
-                    }
-                  });
-
-                case 5:
-                  result = _context3.sent;
-
-                  if (!(result && result.ok)) {
-                    _context3.next = 8;
-                    break;
-                  }
-
-                  return _context3.abrupt("return", true);
-
-                case 8:
-                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
-
-                case 9:
-                case "end":
-                  return _context3.stop();
-              }
-            }
-          }, _callee3);
-        }));
-
-        function save() {
-          return _save.apply(this, arguments);
-        }
-
-        return save;
-      }()
-    }, {
-      key: "userCanEdit",
-      value: function userCanEdit() {
-        return window.FileList && window.OC && (window.OC.PERMISSION_ALL === window.FileList.getDirectoryPermissions() || window.OC.PERMISSION_UPDATE === window.FileList.getDirectoryPermissions());
-      }
-    }]);
-
-    return FileService;
-  }();
-
-  var viewMode = writable(""); // 'edit' or 'view'
-
-  var currentFile = writable(FileService.getFileConfig());
-
-  function create_if_block_2(ctx) {
-    var p;
-    var t0_value =
-    /*t*/
-    ctx[2]("files_linkeditor", "You are about to visit:") + "";
-    var t0;
-    var t1;
-    var em;
-    var a;
-    var t2_value =
-    /*file*/
-    ctx[0].url + "";
-    var t2;
-    var a_href_value;
-    var a_target_value;
-    return {
-      c() {
-        p = element("p");
-        t0 = text(t0_value);
-        t1 = space();
-        em = element("em");
-        a = element("a");
-        t2 = text(t2_value);
-        attr(a, "href", a_href_value = sanitizeUrl(
-        /*file*/
-        ctx[0].url));
-        attr(a, "target", a_target_value =
-        /*file*/
-        ctx[0].sameWindow ? "_self" : "_blank");
-        attr(p, "class", "urldisplay");
-      },
-
-      m(target, anchor) {
-        insert(target, p, anchor);
-        append(p, t0);
-        append(p, t1);
-        append(p, em);
-        append(em, a);
-        append(a, t2);
-      },
-
-      p(ctx, dirty) {
-        if (dirty &
-        /*file*/
-        1 && t2_value !== (t2_value =
-        /*file*/
-        ctx[0].url + "")) set_data(t2, t2_value);
-
-        if (dirty &
-        /*file*/
-        1 && a_href_value !== (a_href_value = sanitizeUrl(
-        /*file*/
-        ctx[0].url))) {
-          attr(a, "href", a_href_value);
-        }
-
-        if (dirty &
-        /*file*/
-        1 && a_target_value !== (a_target_value =
-        /*file*/
-        ctx[0].sameWindow ? "_self" : "_blank")) {
-          attr(a, "target", a_target_value);
-        }
-      },
-
-      d(detaching) {
-        if (detaching) detach(p);
-      }
-
-    };
-  } // (63:2) {#if !loading}
-
-
-  function create_if_block(ctx) {
-    var show_if = FileService.userCanEdit();
-    var t0;
-    var a;
-    var t1_value =
-    /*t*/
-    ctx[2]("files_linkeditor", "Visit link") + "";
-    var t1;
-    var a_href_value;
-    var a_target_value;
-    var if_block = show_if && create_if_block_1(ctx);
-    return {
-      c() {
-        if (if_block) if_block.c();
-        t0 = space();
-        a = element("a");
-        t1 = text(t1_value);
-        attr(a, "href", a_href_value = sanitizeUrl(
-        /*file*/
-        ctx[0].url));
-        attr(a, "target", a_target_value =
-        /*file*/
-        ctx[0].sameWindow ? "_self" : "_blank");
-        attr(a, "class", "button primary");
-      },
-
-      m(target, anchor) {
-        if (if_block) if_block.m(target, anchor);
-        insert(target, t0, anchor);
-        insert(target, a, anchor);
-        append(a, t1);
-      },
-
-      p(ctx, dirty) {
-        if (show_if) if_block.p(ctx, dirty);
-
-        if (dirty &
-        /*file*/
-        1 && a_href_value !== (a_href_value = sanitizeUrl(
-        /*file*/
-        ctx[0].url))) {
-          attr(a, "href", a_href_value);
-        }
-
-        if (dirty &
-        /*file*/
-        1 && a_target_value !== (a_target_value =
-        /*file*/
-        ctx[0].sameWindow ? "_self" : "_blank")) {
-          attr(a, "target", a_target_value);
-        }
-      },
-
-      d(detaching) {
-        if (if_block) if_block.d(detaching);
-        if (detaching) detach(t0);
-        if (detaching) detach(a);
-      }
-
-    };
-  } // (64:3) {#if FileService.userCanEdit()}
-
-
-  function create_if_block_1(ctx) {
-    var a;
-    var t_1_value =
-    /*t*/
-    ctx[2]("files_linkeditor", "Edit link") + "";
-    var t_1;
-    var a_href_value;
-    var mounted;
-    var dispose;
-    return {
-      c() {
-        a = element("a");
-        t_1 = text(t_1_value);
-        attr(a, "href", a_href_value =
-        /*file*/
-        ctx[0].currentUrl);
-        attr(a, "class", "button");
-      },
-
-      m(target, anchor) {
-        insert(target, a, anchor);
-        append(a, t_1);
-
-        if (!mounted) {
-          dispose = listen(a, "click", prevent_default(
-          /*click_handler_1*/
-          ctx[5]));
-          mounted = true;
-        }
-      },
-
-      p(ctx, dirty) {
-        if (dirty &
-        /*file*/
-        1 && a_href_value !== (a_href_value =
-        /*file*/
-        ctx[0].currentUrl)) {
-          attr(a, "href", a_href_value);
-        }
-      },
-
-      d(detaching) {
-        if (detaching) detach(a);
-        mounted = false;
-        dispose();
-      }
-
-    };
-  } // (42:0) <Overlay {loading}>
-
-
-  function create_default_slot(ctx) {
-    var div0;
-    var h3;
-    var t0_value =
-    /*file*/
-    ctx[0].name + "";
-    var t0;
-    var t1;
-    var t2;
-    var div1;
-    var a;
-    var t3_value =
-    /*t*/
-    ctx[2]("files_linkeditor", "Cancel") + "";
-    var t3;
-    var a_href_value;
-    var t4;
-    var mounted;
-    var dispose;
-    var if_block0 = !
-    /*loading*/
-    ctx[1] && create_if_block_2(ctx);
-    var if_block1 = !
-    /*loading*/
-    ctx[1] && create_if_block(ctx);
-    return {
-      c() {
-        div0 = element("div");
-        h3 = element("h3");
-        t0 = text(t0_value);
-        t1 = space();
-        if (if_block0) if_block0.c();
-        t2 = space();
-        div1 = element("div");
-        a = element("a");
-        t3 = text(t3_value);
-        t4 = space();
-        if (if_block1) if_block1.c();
-        attr(div0, "class", "urledit push-bottom");
-        attr(a, "href", a_href_value =
-        /*file*/
-        ctx[0].currentUrl);
-        attr(a, "class", "button");
-        attr(div1, "class", "oc-dialog-buttonrow twobuttons");
-      },
-
-      m(target, anchor) {
-        insert(target, div0, anchor);
-        append(div0, h3);
-        append(h3, t0);
-        append(div0, t1);
-        if (if_block0) if_block0.m(div0, null);
-        insert(target, t2, anchor);
-        insert(target, div1, anchor);
-        append(div1, a);
-        append(a, t3);
-        append(div1, t4);
-        if (if_block1) if_block1.m(div1, null);
-
-        if (!mounted) {
-          dispose = listen(a, "click", prevent_default(
-          /*click_handler*/
-          ctx[4]));
-          mounted = true;
-        }
-      },
-
-      p(ctx, dirty) {
-        if (dirty &
-        /*file*/
-        1 && t0_value !== (t0_value =
-        /*file*/
-        ctx[0].name + "")) set_data(t0, t0_value);
-
-        if (!
-        /*loading*/
-        ctx[1]) {
-          if (if_block0) {
-            if_block0.p(ctx, dirty);
-          } else {
-            if_block0 = create_if_block_2(ctx);
-            if_block0.c();
-            if_block0.m(div0, null);
-          }
-        } else if (if_block0) {
-          if_block0.d(1);
-          if_block0 = null;
-        }
-
-        if (dirty &
-        /*file*/
-        1 && a_href_value !== (a_href_value =
-        /*file*/
-        ctx[0].currentUrl)) {
-          attr(a, "href", a_href_value);
-        }
-
-        if (!
-        /*loading*/
-        ctx[1]) {
-          if (if_block1) {
-            if_block1.p(ctx, dirty);
-          } else {
-            if_block1 = create_if_block(ctx);
-            if_block1.c();
-            if_block1.m(div1, null);
-          }
-        } else if (if_block1) {
-          if_block1.d(1);
-          if_block1 = null;
-        }
-      },
-
-      d(detaching) {
-        if (detaching) detach(div0);
-        if (if_block0) if_block0.d();
-        if (detaching) detach(t2);
-        if (detaching) detach(div1);
-        if (if_block1) if_block1.d();
-        mounted = false;
-        dispose();
-      }
-
-    };
-  }
-
-  function create_fragment$1(ctx) {
-    var current;
-    var overlay = new Overlay({
-      props: {
-        loading:
-        /*loading*/
-        ctx[1],
-        $$slots: {
-          default: [create_default_slot]
-        },
-        $$scope: {
-          ctx
-        }
-      }
-    });
-    return {
-      c() {
-        create_component(overlay.$$.fragment);
-      },
-
-      m(target, anchor) {
-        mount_component(overlay, target, anchor);
-        current = true;
-      },
-
-      p(ctx, _ref) {
-        var _ref2 = _slicedToArray(_ref, 1),
-            dirty = _ref2[0];
-
-        var overlay_changes = {};
-        if (dirty &
-        /*loading*/
-        2) overlay_changes.loading =
-        /*loading*/
-        ctx[1];
-
-        if (dirty &
-        /*$$scope, file, loading*/
-        67) {
-          overlay_changes.$$scope = {
-            dirty,
-            ctx
-          };
-        }
-
-        overlay.$set(overlay_changes);
-      },
-
-      i(local) {
-        if (current) return;
-        transition_in(overlay.$$.fragment, local);
-        current = true;
-      },
-
-      o(local) {
-        transition_out(overlay.$$.fragment, local);
-        current = false;
-      },
-
-      d(detaching) {
-        destroy_component(overlay, detaching);
-      }
-
-    };
-  }
-
-  function instance$1($$self, $$props, $$invalidate) {
-    var t = window.t;
-    var unsubscribe;
-    onMount(function () {
-      // Subscribe to changes of the current file
-      unsubscribe = currentFile.subscribe( /*#__PURE__*/function () {
-        var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileUpdate) {
-          return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  $$invalidate(0, file = fileUpdate);
-
-                  if (!(file && file.isLoaded)) {
-                    _context.next = 7;
-                    break;
-                  }
-
-                  $$invalidate(1, loading = false); // Show error when url is permanently empty (or maybe show editor?)
-
-                  if (file.url) {
-                    _context.next = 6;
-                    break;
-                  }
-
-                  OC.dialogs.alert(t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."), t("files_linkeditor", "A slight problem"));
-                  return _context.abrupt("return");
-
-                case 6:
-                  // Open the link without confirmation
-                  if (file.skipConfirmation && file.sameWindow) {
-                    window.location.href = file.url; // Hide viewer
-
-                    viewMode.update(function () {
-                      return "none";
-                    });
-                  }
-
-                case 7:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee);
-        }));
-
-        return function (_x) {
-          return _ref3.apply(this, arguments);
-        };
-      }());
-    });
-    onDestroy(function () {
-      // Unsubscribe from store to avoid memory leaks
-      unsubscribe();
-    });
-
-    var click_handler = function click_handler() {
-      viewMode.update(function () {
-        return "none";
-      });
-    };
-
-    var click_handler_1 = function click_handler_1() {
-      viewMode.update(function () {
-        return "edit";
-      });
-    };
-
-    var file;
-    var loading;
-
-     $$invalidate(0, file = FileService.getFileConfig());
-
-     $$invalidate(1, loading = true);
-
-    return [file, loading, t, unsubscribe, click_handler, click_handler_1];
-  }
-
-  var Viewer = /*#__PURE__*/function (_SvelteComponent) {
-    _inherits(Viewer, _SvelteComponent);
-
-    var _super = _createSuper(Viewer);
-
-    function Viewer(options) {
-      var _this;
-
-      _classCallCheck(this, Viewer);
-
-      _this = _super.call(this);
-      init(_assertThisInitialized(_this), options, instance$1, create_fragment$1, safe_not_equal, {});
-      return _this;
-    }
-
-    return Viewer;
-  }(SvelteComponent);
-
-  var aPossiblePrototype = function (it) {
-    if (!isObject(it) && it !== null) {
-      throw TypeError("Can't set " + String(it) + ' as a prototype');
-    }
-
-    return it;
-  };
-
-  // `Object.setPrototypeOf` method
-  // https://tc39.github.io/ecma262/#sec-object.setprototypeof
-  // Works with __proto__ only. Old v8 can't work with null proto objects.
-
-  /* eslint-disable no-proto */
-
-
-  var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
-    var CORRECT_SETTER = false;
-    var test = {};
-    var setter;
-
-    try {
-      setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
-      setter.call(test, []);
-      CORRECT_SETTER = test instanceof Array;
-    } catch (error) {
-      /* empty */
-    }
-
-    return function setPrototypeOf(O, proto) {
-      anObject(O);
-      aPossiblePrototype(proto);
-      if (CORRECT_SETTER) setter.call(O, proto);else O.__proto__ = proto;
-      return O;
-    };
-  }() : undefined);
-
-  // makes subclassing work correct for wrapped built-ins
-
-
-  var inheritIfRequired = function ($this, dummy, Wrapper) {
-    var NewTarget, NewTargetPrototype;
-    if ( // it can work only with native `setPrototypeOf`
-    objectSetPrototypeOf && // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
-    typeof (NewTarget = dummy.constructor) == 'function' && NewTarget !== Wrapper && isObject(NewTargetPrototype = NewTarget.prototype) && NewTargetPrototype !== Wrapper.prototype) objectSetPrototypeOf($this, NewTargetPrototype);
-    return $this;
-  };
-
-  var MATCH = wellKnownSymbol('match'); // `IsRegExp` abstract operation
-  // https://tc39.github.io/ecma262/#sec-isregexp
-
-  var isRegexp = function (it) {
-    var isRegExp;
-    return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
-  };
-
-  var defineProperty$2 = objectDefineProperty.f;
-
-  var getOwnPropertyNames = objectGetOwnPropertyNames.f;
-
-
-
-
-
-
-
-
-
-
-
-  var setInternalState$1 = internalState.set;
-
-
-
-
-
-  var MATCH$1 = wellKnownSymbol('match');
-  var NativeRegExp = global_1.RegExp;
-  var RegExpPrototype = NativeRegExp.prototype;
-  var re1 = /a/g;
-  var re2 = /a/g; // "new" should create a new object, old webkit bug
-
-  var CORRECT_NEW = new NativeRegExp(re1) !== re1;
-  var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y;
-  var FORCED$2 = descriptors && isForced_1('RegExp', !CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
-    re2[MATCH$1] = false; // RegExp constructor can alter flags and IsRegExp works correct with @@match
-
-    return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
-  })); // `RegExp` constructor
-  // https://tc39.github.io/ecma262/#sec-regexp-constructor
-
-  if (FORCED$2) {
-    var RegExpWrapper = function RegExp(pattern, flags) {
-      var thisIsRegExp = this instanceof RegExpWrapper;
-      var patternIsRegExp = isRegexp(pattern);
-      var flagsAreUndefined = flags === undefined;
-      var sticky;
-
-      if (!thisIsRegExp && patternIsRegExp && pattern.constructor === RegExpWrapper && flagsAreUndefined) {
-        return pattern;
-      }
-
-      if (CORRECT_NEW) {
-        if (patternIsRegExp && !flagsAreUndefined) pattern = pattern.source;
-      } else if (pattern instanceof RegExpWrapper) {
-        if (flagsAreUndefined) flags = regexpFlags.call(pattern);
-        pattern = pattern.source;
-      }
-
-      if (UNSUPPORTED_Y$2) {
-        sticky = !!flags && flags.indexOf('y') > -1;
-        if (sticky) flags = flags.replace(/y/g, '');
-      }
-
-      var result = inheritIfRequired(CORRECT_NEW ? new NativeRegExp(pattern, flags) : NativeRegExp(pattern, flags), thisIsRegExp ? this : RegExpPrototype, RegExpWrapper);
-      if (UNSUPPORTED_Y$2 && sticky) setInternalState$1(result, {
-        sticky: sticky
-      });
-      return result;
-    };
-
-    var proxy = function (key) {
-      key in RegExpWrapper || defineProperty$2(RegExpWrapper, key, {
-        configurable: true,
-        get: function () {
-          return NativeRegExp[key];
-        },
-        set: function (it) {
-          NativeRegExp[key] = it;
-        }
-      });
-    };
-
-    var keys$1 = getOwnPropertyNames(NativeRegExp);
-    var index = 0;
-
-    while (keys$1.length > index) proxy(keys$1[index++]);
-
-    RegExpPrototype.constructor = RegExpWrapper;
-    RegExpWrapper.prototype = RegExpPrototype;
-    redefine(global_1, 'RegExp', RegExpWrapper);
-  } // https://tc39.github.io/ecma262/#sec-get-regexp-@@species
-
-
-  setSpecies('RegExp');
-
-  var TO_STRING = 'toString';
-  var RegExpPrototype$1 = RegExp.prototype;
-  var nativeToString = RegExpPrototype$1[TO_STRING];
-  var NOT_GENERIC = fails(function () {
-    return nativeToString.call({
-      source: 'a',
-      flags: 'b'
-    }) != '/a/b';
-  }); // FF44- RegExp#toString has a wrong name
-
-  var INCORRECT_NAME = nativeToString.name != TO_STRING; // `RegExp.prototype.toString` method
-  // https://tc39.github.io/ecma262/#sec-regexp.prototype.tostring
-
-  if (NOT_GENERIC || INCORRECT_NAME) {
-    redefine(RegExp.prototype, TO_STRING, function toString() {
-      var R = anObject(this);
-      var p = String(R.source);
-      var rf = R.flags;
-      var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype$1) ? regexpFlags.call(R) : rf);
-      return '/' + p + '/' + f;
-    }, {
-      unsafe: true
-    });
-  }
 
   var arrayPush = [].push;
   var min$3 = Math.min;
@@ -6653,122 +6693,129 @@
   } //amd check
   });
 
-  var b64 = createCommonjsModule(function (module, exports) {
+  var byteLength_1 = byteLength;
+  var toByteArray_1 = toByteArray;
+  var fromByteArray_1 = fromByteArray;
+  var lookup = [];
+  var revLookup = [];
+  var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
+  var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-  (function (exports) {
+  for (var i = 0, len = code.length; i < len; ++i) {
+    lookup[i] = code[i];
+    revLookup[code.charCodeAt(i)] = i;
+  } // Support decoding URL-safe base64 strings, as Node.js does.
+  // See: https://en.wikipedia.org/wiki/Base64#URL_applications
 
-    var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
-    var PLUS = '+'.charCodeAt(0);
-    var SLASH = '/'.charCodeAt(0);
-    var NUMBER = '0'.charCodeAt(0);
-    var LOWER = 'a'.charCodeAt(0);
-    var UPPER = 'A'.charCodeAt(0);
-    var PLUS_URL_SAFE = '-'.charCodeAt(0);
-    var SLASH_URL_SAFE = '_'.charCodeAt(0);
 
-    function decode(elt) {
-      var code = elt.charCodeAt(0);
-      if (code === PLUS || code === PLUS_URL_SAFE) return 62; // '+'
+  revLookup['-'.charCodeAt(0)] = 62;
+  revLookup['_'.charCodeAt(0)] = 63;
 
-      if (code === SLASH || code === SLASH_URL_SAFE) return 63; // '/'
+  function getLens(b64) {
+    var len = b64.length;
 
-      if (code < NUMBER) return -1; // no match
+    if (len % 4 > 0) {
+      throw new Error('Invalid string. Length must be a multiple of 4');
+    } // Trim off extra bytes after placeholder bytes are found
+    // See: https://github.com/beatgammit/base64-js/issues/42
 
-      if (code < NUMBER + 10) return code - NUMBER + 26 + 26;
-      if (code < UPPER + 26) return code - UPPER;
-      if (code < LOWER + 26) return code - LOWER + 26;
+
+    var validLen = b64.indexOf('=');
+    if (validLen === -1) validLen = len;
+    var placeHoldersLen = validLen === len ? 0 : 4 - validLen % 4;
+    return [validLen, placeHoldersLen];
+  } // base64 is 4/3 + up to two characters of the original data
+
+
+  function byteLength(b64) {
+    var lens = getLens(b64);
+    var validLen = lens[0];
+    var placeHoldersLen = lens[1];
+    return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;
+  }
+
+  function _byteLength(b64, validLen, placeHoldersLen) {
+    return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;
+  }
+
+  function toByteArray(b64) {
+    var tmp;
+    var lens = getLens(b64);
+    var validLen = lens[0];
+    var placeHoldersLen = lens[1];
+    var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen));
+    var curByte = 0; // if there are placeholders, only get up to the last complete 4 chars
+
+    var len = placeHoldersLen > 0 ? validLen - 4 : validLen;
+    var i;
+
+    for (i = 0; i < len; i += 4) {
+      tmp = revLookup[b64.charCodeAt(i)] << 18 | revLookup[b64.charCodeAt(i + 1)] << 12 | revLookup[b64.charCodeAt(i + 2)] << 6 | revLookup[b64.charCodeAt(i + 3)];
+      arr[curByte++] = tmp >> 16 & 0xFF;
+      arr[curByte++] = tmp >> 8 & 0xFF;
+      arr[curByte++] = tmp & 0xFF;
     }
 
-    function b64ToByteArray(b64) {
-      var i, j, l, tmp, placeHolders, arr;
-
-      if (b64.length % 4 > 0) {
-        throw new Error('Invalid string. Length must be a multiple of 4');
-      } // the number of equal signs (place holders)
-      // if there are two placeholders, than the two characters before it
-      // represent one byte
-      // if there is only one, then the three characters before it represent 2 bytes
-      // this is just a cheap hack to not do indexOf twice
-
-
-      var len = b64.length;
-      placeHolders = b64.charAt(len - 2) === '=' ? 2 : b64.charAt(len - 1) === '=' ? 1 : 0; // base64 is 4/3 + up to two characters of the original data
-
-      arr = new Arr(b64.length * 3 / 4 - placeHolders); // if there are placeholders, only get up to the last complete 4 chars
-
-      l = placeHolders > 0 ? b64.length - 4 : b64.length;
-      var L = 0;
-
-      function push(v) {
-        arr[L++] = v;
-      }
-
-      for (i = 0, j = 0; i < l; i += 4, j += 3) {
-        tmp = decode(b64.charAt(i)) << 18 | decode(b64.charAt(i + 1)) << 12 | decode(b64.charAt(i + 2)) << 6 | decode(b64.charAt(i + 3));
-        push((tmp & 0xFF0000) >> 16);
-        push((tmp & 0xFF00) >> 8);
-        push(tmp & 0xFF);
-      }
-
-      if (placeHolders === 2) {
-        tmp = decode(b64.charAt(i)) << 2 | decode(b64.charAt(i + 1)) >> 4;
-        push(tmp & 0xFF);
-      } else if (placeHolders === 1) {
-        tmp = decode(b64.charAt(i)) << 10 | decode(b64.charAt(i + 1)) << 4 | decode(b64.charAt(i + 2)) >> 2;
-        push(tmp >> 8 & 0xFF);
-        push(tmp & 0xFF);
-      }
-
-      return arr;
+    if (placeHoldersLen === 2) {
+      tmp = revLookup[b64.charCodeAt(i)] << 2 | revLookup[b64.charCodeAt(i + 1)] >> 4;
+      arr[curByte++] = tmp & 0xFF;
     }
 
-    function uint8ToBase64(uint8) {
-      var i;
-      var extraBytes = uint8.length % 3; // if we have 1 byte left, pad 2 bytes
-
-      var output = '';
-      var temp, length;
-
-      function encode(num) {
-        return lookup.charAt(num);
-      }
-
-      function tripletToBase64(num) {
-        return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F);
-      } // go through the array every three bytes, we'll deal with trailing stuff later
-
-
-      for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-        temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + uint8[i + 2];
-        output += tripletToBase64(temp);
-      } // pad the end with zeros, but make sure to not forget the extra bytes
-
-
-      switch (extraBytes) {
-        case 1:
-          temp = uint8[uint8.length - 1];
-          output += encode(temp >> 2);
-          output += encode(temp << 4 & 0x3F);
-          output += '==';
-          break;
-
-        case 2:
-          temp = (uint8[uint8.length - 2] << 8) + uint8[uint8.length - 1];
-          output += encode(temp >> 10);
-          output += encode(temp >> 4 & 0x3F);
-          output += encode(temp << 2 & 0x3F);
-          output += '=';
-          break;
-      }
-
-      return output;
+    if (placeHoldersLen === 1) {
+      tmp = revLookup[b64.charCodeAt(i)] << 10 | revLookup[b64.charCodeAt(i + 1)] << 4 | revLookup[b64.charCodeAt(i + 2)] >> 2;
+      arr[curByte++] = tmp >> 8 & 0xFF;
+      arr[curByte++] = tmp & 0xFF;
     }
 
-    exports.toByteArray = b64ToByteArray;
-    exports.fromByteArray = uint8ToBase64;
-  })( exports);
-  });
+    return arr;
+  }
+
+  function tripletToBase64(num) {
+    return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
+  }
+
+  function encodeChunk(uint8, start, end) {
+    var tmp;
+    var output = [];
+
+    for (var i = start; i < end; i += 3) {
+      tmp = (uint8[i] << 16 & 0xFF0000) + (uint8[i + 1] << 8 & 0xFF00) + (uint8[i + 2] & 0xFF);
+      output.push(tripletToBase64(tmp));
+    }
+
+    return output.join('');
+  }
+
+  function fromByteArray(uint8) {
+    var tmp;
+    var len = uint8.length;
+    var extraBytes = len % 3; // if we have 1 byte left, pad 2 bytes
+
+    var parts = [];
+    var maxChunkLength = 16383; // must be multiple of 3
+    // go through the array every three bytes, we'll deal with trailing stuff later
+
+    for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+      parts.push(encodeChunk(uint8, i, i + maxChunkLength > len2 ? len2 : i + maxChunkLength));
+    } // pad the end with zeros, but make sure to not forget the extra bytes
+
+
+    if (extraBytes === 1) {
+      tmp = uint8[len - 1];
+      parts.push(lookup[tmp >> 2] + lookup[tmp << 4 & 0x3F] + '==');
+    } else if (extraBytes === 2) {
+      tmp = (uint8[len - 2] << 8) + uint8[len - 1];
+      parts.push(lookup[tmp >> 10] + lookup[tmp >> 4 & 0x3F] + lookup[tmp << 2 & 0x3F] + '=');
+    }
+
+    return parts.join('');
+  }
+
+  var base64Js = {
+  	byteLength: byteLength_1,
+  	toByteArray: toByteArray_1,
+  	fromByteArray: fromByteArray_1
+  };
 
   var read = function (buffer, offset, isLE, mLen, nBytes) {
     var e, m;
@@ -7815,9 +7862,9 @@
 
   function base64Slice(buf, start, end) {
     if (start === 0 && end === buf.length) {
-      return b64.fromByteArray(buf);
+      return base64Js.fromByteArray(buf);
     } else {
-      return b64.fromByteArray(buf.slice(start, end));
+      return base64Js.fromByteArray(buf.slice(start, end));
     }
   }
 
@@ -8629,7 +8676,7 @@
   }
 
   function base64ToBytes(str) {
-    return b64.toByteArray(base64clean(str));
+    return base64Js.toByteArray(base64clean(str));
   }
 
   function blitBuffer(src, dst, offset, length) {
@@ -9146,10 +9193,10 @@
 
         if (oldContent && oldContent.indexOf("[InternetShortcut]") !== -1 && oldContent.indexOf("URL=") !== -1) {
           // Seems like it, replace the url.
-          newContent = oldContent.replace(new RegExp("URL=.*", "gm"), "URL=".concat(sanitizeUrl(url)));
+          newContent = oldContent.replace(new RegExp("URL=.*", "gm"), "URL=".concat(dist_1(url)));
         } else {
           // Okay, let's create a new file.
-          newContent = "[InternetShortcut]\r\nURL=".concat(sanitizeUrl(url));
+          newContent = "[InternetShortcut]\r\nURL=".concat(dist_1(url));
         } // Adjust same window property
 
 
@@ -9188,7 +9235,7 @@
             // Let's use the first match.
             var url = urllines[0]; // Return only the URL.
 
-            result.url = sanitizeUrl(url.replace("URL=", ""));
+            result.url = dist_1(url.replace("URL=", ""));
           } // If this extra field is present, we skip the navigation confirmation view
 
 
@@ -9238,7 +9285,7 @@
                 var string = element.getElementsByTagName("string"); // Match for URL line
 
                 if (getXMLTagValue(key) === "URL") {
-                  setXMLTagValue(string, sanitizeUrl(url));
+                  setXMLTagValue(string, dist_1(url));
                   urlMatch = true;
                 } // If this extra field is present, the link opens in the same window
 
@@ -9305,7 +9352,7 @@
 
         if (!newContent || !urlMatch) {
           // Okay, let's create a new file.
-          newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t<plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(sanitizeUrl(url), "</string>\n\t\t\t\t\t</dict>");
+          newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t\t\t<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\t\t\t\t<plist version=\"1.0\">\n\t\t\t\t\t<dict>\n\t\t\t\t\t\t<key>URL</key>\n\t\t\t\t\t\t<string>".concat(dist_1(url), "</string>\n\t\t\t\t\t</dict>");
 
           if (sameWindow) {
             newContent = "".concat(newContent, "\n\t\t\t\t<extra>\n\t\t\t\t\t<key>").concat(extraFieldNames.sameWindow, "</key>\n\t\t\t\t\t<string>_self</string>\n\t\t\t\t</extra>");
@@ -9369,7 +9416,7 @@
                   var string = element.getElementsByTagName("string"); // Match for URL line
 
                   if (getXMLTagValue(key) === "URL") {
-                    result.url = sanitizeUrl(getXMLTagValue(string));
+                    result.url = dist_1(getXMLTagValue(string));
                   } // If this extra field is present, the link opens in the same window
 
 
@@ -9527,7 +9574,7 @@
     var onClick = $$props.onClick;
     var t = window.t;
 
-    $$self.$set = function ($$props) {
+    $$self.$$set = function ($$props) {
       if ("onClick" in $$props) $$invalidate(0, onClick = $$props.onClick);
     };
 
@@ -10024,11 +10071,11 @@
         if (!mounted) {
           dispose = [listen(input0, "input",
           /*input0_input_handler*/
-          ctx[6]), listen(input1, "change",
+          ctx[5]), listen(input1, "change",
           /*input1_change_handler*/
-          ctx[7]), listen(input2, "change",
+          ctx[6]), listen(input2, "change",
           /*input2_change_handler*/
-          ctx[8])];
+          ctx[7])];
           mounted = true;
         }
       },
@@ -10098,7 +10145,7 @@
       c() {
         a = element("a");
         t_1 = text(t_1_value);
-        attr(a, "href", a_href_value = sanitizeUrl(
+        attr(a, "href", a_href_value = dist_1(
         /*file*/
         ctx[0].url));
         attr(a, "target", "_blank");
@@ -10113,7 +10160,7 @@
       p(ctx, dirty) {
         if (dirty &
         /*file*/
-        1 && a_href_value !== (a_href_value = sanitizeUrl(
+        1 && a_href_value !== (a_href_value = dist_1(
         /*file*/
         ctx[0].url))) {
           attr(a, "href", a_href_value);
@@ -10261,7 +10308,7 @@
         if (!mounted) {
           dispose = [listen(a, "click", prevent_default(
           /*click_handler*/
-          ctx[9])), listen(form, "submit", prevent_default(
+          ctx[8])), listen(form, "submit", prevent_default(
           /*save*/
           ctx[4]))];
           mounted = true;
@@ -10342,8 +10389,9 @@
   }
 
   function create_fragment$3(ctx) {
+    var overlay;
     var current;
-    var overlay = new Overlay({
+    overlay = new Overlay({
       props: {
         loading:
         /*loading*/
@@ -10464,7 +10512,7 @@
 
      $$invalidate(1, loading = true);
 
-    return [file, loading, t, OC, save, unsubscribe, input0_input_handler, input1_change_handler, input2_change_handler, click_handler];
+    return [file, loading, t, OC, save, input0_input_handler, input1_change_handler, input2_change_handler, click_handler];
   }
 
   var Editor = /*#__PURE__*/function (_SvelteComponent) {
@@ -10486,8 +10534,9 @@
   }(SvelteComponent);
 
   function create_if_block_1$2(ctx) {
+    var viewer;
     var current;
-    var viewer = new Viewer({});
+    viewer = new Viewer({});
     return {
       c() {
         create_component(viewer.$$.fragment);
@@ -10518,8 +10567,9 @@
 
 
   function create_if_block$2(ctx) {
+    var editor;
     var current;
-    var editor = new Editor({});
+    editor = new Editor({});
     return {
       c() {
         create_component(editor.$$.fragment);
