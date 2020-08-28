@@ -18,6 +18,11 @@ describe("Sanitizer", function () {
 		var url = "http://example.org/7pe0o300%40group.calendar.com/public/basic.ics";
 		expect(Parser.generateURLFileContent("", url)).toEqual(`[InternetShortcut]\r\nURL=${url}\r\n`);
 	});
+
+	it("keeps a URL with special characters as it is", function () {
+		var url = "https://example.org/éèùà";
+		expect(Parser.generateURLFileContent("", url)).toEqual(`[InternetShortcut]\r\nURL=${url}\r\n`);
+	});
 });
 
 describe("Parser", function () {
