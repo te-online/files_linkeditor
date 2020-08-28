@@ -3,7 +3,7 @@
 	import { viewMode, currentFile } from "../lib/store";
 	import { onDestroy, onMount } from "svelte";
 	import { FileService } from "../lib/File.service";
-	import { sanitizeUrl } from "../lib/sanitizeUrl";
+	import { sanitizeUrl } from "@braintree/sanitize-url";
 	const t = window.t;
 
 	$: file = FileService.getFileConfig();

@@ -4,7 +4,7 @@
 	import { onDestroy, onMount } from "svelte";
 	import { FileService } from "../lib/File.service";
 	import { LinkeditorService } from "../lib/Linkeditor.service";
-	import { sanitizeUrl } from "../lib/sanitizeUrl";
+	import { sanitizeUrl } from "@braintree/sanitize-url";
 	const t = window.t;
 	const OC = window.OC;
 

@@ -1,4 +1,4 @@
-import { sanitizeUrl } from "./sanitizeUrl";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 export class FileService {
 	static getFileConfig({

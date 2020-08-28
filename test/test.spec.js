@@ -1,6 +1,6 @@
 "use strict";
 
-import { sanitizeUrl } from "../js/lib/sanitizeUrl";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Parser } from "../js/lib/Parser";
 import fs from "fs";
 

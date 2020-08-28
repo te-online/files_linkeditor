@@ -1,4 +1,4 @@
-import { sanitizeUrl } from "./sanitizeUrl";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 import { BinaryPlistParserService } from "./bplistParser";
 const binaryPlistParser = new BinaryPlistParserService();
 
