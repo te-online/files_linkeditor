@@ -15,6 +15,8 @@ OC.L10N.register(
 		'Save': 'Enregistrer',
 		'New link': 'Nouveau lien',
 		'Link.URL': 'Link.URL',
-		'Link.webloc': 'Link.webloc'
+		'Link.webloc': 'Link.webloc',
+		'Open in same window': 'Ouvrir dans la même fenêtre',
+		'Skip confirmation dialog before open (has to open in same window)': 'Ignorer la fenêtre de confirmation avant ouverture (Doit être ouvert dans la même fenêtre)'
 	},
 'nplurals=2; plural=(n != 1);');
