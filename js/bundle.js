@@ -3448,7 +3448,7 @@
     }, {
       key: "userCanEdit",
       value: function userCanEdit() {
-        return window.FileList && window.OC && (window.OC.PERMISSION_ALL === window.FileList.getDirectoryPermissions() || window.OC.PERMISSION_UPDATE === window.FileList.getDirectoryPermissions());
+        return window.FileList && window.OC && window.OC.currentUser && (window.OC.PERMISSION_ALL === window.FileList.getDirectoryPermissions() || window.OC.PERMISSION_UPDATE === window.FileList.getDirectoryPermissions());
       }
     }]);
 
@@ -9650,7 +9650,7 @@
 
             return actionHandler;
           }(),
-          permissions: window.OC.PERMISSION_UPDATE,
+          permissions: window.OC.currentUser && window.OC.PERMISSION_UPDATE,
           iconClass: "icon-link"
         }); // View action on single file
 

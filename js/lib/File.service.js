@@ -88,6 +88,7 @@ export class FileService {
 		return (
 			window.FileList &&
 			window.OC &&
+			window.OC.currentUser &&
 			(window.OC.PERMISSION_ALL === window.FileList.getDirectoryPermissions() ||
 				window.OC.PERMISSION_UPDATE === window.FileList.getDirectoryPermissions())
 		);

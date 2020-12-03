@@ -17,7 +17,7 @@ export class LinkeditorService {
 			mime: supportedMimetype,
 			actionHandler: async (fileName, context) =>
 				await LinkeditorService.loadAndChangeViewMode({ fileName, context, nextViewMode: "edit" }),
-			permissions: window.OC.PERMISSION_UPDATE,
+			permissions: window.OC.currentUser && window.OC.PERMISSION_UPDATE,
 			iconClass: "icon-link",
 		});
 
