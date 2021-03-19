@@ -24,6 +24,9 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
+### 1.1.5, 19. March 2021
+- Add Polish translation (thanks to @Valdnet)
+
 ### 1.1.4, 11. March 2021
 - Support for Nextcloud 21
 
