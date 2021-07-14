@@ -24,6 +24,11 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
+### 1.1.6, 14. July 2021
+- Bump compatibility to Nextcloud 22
+- Update JS dependencies
+- Fix jest test config
+
 ### 1.1.5, 19. March 2021
 - Add Polish translation (thanks to @Valdnet)
 
