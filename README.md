@@ -24,6 +24,10 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
+### 1.1.7, 3. December 2021
+- Bump compatibility to Nextcloud 23
+- Update JS dependencies
+
 ### 1.1.6, 14. July 2021
 - Bump compatibility to Nextcloud 22
 - Update JS dependencies
