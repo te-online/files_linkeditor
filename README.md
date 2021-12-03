@@ -24,6 +24,9 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
+### 1.1.9, tba
+- Add Czech localization (thanks to @p-bo)
+
 ### 1.1.8, 3. December
 - v1.1.7, but a second attempt to get a properly signed app into the appstore
 
