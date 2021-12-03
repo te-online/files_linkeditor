@@ -11,7 +11,7 @@
 * 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.]]></description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
-	<version>1.1.6</version>
+	<version>1.1.7</version>
 	<category>files</category>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/master/img/link_editor.png</screenshot>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/master/img/link_editor_edit.png</screenshot>
