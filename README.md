@@ -24,6 +24,9 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
+### 1.1.8, 3. December
+- v1.1.7, but a second attempt to get a properly signed app into the appstore
+
 ### 1.1.7, 3. December 2021
 - Bump compatibility to Nextcloud 23
 - Update JS dependencies
