@@ -8,16 +8,24 @@
 * ✍️ **create and edit** .URL and .webloc links in the file view
 * 🌍 **open links** by clicking them and confirming you want to go to the external site
 * 📤 **works in public shares** so you can share links easily with others
-* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.]]></description>
+* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.
+\n\n
+### Latest changes 
+**1.1.7, 3. December 2021**
+- Bump compatibility to Nextcloud 23
+- Update JS dependencies
+\n
+[View changelog for older versions](https://github.com/te-online/files_linkeditor#changelog)
+]]></description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
 	<version>1.1.7</version>
 	<category>files</category>
-	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/master/img/link_editor.png</screenshot>
-	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/master/img/link_editor_edit.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor_edit.png</screenshot>
 	<documentation>
-		<user>https://github.com/te-online/files_linkeditor/blob/master/README.md</user>
-		<admin>https://github.com/te-online/files_linkeditor/blob/master/README.md</admin>
+		<user>https://github.com/te-online/files_linkeditor/blob/main/README.md</user>
+		<admin>https://github.com/te-online/files_linkeditor/blob/main/README.md</admin>
 	</documentation>
 	<website>https://github.com/te-online/files_linkeditor</website>
 	<repository type="git">https://github.com/te-online/files_linkeditor.git</repository>
