@@ -24,10 +24,11 @@ Before building or development, dependencies need to be installed once, by runni
 
 ## Changelog
 
-### 1.1.9, tba
+### 1.1.9, 21. March 2022
 - Add Czech localization (thanks to @p-bo)
+- Update JS dependencies, fixes [a potential XSS-vulnerability in the URL sanitizer](https://github.com/te-online/files_linkeditor/pull/65)
 
-### 1.1.8, 3. December
+### 1.1.8, 3. December 2021
 - v1.1.7, but a second attempt to get a properly signed app into the appstore
 
 ### 1.1.7, 3. December 2021
