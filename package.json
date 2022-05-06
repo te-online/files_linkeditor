@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
-    "test": "jest"
+    "test": "jest ./jest"
   },
   "repository": {
     "type": "git",

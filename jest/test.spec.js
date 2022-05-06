@@ -277,7 +277,7 @@ describe("Parser", function () {
 				sameWindow: false,
 				skipConfirmation: false,
 			};
-			const binaryContent = fs.readFileSync("./test/Example Domain.webloc", "binary");
+			const binaryContent = fs.readFileSync("./jest/Example Domain.webloc", "binary");
 			expect(Parser.parseWeblocFile(binaryContent)).toEqual(file);
 		});
 	});
