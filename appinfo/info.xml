@@ -10,14 +10,15 @@
 * 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.
 
 #### Latest changes 🎉
-**1.1.9, 21. March 2022**
-- Add Czech localization (thanks to @p-bo)
-- Update JS dependencies, fixes [a potential XSS-vulnerability in the URL sanitizer](https://github.com/te-online/files_linkeditor/pull/65)
+**1.1.10, 6. May 2022**
+- Add some basic end-to-end tests
+- Run tests for Nextcloud 24 and bump compatibility to Nextcloud 24
+- Update JS dependencies
 
 _[View changelog for older versions](https://github.com/te-online/files_linkeditor#changelog)_]]></description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
-	<version>1.1.9</version>
+	<version>1.1.10</version>
 	<category>files</category>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor.png</screenshot>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor_edit.png</screenshot>
