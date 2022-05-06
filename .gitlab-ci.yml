@@ -15,4 +15,4 @@ unit_tests:
     - npm ci
   script:
     # Run jest tests
-    - npm run jest
+    - npm run test
