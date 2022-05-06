@@ -5,6 +5,7 @@ include:
     file: ".gitlab-ci.yml"
 
 unit_tests:
+  image: node:14
   except:
     - merge_requests
   before_script:
