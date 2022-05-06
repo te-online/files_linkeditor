@@ -1,0 +1,17 @@
+# We use the same config as for timemanager app here
+include:
+  - project: "te-online/timemanager"
+    ref: main
+    file: ".gitlab-ci.yml"
+
+unit_tests:
+  except:
+    - merge_requests
+  before_script:
+    # Navigate to main folder
+    - cd $CI_BUILDS_DIR/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME
+    # Install dependencies
+    - npm ci
+  script:
+    # Run jest tests
+    - npm run jest
