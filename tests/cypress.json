@@ -6,5 +6,5 @@
 	"reporterOptions": {
 		"mochaFile": "results/TEST-[hash].xml"
 	},
-	"experimentalSessionAndOrigin": true
+	"chromeWebSecurity": false
 }

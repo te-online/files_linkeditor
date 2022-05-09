@@ -143,9 +143,14 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		waitForOcDialog();
 
 		cy.contains(".nametext", "Test File.URL").click();
-		cy.origin("https://example.org", () => {
-			cy.location("href").should("eq", "https://example.org/");
-		});
+		cy.url().should("be.equal", "https://example.org/");
+
+		// @TODO: Once `experimentalSessionAndOrigin` is more stable
+		// we can re-enable Chrome web security and use this syntax
+		// to test for the change of URL
+		// cy.origin("https://example.org", () => {
+		// 	cy.location("href").should("eq", "https://example.org/");
+		// });
 	});
 
 	it("can open shared link file", () => {
@@ -251,10 +256,14 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 		cy.contains(".directDownload", "Test File.URL").should("be.visible");
 		cy.contains(".directDownload", "View link").click();
+		cy.url().should("be.equal", "https://example.org/");
 
-		cy.origin("https://example.org", () => {
-			cy.location("href").should("eq", "https://example.org/");
-		});
+		// @TODO: Once `experimentalSessionAndOrigin` is more stable
+		// we can re-enable Chrome web security and use this syntax
+		// to test for the change of URL
+		// cy.origin("https://example.org", () => {
+		// cy.location("href").should("eq", "https://example.org/");
+		// });
 	});
 
 	it("cannot edit publicly shared link file", () => {
