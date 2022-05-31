@@ -21,29 +21,28 @@
 
 namespace OCA\Files_Linkeditor\AppInfo;
 
-use OC\Files\View;
 use OCA\Files_Linkeditor\Controller\LinkHandlingController;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
-use Punic\Exception;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
 
-class Application extends App {
-
+class Application extends App implements IBootstrap {
 	/**
 	 * @param array $urlParams
 	 */
-	public function __construct(array $urlParams = array()) {
-		parent::__construct('files_linkeditor', $urlParams);
+	public function __construct(array $urlParams = []) {
+		parent::__construct("files_linkeditor", $urlParams);
 
 		$container = $this->getContainer();
 		$server = $container->getServer();
 
-		$container->registerService('LinkHandlingController', function (IAppContainer $c) use ($server) {
+		$container->registerService("LinkHandlingController", function (IAppContainer $c) use ($server) {
 			$user = $server->getUserSession()->getUser();
 			if ($user) {
 				$uid = $user->getUID();
 			} else {
-				throw new \BadMethodCallException('no user logged in');
+				throw new \BadMethodCallException("no user logged in");
 			}
 			return new LinkHandlingController(
 				$c->getAppName(),
@@ -52,6 +51,19 @@ class Application extends App {
 				$server->getLogger(),
 				$server->getUserFolder($uid)
 			);
+		});
+	}
+
+	public function boot(IBootContext $context): void {
+		$eventDispatcher = \OC::$server->getEventDispatcher();
+		$eventDispatcher->addListener("OCA\Files::loadAdditionalScripts", function () {
+			OCP\Util::addScript("files_linkeditor", "linkeditor");
+			OCP\Util::addStyle("files_linkeditor", "linkeditor");
+		});
+
+		$eventDispatcher->addListener("OCA\Files_Sharing::loadAdditionalScripts", function () {
+			OCP\Util::addScript("files_linkeditor", "linkeditor");
+			OCP\Util::addStyle("files_linkeditor", "linkeditor");
 		});
 	}
 }
