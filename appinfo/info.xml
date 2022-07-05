@@ -9,16 +9,10 @@
 * 📤 **works in public shares** so you can share links easily with others
 * 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.
 
-#### Latest changes 🎉
-**1.1.10, 6. May 2022**
-- Add some basic end-to-end tests
-- Run tests for Nextcloud 24 and bump compatibility to Nextcloud 24
-- Update JS dependencies
-
-_[View changelog for older versions](https://github.com/te-online/files_linkeditor#changelog)_]]></description>
+_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_]]></description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
-	<version>1.1.10</version>
+	<version>1.1.11</version>
 	<category>files</category>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor.png</screenshot>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor_edit.png</screenshot>
@@ -30,6 +24,6 @@ _[View changelog for older versions](https://github.com/te-online/files_linkedit
 	<repository type="git">https://github.com/te-online/files_linkeditor.git</repository>
 	<bugs>https://github.com/te-online/files_linkeditor/issues</bugs>
 	<dependencies>
-		<nextcloud min-version="13" max-version="24" />
+		<nextcloud min-version="20" max-version="24" />
 	</dependencies>
 </info>
