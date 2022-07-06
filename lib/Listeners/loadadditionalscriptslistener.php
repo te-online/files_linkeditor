@@ -8,7 +8,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
 
-class LoadFilesScriptsStylesListener implements IEventListener {
+class LoadAdditionalScriptsListener implements IEventListener {
 	public function handle(Event $event): void {
 		Util::addStyle("files_linkeditor", "linkeditor");
 		Util::addScript("files_linkeditor", "linkeditor");
