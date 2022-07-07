@@ -2,7 +2,7 @@
 
 Notable changes in each released version can be seen here.
 
-## 1.1.11, 6. July 2022
+## 1.1.11, 8. July 2022
 
 ### Fixed
 
