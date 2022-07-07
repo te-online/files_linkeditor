@@ -4,12 +4,13 @@ namespace OCA\Files_Linkeditor\AppInfo;
 
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
-use OCA\Files_Linkeditor\Listeners\LoadAdditionalScriptsListener;
-use OCA\Files_Linkeditor\Listeners\BeforeTemplateRenderedListener;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public function __construct(array $urlParams = []) {
@@ -22,5 +23,19 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function boot(IBootContext $context): void {
+	}
+}
+
+class BeforeTemplateRenderedListener implements IEventListener {
+	public function handle(Event $event): void {
+		Util::addStyle("files_linkeditor", "linkeditor");
+		Util::addScript("files_linkeditor", "linkeditor");
+	}
+}
+
+class LoadAdditionalScriptsListener implements IEventListener {
+	public function handle(Event $event): void {
+		Util::addStyle("files_linkeditor", "linkeditor");
+		Util::addScript("files_linkeditor", "linkeditor");
 	}
 }
