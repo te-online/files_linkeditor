@@ -29,12 +29,18 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can activate app", () => {
 		cy.visit("/settings/apps");
-		cy.get(".apps-list-container div.section").contains("Link editor").parent().find("input[value='Enable']").click();
 		cy.get(".apps-list-container div.section")
 			.contains("Link editor")
 			.parent()
-			.find("input[value='Enable']")
-			.should("not.exist");
+			.within(() => {
+				cy.contains("Enable").click();
+			});
+		cy.get(".apps-list-container div.section")
+			.contains("Link editor")
+			.parent()
+			.within(() => {
+				cy.contains("Enable").should("not.exist");
+			});
 	});
 
 	it("can create a URL link file", () => {
@@ -166,9 +172,15 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		cy.get(".sharing-input input").type(testusers[0]);
 		cy.contains(`[sharewith="${testusers[0]}"]`, testusers[0]).click();
 
-		cy.get("a.icon-clippy").then(($el) => {
-			sharingLink = $el.get(0).getAttribute("href");
-		});
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get('[aria-label="Copy public link to clipboard"]').then(($el) => {
+				sharingLink = $el.get(0).getAttribute("href");
+			});
+		} else {
+			cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
+				sharingLink = $el.get(0).getAttribute("href");
+			});
+		}
 
 		// Log out admin user
 		cy.get("div#settings div#expand").click({ timeout: 4000 });
@@ -178,7 +190,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		// Log in as test user
 		cy.get('input[name="user"]').type(testusers[0]);
 		cy.get('input[name="password"]').type(`${testusers[0]}-password`);
-		cy.get('input[type="submit"]').click();
+		cy.get('[type="submit"]').click();
 		cy.contains("#app-dashboard", "Recommended files").should("be.visible");
 
 		cy.then(() => {
@@ -201,7 +213,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		// Log in as test user
 		cy.get('input[name="user"]').type(testusers[0]);
 		cy.get('input[name="password"]').type(`${testusers[0]}-password`);
-		cy.get('input[type="submit"]').click();
+		cy.get('[type="submit"]').click();
 		cy.contains("#app-dashboard", "Recommended files").should("be.visible");
 
 		cy.visit("/apps/files/?dir=/");
@@ -241,9 +253,15 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 				});
 		});
 		cy.get("button.new-share-link").click();
-		cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
-			publicSharingLink = $el.get(0).getAttribute("href");
-		});
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get('[aria-label="Copy public link to clipboard"]').then(($el) => {
+				publicSharingLink = $el.get(0).getAttribute("href");
+			});
+		} else {
+			cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
+				publicSharingLink = $el.get(0).getAttribute("href");
+			});
+		}
 
 		// Log out admin user
 		cy.get("div#settings div#expand").click({ timeout: 4000 });
@@ -277,9 +295,16 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 				});
 		});
 		cy.get("button.new-share-link").click();
-		cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
-			publicSharingLink = $el.get(0).getAttribute("href");
-		});
+
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get('[aria-label="Copy public link to clipboard"]').then(($el) => {
+				publicSharingLink = $el.get(0).getAttribute("href");
+			});
+		} else {
+			cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
+				publicSharingLink = $el.get(0).getAttribute("href");
+			});
+		}
 
 		// Log out admin user
 		cy.get("div#settings div#expand").click({ timeout: 4000 });
