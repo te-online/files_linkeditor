@@ -57,6 +57,12 @@ app_test_nc_24:
     - sed -i "s#nextcloud:23-fpm-alpine#nextcloud:24-fpm-alpine#g" tests/docker-compose.yml
     - *before_script
 
+app_test_nc_25:
+  extends: .app_tests
+  before_script:
+    - sed -i "s#nextcloud:23-fpm-alpine#nextcloud:25-fpm-alpine#g" tests/docker-compose.yml
+    - *before_script
+
 unit_tests:
   image: node:14
   except:
