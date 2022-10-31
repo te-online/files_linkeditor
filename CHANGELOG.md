@@ -2,6 +2,10 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.12, 31. October 2022
+
+- Run tests for Nextcloud 25 and bump compatibility to Nextcloud 25
+
 ## 1.1.11, 8. July 2022
 
 ### Fixed
