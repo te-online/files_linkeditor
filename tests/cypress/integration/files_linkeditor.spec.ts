@@ -182,11 +182,11 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		cy.contains(`[sharewith="${testusers[0]}"]`, testusers[0]).click();
 
 		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Copy public link to clipboard"]').then(($el) => {
+			cy.get('[aria-label="Copy internal link to clipboard"]').then(($el) => {
 				sharingLink = $el.get(0).getAttribute("href");
 			});
 		} else {
-			cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
+			cy.get("a.icon-clippy").then(($el) => {
 				sharingLink = $el.get(0).getAttribute("href");
 			});
 		}
