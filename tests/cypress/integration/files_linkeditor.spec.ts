@@ -29,18 +29,27 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can activate app", () => {
 		cy.visit("/settings/apps");
-		cy.get(".apps-list-container div.section")
-			.contains("Link editor")
-			.parent()
-			.within(() => {
-				cy.contains("Enable").click();
-			});
-		cy.get(".apps-list-container div.section")
-			.contains("Link editor")
-			.parent()
-			.within(() => {
-				cy.contains("Enable").should("not.exist");
-			});
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get(".apps-list-container div.section")
+				.contains("Link editor")
+				.parent()
+				.within(() => {
+					cy.contains("Enable").click();
+				});
+			cy.get(".apps-list-container div.section")
+				.contains("Link editor")
+				.parent()
+				.within(() => {
+					cy.contains("Enable").should("not.exist");
+				});
+		} else {
+			cy.get(".apps-list-container div.section").contains("Link editor").parent().find("input[value='Enable']").click();
+			cy.get(".apps-list-container div.section")
+				.contains("Link editor")
+				.parent()
+				.find("input[value='Enable']")
+				.should("not.exist");
+		}
 	});
 
 	it("can create a URL link file", () => {
