@@ -13,7 +13,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		cy.visit("/");
 		cy.get('input[name="user"]').type(Cypress.env("NEXTCLOUD_ADMIN_USER"));
 		cy.get('input[name="password"]').type(Cypress.env("NEXTCLOUD_ADMIN_PASSWORD"));
-		cy.get('input[type="submit"]').click();
+		cy.get('[type="submit"]').click();
 	});
 
 	it("can create test users", () => {
