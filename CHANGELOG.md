@@ -2,6 +2,11 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.13, 23. November 2022
+
+- Fix missing CSS for Nextcloud 25, thanks to @datenzar
+- Update JS dependencies
+
 ## 1.1.12, 31. October 2022
 
 - Run tests for Nextcloud 25 and bump compatibility to Nextcloud 25
