@@ -10,6 +10,7 @@ OC.L10N.register(
     "You can not write to a folder" : "Não é possível escrever na pasta",
     "Cannot save file as it has been modified since opening" : "Não é possível guardar o ficheiro porque este foi modificado desde a abertura",
     "Insufficient permissions" : "Permissões insuficientes",
+    "File path not supplied" : "Caminho do ficheiro não indicado",
     "File mtime not supplied" : "O Ficheiro mtime não foi indicado",
     "An error occurred!" : "Ocorreu um erro!"
 },

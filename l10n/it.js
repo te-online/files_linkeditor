@@ -1,0 +1,17 @@
+OC.L10N.register(
+    "files_linkeditor",
+    {
+    "You can not open a folder" : "Non puoi aprire una cartella",
+    "This file is too big to be opened. Please download the file instead." : "Il file è troppo grande per essere aperto. Scaricalo invece.",
+    "Cannot read the file." : "Impossibile leggere il file.",
+    "Invalid file path supplied." : "Fornito un percorso del file non valido.",
+    "The file is locked." : "il file è bloccato.",
+    "An internal server error occurred." : "Si è verificato un errore interno.",
+    "You can not write to a folder" : "Non puoi scrivere in una cartella",
+    "Cannot save file as it has been modified since opening" : "Impossibile salvare il file poiché è stato modificato dopo la sua apertura",
+    "Insufficient permissions" : "Permessi insufficienti",
+    "File path not supplied" : "Percorso del file non fornito",
+    "File mtime not supplied" : "mtime del file non fornito",
+    "An error occurred!" : "Si è verificato un errore!"
+},
+"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

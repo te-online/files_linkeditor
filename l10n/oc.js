@@ -8,6 +8,8 @@ OC.L10N.register(
     "An internal server error occurred." : "Una error intèrna del servidor s'es produsida.",
     "Cannot save file as it has been modified since opening" : "Impossible de salvar lo fichièr, es estat modificat entre temps",
     "Insufficient permissions" : "Permissions insufisentas",
+    "File path not supplied" : "Camin del fichièr pas provesit",
+    "File mtime not supplied" : "mtime del fichièr pas provesit",
     "An error occurred!" : "Una error s'es produsida !"
 },
 "nplurals=2; plural=(n > 1);");
