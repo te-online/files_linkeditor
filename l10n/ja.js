@@ -12,6 +12,8 @@ OC.L10N.register(
     "Insufficient permissions" : "権限が不足しています",
     "File path not supplied" : "ファイルパスが足りません",
     "File mtime not supplied" : "ファイルのアクセス時刻がありません",
-    "An error occurred!" : "エラーが発生しました！"
+    "An error occurred!" : "エラーが発生しました！",
+    "Edit link" : "リンクを編集",
+    "View link" : "リンクを見る"
 },
 "nplurals=1; plural=0;");
