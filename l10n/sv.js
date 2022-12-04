@@ -12,6 +12,13 @@ OC.L10N.register(
     "Insufficient permissions" : "Otillräcklig behörighet.",
     "File path not supplied" : "Ingen sökväg till fil angiven.",
     "File mtime not supplied" : "Inget mtime-attribut angivet för filen.",
-    "An error occurred!" : "Ett fel uppstod!"
+    "An error occurred!" : "Ett fel uppstod!",
+    "Edit link" : "Redigera länk",
+    "View link" : "Visa länk",
+    "New link" : "Ny länk",
+    "Link.URL" : "Länk.URL",
+    "Link.webloc" : "Länk.webloc",
+    "Link editor" : "Länkredigerare",
+    "An app to read and edit .URL and .webloc files." : "En app för att läsa och redigera .URL- och .webloc-filer."
 },
 "nplurals=2; plural=(n != 1);");
