@@ -12,6 +12,10 @@ OC.L10N.register(
     "Insufficient permissions" : "Oikeudet eivät riitä",
     "File path not supplied" : "TIedoston polkua ei annettu",
     "File mtime not supplied" : "Tiedoston mtime-arvoa ei ole annettu",
-    "An error occurred!" : "Tapahtui virhe!"
+    "An error occurred!" : "Tapahtui virhe!",
+    "Edit link" : "Muokkaa linkkiä",
+    "View link" : "Näytä linkki",
+    "New link" : "Uusi linkki",
+    "Link editor" : "Linkkimuokkain"
 },
 "nplurals=2; plural=(n != 1);");
