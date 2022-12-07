@@ -12,6 +12,10 @@ OC.L10N.register(
     "Insufficient permissions" : "Nicht ausreichende Berechtigungen",
     "File path not supplied" : "Dateipfad nicht angegeben",
     "File mtime not supplied" : "Dateiänderungsdatum nicht angegeben",
-    "An error occurred!" : "Ein Fehler ist aufgetreten!"
+    "An error occurred!" : "Ein Fehler ist aufgetreten!",
+    "Edit link" : "Link bearbeiten",
+    "View link" : "Link anzeigen",
+    "New link" : "Neuer Link",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Externe Web-Verknüpfungen in Nextcloud!\n* ✍️ **erstellt und bearbeitet** .URL und .webloc Verknüpfungen in der Dateiansicht\n* 🌍 **öffnet Verknüpfungen** durch Daraufklicken und Bestätigung, ob  du auf eine externe Seite wechseln möchtest\n* 📤 **funktioniert in öffentlichen Freigaben**, damit du Verknüpfungen einfach mit anderen teilen kannst\n* 🔄 **synchronisiert deine Verknüpfungen**, da .URL und .webloc Web-Verknüpfungen sind, die so auch bei den meisten Betriebssystemen erstellt werden.\n\n_[Siehe Liste der Veränderungen](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },
 "nplurals=2; plural=(n != 1);");
