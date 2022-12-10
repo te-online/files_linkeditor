@@ -90,11 +90,13 @@ export class LinkeditorService {
 				menuEntryFactory({
 					id: "application-internet-shortcut",
 					displayName: `${window.t("files_linkeditor", "New link")} (.URL)`,
+					// TRANSLATORS default filename when creating a new link file from the files list, keep .URL at the end
 					templateName: window.t("files_linkeditor", "Link.URL"),
 				});
 				menuEntryFactory({
 					id: "application-internet-shortcut-webloc",
 					displayName: `${window.t("files_linkeditor", "New link")} (.webloc)`,
+					// TRANSLATORS default filename when creating a new link file from the files list, keep .webloc at the end
 					templateName: window.t("files_linkeditor", "Link.webloc"),
 				});
 			},
