@@ -10,6 +10,8 @@ OC.L10N.register(
     "Insufficient permissions" : "สิทธิ์ไม่เพียงพอ",
     "File path not supplied" : "ไม่ได้ระบุเส้นทางของไฟล์",
     "File mtime not supplied" : "ไม่ได้ให้ไฟล์ mtime มาด้วย",
-    "An error occurred!" : "เกิดข้อผิดพลาดบางประการ!"
+    "An error occurred!" : "เกิดข้อผิดพลาดบางประการ!",
+    "Cancel" : "ยกเลิก",
+    "Save" : "บันทึก"
 },
 "nplurals=1; plural=0;");

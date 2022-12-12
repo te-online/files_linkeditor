@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "권한 부족",
     "File path not supplied" : "파일 경로가 지정되지 않았음",
     "File mtime not supplied" : "파일 수정 시간이 지정되지 않았음",
-    "An error occurred!" : "오류가 발생했습니다!"
+    "An error occurred!" : "오류가 발생했습니다!",
+    "Saving failed!" : "저장할 수 없습니다!",
+    "Cancel" : "취소",
+    "Save" : "저장"
 },
 "nplurals=1; plural=0;");

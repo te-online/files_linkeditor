@@ -12,6 +12,7 @@ OC.L10N.register(
     "Insufficient permissions" : "Pole piisavalt õiguseid",
     "File path not supplied" : "Faili asukoht on määramata",
     "File mtime not supplied" : "Faili mtime puudub",
-    "An error occurred!" : "Tekis tõrge!"
+    "An error occurred!" : "Tekis tõrge!",
+    "Cancel" : "Loobu"
 },
 "nplurals=2; plural=(n != 1);");

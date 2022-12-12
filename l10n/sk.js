@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Nedostatočné oprávnenia",
     "File path not supplied" : "Nebola uvedená cesta k súboru",
     "File mtime not supplied" : "Nebol uvedený mtime súboru",
-    "An error occurred!" : "Vyskytla sa chyba!"
+    "An error occurred!" : "Vyskytla sa chyba!",
+    "Saving failed!" : "Ukladanie zlyhalo!",
+    "Cancel" : "Zrušiť",
+    "Save" : "Uložiť"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

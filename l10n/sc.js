@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Permissos non sufitzientes",
     "File path not supplied" : "Caminu de s'archìviu non frunidu",
     "File mtime not supplied" : "mtime de s'archìviu non frunidu",
-    "An error occurred!" : "B'at àpidu un'errore!"
+    "An error occurred!" : "B'at àpidu un'errore!",
+    "Saving failed!" : "Sarvamentu faddidu!",
+    "Cancel" : "Annulla",
+    "Save" : "Sarva"
 },
 "nplurals=2; plural=(n != 1);");

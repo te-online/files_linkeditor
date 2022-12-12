@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "უფლებების უკმარისობა",
     "File path not supplied" : "ფაილის მისამართი არაა მოცემული",
     "File mtime not supplied" : "ფაილი mtime არაა მოცემული",
-    "An error occurred!" : "დაფიქსირდა შეცდომა!"
+    "An error occurred!" : "დაფიქსირდა შეცდომა!",
+    "Saving failed!" : "შენახვა ვერ მოხერხდა!",
+    "Cancel" : "უარყოფა",
+    "Save" : "შენახვა"
 },
 "nplurals=2; plural=(n!=1);");

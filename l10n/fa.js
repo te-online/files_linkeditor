@@ -12,6 +12,8 @@ OC.L10N.register(
     "Insufficient permissions" : "دسترسی کافی نیست",
     "File path not supplied" : "مسیر فایل داده نشده است",
     "File mtime not supplied" : "mtime فایل داده نشده است",
-    "An error occurred!" : "یک خطا رخ‌داده است!"
+    "An error occurred!" : "یک خطا رخ‌داده است!",
+    "Saving failed!" : "پس انداز نشد!",
+    "Cancel" : "لغو"
 },
 "nplurals=2; plural=(n > 1);");

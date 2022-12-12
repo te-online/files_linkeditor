@@ -19,6 +19,9 @@ OC.L10N.register(
     "Link.URL" : "Länk.URL",
     "Link.webloc" : "Länk.webloc",
     "Link editor" : "Länkredigerare",
-    "An app to read and edit .URL and .webloc files." : "En app för att läsa och redigera .URL- och .webloc-filer."
+    "An app to read and edit .URL and .webloc files." : "En app för att läsa och redigera .URL- och .webloc-filer.",
+    "Saving failed!" : "Misslyckades att spara!",
+    "Cancel" : "Avbryt",
+    "Save" : "Spara"
 },
 "nplurals=2; plural=(n != 1);");
