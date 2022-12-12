@@ -12,6 +12,8 @@ OC.L10N.register(
     "Insufficient permissions" : "אין הרשאות מספקות",
     "File path not supplied" : "נתיב קובץ לא סופק",
     "File mtime not supplied" : "קובץ mtime לא סופק",
-    "An error occurred!" : "אירעה שגיאה!"
+    "An error occurred!" : "אירעה שגיאה!",
+    "Saving failed!" : "השמירה נכשלה!",
+    "Cancel" : "ביטול"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;");

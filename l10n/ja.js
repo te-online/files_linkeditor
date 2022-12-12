@@ -14,6 +14,9 @@ OC.L10N.register(
     "File mtime not supplied" : "ファイルのアクセス時刻がありません",
     "An error occurred!" : "エラーが発生しました！",
     "Edit link" : "リンクを編集",
-    "View link" : "リンクを見る"
+    "View link" : "リンクを見る",
+    "Saving failed!" : "保存に失敗しました",
+    "Cancel" : "キャンセル",
+    "Save" : "保存"
 },
 "nplurals=1; plural=0;");

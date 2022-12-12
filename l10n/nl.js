@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Onvoldoende rechten",
     "File path not supplied" : "Bestandspad niet opgegeven",
     "File mtime not supplied" : "Tijdstempel bestand niet opgegeven",
-    "An error occurred!" : "Er trad een fout op!"
+    "An error occurred!" : "Er trad een fout op!",
+    "Saving failed!" : "Opslaan mislukt!",
+    "Cancel" : "Annuleren",
+    "Save" : "Opslaan"
 },
 "nplurals=2; plural=(n != 1);");

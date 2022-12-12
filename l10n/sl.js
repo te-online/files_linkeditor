@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Neustrezna dovoljenja",
     "File path not supplied" : "Pot do datoteke ni podana",
     "File mtime not supplied" : "Datoteka mtime ni podana",
-    "An error occurred!" : "Prišlo je do napake!"
+    "An error occurred!" : "Prišlo je do napake!",
+    "Saving failed!" : "Shranjevanje je spodletelo!",
+    "Cancel" : "Prekliči",
+    "Save" : "Shrani"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

@@ -16,6 +16,8 @@ OC.L10N.register(
     "Edit link" : "Muokkaa linkkiä",
     "View link" : "Näytä linkki",
     "New link" : "Uusi linkki",
-    "Link editor" : "Linkkimuokkain"
+    "Link editor" : "Linkkimuokkain",
+    "Saving failed!" : "Tallentaminen epäonnistui!",
+    "Cancel" : "Peruuta"
 },
 "nplurals=2; plural=(n != 1);");

@@ -6,6 +6,8 @@ OC.L10N.register(
     "Invalid file path supplied." : "Ugyldig stig oppgjett.",
     "The file is locked." : "Fila er låst.",
     "An internal server error occurred." : "Det oppstod ein intern tenarfeil.",
-    "An error occurred!" : "Det oppstod ein feil."
+    "An error occurred!" : "Det oppstod ein feil.",
+    "Cancel" : "Avbryt",
+    "Save" : "Lagre"
 },
 "nplurals=2; plural=(n != 1);");

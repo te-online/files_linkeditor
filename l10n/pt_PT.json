@@ -10,6 +10,8 @@
     "Insufficient permissions" : "Permissões insuficientes",
     "File path not supplied" : "Caminho do ficheiro não indicado",
     "File mtime not supplied" : "O Ficheiro mtime não foi indicado",
-    "An error occurred!" : "Ocorreu um erro!"
+    "An error occurred!" : "Ocorreu um erro!",
+    "Cancel" : "Cancelar",
+    "Save" : "Guardar"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

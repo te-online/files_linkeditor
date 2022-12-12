@@ -10,6 +10,9 @@
     "Insufficient permissions" : "Ekki næg réttindi",
     "File path not supplied" : "Skrá slóð fylgir ekki",
     "File mtime not supplied" : "mtime skrá fylgir ekki",
-    "An error occurred!" : "Villa kom upp!"
+    "An error occurred!" : "Villa kom upp!",
+    "Saving failed!" : "Vistun mistókst!",
+    "Cancel" : "Hætta við",
+    "Save" : "Vista"
 },"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
 }

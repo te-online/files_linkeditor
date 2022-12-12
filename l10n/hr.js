@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Nedovoljna dopuštenja",
     "File path not supplied" : "Nije isporučen put datoteke",
     "File mtime not supplied" : "Nije isporučen mtime datoteke",
-    "An error occurred!" : "Došlo je do pogreške!"
+    "An error occurred!" : "Došlo je do pogreške!",
+    "Saving failed!" : "Spremanje nije uspjelo!",
+    "Cancel" : "Odustani",
+    "Save" : "Spremi"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");

@@ -12,6 +12,8 @@ OC.L10N.register(
     "Insufficient permissions" : "Non ten permisos abondo",
     "File path not supplied" : "Non forneceu unha ruta de ficheiro",
     "File mtime not supplied" : "Non forneceu o ficheiro mtime",
-    "An error occurred!" : "Produciuse un erro!"
+    "An error occurred!" : "Produciuse un erro!",
+    "Saving failed!" : "Produciuse un fallo ao gardar!",
+    "Cancel" : "Cancelar"
 },
 "nplurals=2; plural=(n != 1);");

@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Nincs jogosultsága hozzá",
     "File path not supplied" : "Nincs megadva a fájl elérési útja",
     "File mtime not supplied" : "Nincs megadva a fájl módosítási ideje",
-    "An error occurred!" : "Hiba történt."
+    "An error occurred!" : "Hiba történt.",
+    "Saving failed!" : "Mentés sikertelen!",
+    "Cancel" : "Mégse",
+    "Save" : "Mentés"
 },
 "nplurals=2; plural=(n != 1);");

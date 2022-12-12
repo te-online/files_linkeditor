@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Ikke rettigheter",
     "File path not supplied" : "Filbane ikke angitt",
     "File mtime not supplied" : "Filens mtime ikke angitt",
-    "An error occurred!" : "En feil oppstod!"
+    "An error occurred!" : "En feil oppstod!",
+    "Saving failed!" : "Lagring mislyktes!",
+    "Cancel" : "Avbryt",
+    "Save" : "Lagre"
 },
 "nplurals=2; plural=(n != 1);");

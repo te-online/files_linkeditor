@@ -10,6 +10,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Permissions insufisentas",
     "File path not supplied" : "Camin del fichièr pas provesit",
     "File mtime not supplied" : "mtime del fichièr pas provesit",
-    "An error occurred!" : "Una error s'es produsida !"
+    "An error occurred!" : "Una error s'es produsida !",
+    "Saving failed!" : "Fracàs de l'enregistrament !",
+    "Cancel" : "Anullar",
+    "Save" : "Enregistrar"
 },
 "nplurals=2; plural=(n > 1);");
