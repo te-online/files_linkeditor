@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Nesufiĉaj permesoj",
     "File path not supplied" : "Dosiervojo ne provizita.",
     "File mtime not supplied" : "Ŝanĝotempo (mtime) de la dosiero ne provizita",
-    "An error occurred!" : "Eraro okazis!"
+    "An error occurred!" : "Eraro okazis!",
+    "Saving failed!" : "Konservado malsukcesis!",
+    "Cancel" : "Nuligi",
+    "Save" : "Konservi"
 },
 "nplurals=2; plural=(n != 1);");

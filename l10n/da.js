@@ -18,6 +18,9 @@ OC.L10N.register(
     "New link" : "Nyt link",
     "Link.URL" : "Link.URL",
     "Link.webloc" : "Link.webloc",
+    "Saving failed!" : "Kunne ikke gemme!",
+    "Cancel" : "Annuller",
+    "Save" : "Gem",
     "Link editor" : "Link editor",
     "An app to read and edit .URL and .webloc files." : "En app til at vise og redigere .URL og .webloc filer."
 },

@@ -1,0 +1,6 @@
+{ "translations": {
+    "Saving failed!" : "Stoor het misluk!",
+    "Cancel" : "Kanselleer",
+    "Save" : "Bewaar"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Μη επαρκή δικαιώματα",
     "File path not supplied" : "Η διαδρομή του αρχείου δεν παρέχεται.",
     "File mtime not supplied" : "Ο χρόνος τροποποίησης  του αρχείου δεν παρέχεται",
-    "An error occurred!" : "Παρουσιάστηκε σφάλμα!"
+    "An error occurred!" : "Παρουσιάστηκε σφάλμα!",
+    "Saving failed!" : "Απέτυχε η αποθήκευση!",
+    "Cancel" : "Ακύρωση",
+    "Save" : "Αποθήκευση"
 },
 "nplurals=2; plural=(n != 1);");

@@ -18,10 +18,19 @@ OC.L10N.register(
     "New link" : "Nouveau lien",
     "Link.URL" : "Lien.URL",
     "Link.webloc" : "Lien.webloc",
+    "You are about to visit:" : "Vous vous apprêtez à visiter : ",
+    "Saving failed!" : "L'enregistrement a échoué !",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Ce fichier de liens ne semble pas être valide. - Vous pouvez corriger cela en éditant le fichier.",
+    "A slight problem" : "Un petit problème",
+    "Cancel" : "Annuler",
+    "Visit link" : "Visiter le lien",
+    "Link target URL" : "URL cible du lien",
+    "e.g. https://example.org" : "ex. https://example.org",
+    "Save" : "Enregistrer",
+    "Open in same window" : "Ouvrir dans la même fenêtre",
+    "Skip confirmation dialog before open (has to open in same window)" : "Sauter le dialogue de confirmation avant l'ouverture (doit s'ouvrir dans la même fenêtre)",
     "Link editor" : "Éditeur de lien",
     "An app to read and edit .URL and .webloc files." : "Un application pour lire et éditer les fichiers .URL et .webloc",
-    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Des liens externes dans Nextcloud !\n* ✍️ **crée et édite** les fichiers .URL and .webloc dans le gestionnaire de fichiers\n* 🌍 **ouverture des liens** en cliquant sur les fichiers et en confirmant que vous souhaitez visiter le site externe\n* 📤 **fonctionne dans les partages publics** ce qui permet de partager facilement des liens avec d'autres\n* 🔄 **synchronise vos liens** car les fichiers .URL and .webloc sont utilisables sur la plupart des systèmes d'exploitation\n\n_[Voir le journal des modifications](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_",
-    "Saving failed!" : "L'enregistrement a échoué !",
-    "Cancel" : "Annuler"
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Des liens externes dans Nextcloud !\n* ✍️ **crée et édite** les fichiers .URL and .webloc dans le gestionnaire de fichiers\n* 🌍 **ouverture des liens** en cliquant sur les fichiers et en confirmant que vous souhaitez visiter le site externe\n* 📤 **fonctionne dans les partages publics** ce qui permet de partager facilement des liens avec d'autres\n* 🔄 **synchronise vos liens** car les fichiers .URL and .webloc sont utilisables sur la plupart des systèmes d'exploitation\n\n_[Voir le journal des modifications](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

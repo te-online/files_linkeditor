@@ -16,9 +16,9 @@ OC.L10N.register(
     "Edit link" : "编辑链接",
     "View link" : "查看链接",
     "New link" : "新建链接",
-    "Link editor" : "链接编辑器",
     "Saving failed!" : "保存失败！",
     "Cancel" : "取消",
-    "Save" : "保存"
+    "Save" : "保存",
+    "Link editor" : "链接编辑器"
 },
 "nplurals=1; plural=0;");

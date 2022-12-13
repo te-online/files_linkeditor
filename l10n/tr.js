@@ -18,11 +18,19 @@ OC.L10N.register(
     "New link" : "Bağlantı ekle",
     "Link.URL" : "Baglanti.adresi",
     "Link.webloc" : "Baglanti.webloc",
+    "You are about to visit:" : "Şurayı açmak üzeresiniz:",
+    "Saving failed!" : "Kaydedilemedi!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Bu bağlantı dosyası geçersiz gibi görünüyor. Dosyayı düzenleyerek bu sorunu çözebilirsiniz.",
+    "A slight problem" : "Küçük bir sorun",
+    "Cancel" : "İptal",
+    "Visit link" : "Bağlantıyı aç",
+    "Link target URL" : "Bağlantı hedef adresi",
+    "e.g. https://example.org" : "https://ornek.org gibi",
+    "Save" : "Kaydet",
+    "Open in same window" : "Aynı pencerede açılsın",
+    "Skip confirmation dialog before open (has to open in same window)" : "Açılmadan önce onay istenmesin (aynı pencerede açılmalıdır)",
     "Link editor" : "Bağlantı düzenleyici",
     "An app to read and edit .URL and .webloc files." : ".URL ve .webloc dosyalarını okuyan ve düzenleyen bir uygulama.",
-    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Nextcloud için dış web bağlantıları!\n* ✍️ **Dosya görünümünde .URL ve .webloc bağlantıları oluşturup düzenleyebilirsiniz**\n* 🌍 Üzerine tıkladıktan sonra dış siteye gitmek istediğinizi onaylayarak **bağlantıları açabilirsiniz**\n* 📤 **Herkese açık paylaşımları destekler**. Böylece başkalarıyla kolayca bağlantı paylaşabilirsiniz\n* 🔄 Çoğu işletim sistemi tarafından kullanılan .URL ve .webloc biçimleriyle **web bağlantılarınızı eşitleyebilirsiniz**.\n\n_[Değişiklik günlüğü](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_",
-    "Saving failed!" : "Kaydedilemedi!",
-    "Cancel" : "İptal",
-    "Save" : "Kaydet"
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Nextcloud için dış web bağlantıları!\n* ✍️ **Dosya görünümünde .URL ve .webloc bağlantıları oluşturup düzenleyebilirsiniz**\n* 🌍 Üzerine tıkladıktan sonra dış siteye gitmek istediğinizi onaylayarak **bağlantıları açabilirsiniz**\n* 📤 **Herkese açık paylaşımları destekler**. Böylece başkalarıyla kolayca bağlantı paylaşabilirsiniz\n* 🔄 Çoğu işletim sistemi tarafından kullanılan .URL ve .webloc biçimleriyle **web bağlantılarınızı eşitleyebilirsiniz**.\n\n_[Değişiklik günlüğü](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },
 "nplurals=2; plural=(n > 1);");
