@@ -18,6 +18,9 @@ OC.L10N.register(
     "New link" : "Nový odkaz",
     "Link.URL" : "URL adresa odkazu",
     "Link.webloc" : "Odkaz.webloc",
+    "Saving failed!" : "Ukládání se nezdařilo!",
+    "Cancel" : "Storno",
+    "Save" : "Uložit",
     "Link editor" : "Editor odkazů",
     "An app to read and edit .URL and .webloc files." : "Aplikace pro čtení a úpravu .URL a .webloc souborů.",
     "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Odkazy na externí weby v Nextcloud!\n* ✍️ **vytvářejte a upravujte** .URL a .webloc odkazy v zobrazení Soubory\n* 🌍 **otevírejte odkazy** kliknutím na ně a potvrzením, že chcete přejít na externí stránku\n* 📤 **funguje ve veřejných sdíleních** takže je možné odkazy snadno sdílet s ostatními\n* 🔄 **synchronizujte své odkazy** protože .URL a .webloc jsou odkazy na weby, jak jsou vytvářeny na většině operačních systémů.\n\n_[Zobrazit seznam změn v nových verzích](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"

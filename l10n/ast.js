@@ -12,6 +12,8 @@ OC.L10N.register(
     "Insufficient permissions" : "Permisos insuficientes",
     "File path not supplied" : "Camín de ficheru non soportáu",
     "File mtime not supplied" : "Ficheru mtime non soportáu",
-    "An error occurred!" : "Hebo un fallu!"
+    "An error occurred!" : "Hebo un fallu!",
+    "Cancel" : "Encaboxar",
+    "Save" : "Guardar"
 },
 "nplurals=2; plural=(n != 1);");

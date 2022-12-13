@@ -14,6 +14,7 @@ OC.L10N.register(
     "File mtime not supplied" : "Non forneceu o ficheiro mtime",
     "An error occurred!" : "Produciuse un erro!",
     "Saving failed!" : "Produciuse un fallo ao gardar!",
-    "Cancel" : "Cancelar"
+    "Cancel" : "Cancelar",
+    "Save" : "Gardar"
 },
 "nplurals=2; plural=(n != 1);");

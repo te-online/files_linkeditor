@@ -14,6 +14,7 @@ OC.L10N.register(
     "File mtime not supplied" : "mtime فایل داده نشده است",
     "An error occurred!" : "یک خطا رخ‌داده است!",
     "Saving failed!" : "پس انداز نشد!",
-    "Cancel" : "لغو"
+    "Cancel" : "لغو",
+    "Save" : "ذخیره"
 },
 "nplurals=2; plural=(n > 1);");

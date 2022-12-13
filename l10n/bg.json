@@ -16,6 +16,9 @@
     "New link" : "Нова връзка",
     "Link.URL" : "Връзка.URLадрес",
     "Link.webloc" : "Връзка.webloc",
+    "Saving failed!" : "Записването се провали!",
+    "Cancel" : "Отказ",
+    "Save" : "Запиши",
     "Link editor" : "Редактор на връзки",
     "An app to read and edit .URL and .webloc files." : "Приложение за четене и редактиране на .URL адреси и .webloc файлове.",
     "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Външни уеб връзки в Nextcloud!\n* ✍️ **създаване и редактиране** на .URL и .webloc връзки в менюто за изглед на файловете\n* 🌍 **отваряне на връзките**, чрез щракване върху тях и потвърждение, че искате да отидете на външния сайт\n* 📤 **работи и в публични споделяния**, така че лесно можете да споделяте връзки с други хора\n* 🔄 **синхронизиране на връзките ви**, защото .URL и .webloc са уеб връзки, както са създадени в повечето операционни системи.\n\n_[Вижте регистрационният файл с промените](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"

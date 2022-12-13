@@ -12,6 +12,9 @@ OC.L10N.register(
     "Insufficient permissions" : "Permisos insuficients",
     "File path not supplied" : "No s'ha proporcionat la ruta del fitxer",
     "File mtime not supplied" : "No s'ha proporcionat l'hora de modificació del fitxer",
-    "An error occurred!" : "S'ha produït un error!"
+    "An error occurred!" : "S'ha produït un error!",
+    "Saving failed!" : "S'ha produït un error en desar la nota!",
+    "Cancel" : "Cancel·la",
+    "Save" : "Desa"
 },
 "nplurals=2; plural=(n != 1);");

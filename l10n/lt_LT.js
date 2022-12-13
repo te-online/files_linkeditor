@@ -18,11 +18,11 @@ OC.L10N.register(
     "New link" : "Nauja nuoroda",
     "Link.URL" : "Nuoroda.URL",
     "Link.webloc" : "Nuoroda.webloc",
-    "Link editor" : "Nuorodų redaktorius",
-    "An app to read and edit .URL and .webloc files." : "Programėlė, skirta skaityti ir taisyti .URL ir .webloc failus.",
-    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Išorinės saityno nuorodos Nextcloud!\n* ✍️ **kurkite ir taisykite** .URL ir .webloc nuorodas failų rodinyje\n* 🌍 **atverkite nuorodas** spusteldami jas ir patvirtindami, jog norite pereiti į išorinę internetinę svetainę\n* 📤 **veikia viešuose viešiniuose**, todėl galite lengvai bendrinti nuorodas su kitais žmonėmis\n* 🔄 **sinchronizuokite nuorodas** kaip .URL ir .webloc saityno nuorodas, kurios tokiu pavidalu yra kuriamos daugelyje operacinių sistemų.\n\n_[Rodyti keitinių žurnalą](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_",
     "Saving failed!" : "Įrašymas nepavyko!",
     "Cancel" : "Atsisakyti",
-    "Save" : "Įrašyti"
+    "Save" : "Įrašyti",
+    "Link editor" : "Nuorodų redaktorius",
+    "An app to read and edit .URL and .webloc files." : "Programėlė, skirta skaityti ir taisyti .URL ir .webloc failus.",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Išorinės saityno nuorodos Nextcloud!\n* ✍️ **kurkite ir taisykite** .URL ir .webloc nuorodas failų rodinyje\n* 🌍 **atverkite nuorodas** spusteldami jas ir patvirtindami, jog norite pereiti į išorinę internetinę svetainę\n* 📤 **veikia viešuose viešiniuose**, todėl galite lengvai bendrinti nuorodas su kitais žmonėmis\n* 🔄 **sinchronizuokite nuorodas** kaip .URL ir .webloc saityno nuorodas, kurios tokiu pavidalu yra kuriamos daugelyje operacinių sistemų.\n\n_[Rodyti keitinių žurnalą](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");
