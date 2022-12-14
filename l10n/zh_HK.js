@@ -16,6 +16,8 @@ OC.L10N.register(
     "Edit link" : "編輯連結",
     "View link" : "檢視連結",
     "New link" : "新連結",
+    "Link.URL" : "Link.URL",
+    "Link.webloc" : "Link.webloc",
     "You are about to visit:" : "您即將訪問：",
     "Saving failed!" : "保存失敗！",
     "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "此鏈接文件似乎無效。 – 您可以通過編輯檔案來解決這個問題。",
