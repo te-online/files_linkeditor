@@ -18,10 +18,19 @@ OC.L10N.register(
     "New link" : "Ny länk",
     "Link.URL" : "Länk.URL",
     "Link.webloc" : "Länk.webloc",
+    "You are about to visit:" : "Du är på väg att besöka:",
     "Saving failed!" : "Misslyckades att spara!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Denna länkfilen verkar vara ogilti. – Du kan fixa detta genom att redigera filen.",
+    "A slight problem" : "Ett mindre problem",
     "Cancel" : "Avbryt",
+    "Visit link" : "Besök länk",
+    "Link target URL" : "Mål-URL för länk",
+    "e.g. https://example.org" : "t.ex. https://example.org",
     "Save" : "Spara",
+    "Open in same window" : "Öppna i samma fönster",
+    "Skip confirmation dialog before open (has to open in same window)" : "Hoppa över bekräftelsedialogrutan innan den öppnas (måste öppnas i samma fönster)",
     "Link editor" : "Länkredigerare",
-    "An app to read and edit .URL and .webloc files." : "En app för att läsa och redigera .URL- och .webloc-filer."
+    "An app to read and edit .URL and .webloc files." : "En app för att läsa och redigera .URL- och .webloc-filer.",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Externa webblänkar i Nextcloud!\n* ✍️ **skapa och redigera** .URL och .webloc-länkar i filvyn\n* 🌍 **öppna länkar** genom att klicka på dem och bekräfta att du vill gå till den externa sidan\n* 📤 **fungerar i offentliga delningar** så att du enkelt kan dela länkar med andra\n* 🔄 **synkronisera dina länkar** eftersom .URL och .webloc är webblänkar som skapas i de flesta operativsystem.\n\n_[Visa changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },
 "nplurals=2; plural=(n != 1);");
