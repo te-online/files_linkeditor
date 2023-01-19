@@ -2,7 +2,7 @@
 export const translationStrings = [
 	t("files_linkeditor", "You are about to visit:"),
 	t("files_linkeditor", "Saving failed!"),
-	t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."),
+	t("files_linkeditor", "This link-file does not seem to be valid. You can fix this by editing the file."),
 	t("files_linkeditor", "A slight problem"),
 	t("files_linkeditor", "Cancel"),
 	t("files_linkeditor", "Visit link"),
