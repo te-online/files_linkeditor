@@ -16,9 +16,20 @@ OC.L10N.register(
     "Edit link" : "Muokkaa linkkiä",
     "View link" : "Näytä linkki",
     "New link" : "Uusi linkki",
+    "Link.URL" : "Linkki.URL",
+    "Link.webloc" : "Linkki.webloc",
+    "You are about to visit:" : "Olet aikeissa vierailla:",
     "Saving failed!" : "Tallentaminen epäonnistui!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Tämä linkkitiedosto ei vaikuta kelvolliselta. – Voit korjata ongelman muokkaamalla tiedostoa.",
+    "A slight problem" : "Pieni ongelma",
     "Cancel" : "Peruuta",
+    "Visit link" : "Siirry linkkiin",
+    "Link target URL" : "Linkin kohteen URL",
+    "e.g. https://example.org" : "esim. https://example.org",
     "Save" : "Tallenna",
-    "Link editor" : "Linkkimuokkain"
+    "Open in same window" : "Avaa samassa ikkunassa",
+    "Skip confirmation dialog before open (has to open in same window)" : "Ohita vahvistusikkuna ennen avaamista (täytyy avata samassa ikkunassa)",
+    "Link editor" : "Linkkimuokkain",
+    "An app to read and edit .URL and .webloc files." : "Sovellus .URL- ja .webloc-tiedostojen lukemiseen sekä muokkaamiseen."
 },
 "nplurals=2; plural=(n != 1);");
