@@ -6,7 +6,7 @@ OC.L10N.register(
     "Invalid file path supplied." : "Помилковий шлях до файлу.",
     "The file is locked." : "Файл заблоковано.",
     "An internal server error occurred." : "Виникла внутрішня помилка серверу.",
-    "Cannot save file as it has been modified since opening" : "Неможливо зберегти файл оскільки він був змінений після відкриття",
+    "Cannot save file as it has been modified since opening" : "Неможливо зберегти файл оскільки його було змінено після відкриття вами",
     "Insufficient permissions" : "Недостатньо прав доступу",
     "File path not supplied" : "Невідомий шлях файлу",
     "File mtime not supplied" : "Невідомий час модифікації файлу",
