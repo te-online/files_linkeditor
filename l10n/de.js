@@ -12,7 +12,7 @@ OC.L10N.register(
     "Insufficient permissions" : "Nicht ausreichende Berechtigungen",
     "File path not supplied" : "Dateipfad nicht angegeben",
     "File mtime not supplied" : "Dateiänderungsdatum nicht angegeben",
-    "An error occurred!" : "Ein Fehler ist aufgetreten!",
+    "An error occurred!" : "Es ist ein Fehler aufgetreten!",
     "Edit link" : "Link bearbeiten",
     "View link" : "Link anzeigen",
     "New link" : "Neuer Link",
