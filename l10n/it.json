@@ -1,20 +1,18 @@
 { "translations": {
-	"You are about to visit:": "Stai per visitare",
-	"Saving failed!": "Salvataggio fallito!",
-	"Edit link": "Modifica collegamento",
-	"View link": "Visualizza link",
-	"This link-file doesn't seem to be valid. – You can fix this by editing the file.": "Questo collegamento sembra non essere valido. - È possibile risolvere il problema modificando il file.",
-	"A slight problem": "Un piccolo problema",
-	"Cancel": "Annulla",
-	"Visit link": "Visita il link",
-	"An error occurred!": "Si è verificato un errore!",
-	"Link target URL": "Indirizzo URL di destinazione",
-	"e.g. https://example.org": "ad es.: https://example.org",
-	"Save": "Salva",
-	"New link": "Nuovo link",
-	"Link.URL": "Link.URL",
-	"Link.webloc": "Link.webloc",
-	"Open in same window": "Apri nella stessa finestra",
-	"Skip confirmation dialog before open (has to open in same window)": "Ignora la finestra di dialogo prima di aprire il link (deve aprirsi nella stessa finestra)"
-}, "pluralForm": "nplurals=2; plural=(n != 1);"
+    "You can not open a folder" : "Non puoi aprire una cartella",
+    "This file is too big to be opened. Please download the file instead." : "Il file è troppo grande per essere aperto. Scaricalo invece.",
+    "Cannot read the file." : "Impossibile leggere il file.",
+    "Invalid file path supplied." : "Fornito un percorso del file non valido.",
+    "The file is locked." : "il file è bloccato.",
+    "An internal server error occurred." : "Si è verificato un errore interno.",
+    "You can not write to a folder" : "Non puoi scrivere in una cartella",
+    "Cannot save file as it has been modified since opening" : "Impossibile salvare il file poiché è stato modificato dopo la sua apertura",
+    "Insufficient permissions" : "Permessi insufficienti",
+    "File path not supplied" : "Percorso del file non fornito",
+    "File mtime not supplied" : "mtime del file non fornito",
+    "An error occurred!" : "Si è verificato un errore!",
+    "Saving failed!" : "Salvataggio non riuscito!",
+    "Cancel" : "Annulla",
+    "Save" : "Salva"
+},"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

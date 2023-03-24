@@ -1,0 +1,26 @@
+{ "translations": {
+    "You can not open a folder" : "Jūs negalite atverti aplanko",
+    "This file is too big to be opened. Please download the file instead." : "Šis failas yra per didelis, kad būtų atvertas. Vietoj to, prašome jį atsisiųsti.",
+    "Cannot read the file." : "Nepavyko perskaityti failo.",
+    "Invalid file path supplied." : "Pateiktas neteisingas failo kelias.",
+    "The file is locked." : "Failas užrakintas.",
+    "An internal server error occurred." : "Įvyko vidinė serverio klaida.",
+    "You can not write to a folder" : "Negalite rašyti į aplanką",
+    "Cannot save file as it has been modified since opening" : "Negalima įrašyti failo, nes jis nuo to laiko, kai jį atvėrėte, buvo modifikuotas",
+    "Insufficient permissions" : "Nepakanka leidimų",
+    "File path not supplied" : "Nepateiktas failo kelias",
+    "File mtime not supplied" : "Nepateiktas failo mtime",
+    "An error occurred!" : "Įvyko klaida!",
+    "Edit link" : "Taisyti nuorodą",
+    "View link" : "Rodyti nuorodą",
+    "New link" : "Nauja nuoroda",
+    "Link.URL" : "Nuoroda.URL",
+    "Link.webloc" : "Nuoroda.webloc",
+    "Saving failed!" : "Įrašymas nepavyko!",
+    "Cancel" : "Atsisakyti",
+    "Save" : "Įrašyti",
+    "Link editor" : "Nuorodų redaktorius",
+    "An app to read and edit .URL and .webloc files." : "Programėlė, skirta skaityti ir taisyti .URL ir .webloc failus.",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Išorinės saityno nuorodos Nextcloud!\n* ✍️ **kurkite ir taisykite** .URL ir .webloc nuorodas failų rodinyje\n* 🌍 **atverkite nuorodas** spusteldami jas ir patvirtindami, jog norite pereiti į išorinę internetinę svetainę\n* 📤 **veikia viešuose viešiniuose**, todėl galite lengvai bendrinti nuorodas su kitais žmonėmis\n* 🔄 **sinchronizuokite nuorodas** kaip .URL ir .webloc saityno nuorodas, kurios tokiu pavidalu yra kuriamos daugelyje operacinių sistemų.\n\n_[Rodyti keitinių žurnalą](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
+},"pluralForm" :"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);"
+}

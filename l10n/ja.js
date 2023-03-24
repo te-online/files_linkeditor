@@ -1,0 +1,22 @@
+OC.L10N.register(
+    "files_linkeditor",
+    {
+    "You can not open a folder" : "フォルダーを開けません",
+    "This file is too big to be opened. Please download the file instead." : "ファイルが大きすぎます。ダウンロードしてから開いてください。",
+    "Cannot read the file." : "ファイルを読み込めません",
+    "Invalid file path supplied." : "無効なファイルパスが提供されました。",
+    "The file is locked." : "ファイルがロックされています。",
+    "An internal server error occurred." : "内部サーバーエラーが発生しました。",
+    "You can not write to a folder" : "フォルダーに書き込みできません",
+    "Cannot save file as it has been modified since opening" : "変更したファイルは使用中のため保存できません",
+    "Insufficient permissions" : "権限が不足しています",
+    "File path not supplied" : "ファイルパスが足りません",
+    "File mtime not supplied" : "ファイルのアクセス時刻がありません",
+    "An error occurred!" : "エラーが発生しました！",
+    "Edit link" : "リンクを編集",
+    "View link" : "リンクを見る",
+    "Saving failed!" : "保存に失敗しました",
+    "Cancel" : "キャンセル",
+    "Save" : "保存"
+},
+"nplurals=1; plural=0;");
