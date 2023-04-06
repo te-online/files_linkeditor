@@ -2,6 +2,17 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.14, 6. April 2023
+
+### Added
+
+- Run tests for Nextcloud 26 and bump compatibility to Nextcloud 26 (#80)
+
+### Changed
+
+- Update JS dependencies
+- Update translations from Transifex (#72)
+
 ## 1.1.13, 23. November 2022
 
 - Fix missing CSS for Nextcloud 25, thanks to @datenzar

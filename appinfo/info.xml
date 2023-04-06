@@ -3,16 +3,18 @@
 	<id>files_linkeditor</id>
 	<name>Link editor</name>
 	<summary>An app to read and edit .URL and .webloc files.</summary>
-	<description><![CDATA[### External web links in Nextcloud!
+	<description>
+		<![CDATA[### External web links in Nextcloud!
 * ✍️ **create and edit** .URL and .webloc links in the file view
 * 🌍 **open links** by clicking them and confirming you want to go to the external site
 * 📤 **works in public shares** so you can share links easily with others
 * 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.
 
-_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_]]></description>
+_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_]]>
+	</description>
 	<licence>AGPL</licence>
 	<author>Thomas Ebert</author>
-	<version>1.1.13</version>
+	<version>1.1.14</version>
 	<category>files</category>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor.png</screenshot>
 	<screenshot>https://raw.githubusercontent.com/te-online/files_linkeditor/main/img/link_editor_edit.png</screenshot>
