@@ -192,8 +192,13 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		}
 
 		// Log out admin user
-		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
-		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+			cy.contains("a", "Log out").click({ timeout: 4000 });
+		} else {
+			cy.get("div#settings div#expand").click({ timeout: 4000 });
+			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
+		}
 		cy.reload(true);
 
 		// Log in as test user
@@ -215,8 +220,13 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can edit shared link file", () => {
 		// Log out admin user
-		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
-		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+			cy.contains("a", "Log out").click({ timeout: 4000 });
+		} else {
+			cy.get("div#settings div#expand").click({ timeout: 4000 });
+			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
+		}
 		cy.reload(true);
 
 		// Log in as test user
@@ -275,10 +285,11 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		// Log out admin user
 		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
 			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+			cy.contains("a", "Log out").click({ timeout: 4000 });
 		} else {
 			cy.get("div#settings div#expand").click({ timeout: 4000 });
+			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		}
-		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		cy.reload(true);
 
 		cy.then(() => {
@@ -322,10 +333,11 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		// Log out admin user
 		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
 			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+			cy.contains("a", "Log out").click({ timeout: 4000 });
 		} else {
 			cy.get("div#settings div#expand").click({ timeout: 4000 });
+			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		}
-		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		cy.reload(true);
 
 		cy.then(() => {
