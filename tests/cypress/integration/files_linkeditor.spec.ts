@@ -54,6 +54,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can create a URL link file", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.get("a.button.new").click();
 		cy.contains("a", "New link (.URL)").click();
@@ -61,7 +62,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		cy.focused().parent().submit();
 
 		waitForOcDialog();
-		cy.focused().type("https://example.org");
+		cy.get('[data-cy="url-input"]').type("https://example.org");
 		cy.contains("a", "Save").click();
 		waitForOcDialog();
 
@@ -70,6 +71,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can create a webloc link file", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.get("a.button.new").click();
 		cy.contains("a", "New link (.webloc)").click();
@@ -77,7 +79,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		cy.focused().parent().submit();
 
 		waitForOcDialog();
-		cy.focused().type("https://example.org");
+		cy.get('[data-cy="url-input"]').type("https://example.org");
 		cy.contains("a", "Save").click();
 		waitForOcDialog();
 
@@ -86,6 +88,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can open an existing URL link file", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.URL").click();
 
@@ -98,6 +101,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can open an existing webloc link file", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.webloc").click();
 
@@ -110,6 +114,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can open link in same tab", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.URL").within(() => {
 			cy.root()
@@ -139,6 +144,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can open link in same tab without confirmation", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.URL").within(() => {
 			cy.root()
@@ -170,6 +176,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can open shared link file", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.webloc").within(() => {
 			cy.root()
@@ -252,7 +259,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 		waitForOcDialog();
 		cy.contains("h3", "Test File.webloc").should("be.visible");
-		cy.focused().clear().type("https://nextcloud.com");
+		cy.get('[data-cy="url-input"]').clear().type("https://nextcloud.com");
 		cy.contains("a", "Save").click();
 		waitForOcDialog();
 
@@ -267,6 +274,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can open publicly shared link file", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.URL").within(() => {
 			cy.root()
@@ -314,6 +322,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("cannot edit publicly shared link file", () => {
 		cy.visit("/apps/files/?dir=/");
+		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.webloc").within(() => {
 			cy.root()

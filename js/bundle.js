@@ -9108,7 +9108,7 @@
 
   function create_if_block_2(ctx) {
     var label0;
-    var t0_value = /*t*/ctx[2]('files_linkeditor', 'Link target URL') + "";
+    var t0_value = /*t*/ctx[2]("files_linkeditor", "Link target URL") + "";
     var t0;
     var t1;
     var br;
@@ -9137,17 +9137,18 @@
         input1 = element("input");
         t4 = space();
         label1 = element("label");
-        label1.textContent = "".concat( /*t*/ctx[2]('files_linkeditor', 'Open in same window'));
+        label1.textContent = "".concat( /*t*/ctx[2]("files_linkeditor", "Open in same window"));
         t6 = space();
         input2 = element("input");
         t7 = space();
         label2 = element("label");
-        label2.textContent = "".concat( /*t*/ctx[2]('files_linkeditor', 'Skip confirmation dialog before open (has to open in same window)'));
+        label2.textContent = "".concat( /*t*/ctx[2]("files_linkeditor", "Skip confirmation dialog before open (has to open in same window)"));
         attr(input0, "type", "text");
         set_style(input0, "width", "100%");
         attr(input0, "class", "input-wide");
         input0.autofocus = true;
-        attr(input0, "placeholder", /*t*/ctx[2]('files_linkeditor', 'e.g. https://example.org'));
+        attr(input0, "data-cy", "url-input");
+        attr(input0, "placeholder", /*t*/ctx[2]("files_linkeditor", "e.g. https://example.org"));
         attr(input1, "type", "checkbox");
         attr(input1, "id", "linkeditor_sameWindow");
         attr(input1, "class", "checkbox");
@@ -9213,10 +9214,10 @@
     };
   }
 
-  // (69:3) {#if !loading}
+  // (72:3) {#if !loading}
   function create_if_block_1$1(ctx) {
     var a;
-    var t_1_value = /*t*/ctx[2]('files_linkeditor', 'Visit link') + "";
+    var t_1_value = /*t*/ctx[2]("files_linkeditor", "Visit link") + "";
     var t_1;
     var a_href_value;
     return {
@@ -9242,10 +9243,10 @@
     };
   }
 
-  // (82:3) {#if !loading}
+  // (86:3) {#if !loading}
   function create_if_block$1(ctx) {
     var a;
-    var t_1_value = /*t*/ctx[2]('files_linkeditor', 'Save') + "";
+    var t_1_value = /*t*/ctx[2]("files_linkeditor", "Save") + "";
     var t_1;
     var a_href_value;
     var mounted;
@@ -9291,7 +9292,7 @@
     var t3;
     var div2;
     var a;
-    var t4_value = /*t*/ctx[2]('files_linkeditor', 'Cancel') + "";
+    var t4_value = /*t*/ctx[2]("files_linkeditor", "Cancel") + "";
     var t4;
     var a_href_value;
     var t5;
@@ -9322,7 +9323,7 @@
         attr(a, "href", a_href_value = /*file*/ctx[0].currentUrl);
         attr(a, "class", "cancel button");
         attr(div2, "class", "oc-dialog-buttonrow twobuttons");
-        attr(form, "action", /*OC*/ctx[3].generateUrl('/'));
+        attr(form, "action", /*OC*/ctx[3].generateUrl("/"));
         attr(form, "method", "post");
       },
       m: function m(target, anchor) {
@@ -9488,7 +9489,7 @@
     }
     var click_handler = function click_handler() {
       viewMode.update(function () {
-        return 'none';
+        return "none";
       });
     };
     $$invalidate(0, file = FileService.getFileConfig());
