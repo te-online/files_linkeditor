@@ -1,6 +1,33 @@
 (function () {
   'use strict';
 
+  function _iterableToArrayLimit(arr, i) {
+    var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+    if (null != _i) {
+      var _s,
+        _e,
+        _x,
+        _r,
+        _arr = [],
+        _n = !0,
+        _d = !1;
+      try {
+        if (_x = (_i = _i.call(arr)).next, 0 === i) {
+          if (Object(_i) !== _i) return;
+          _n = !1;
+        } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0);
+      } catch (err) {
+        _d = !0, _e = err;
+      } finally {
+        try {
+          if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return;
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+      return _arr;
+    }
+  }
   function ownKeys$1(object, enumerableOnly) {
     var keys = Object.keys(object);
     if (Object.getOwnPropertySymbols) {
@@ -157,14 +184,9 @@
       };
     }
     function maybeInvokeDelegate(delegate, context) {
-      var method = delegate.iterator[context.method];
-      if (undefined === method) {
-        if (context.delegate = null, "throw" === context.method) {
-          if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel;
-          context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method");
-        }
-        return ContinueSentinel;
-      }
+      var methodName = context.method,
+        method = delegate.iterator[methodName];
+      if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel;
       var record = tryCatch(method, delegate.iterator, context.arg);
       if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel;
       var info = record.arg;
@@ -369,7 +391,7 @@
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
       if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
+      Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
     }
   }
   function _createClass(Constructor, protoProps, staticProps) {
@@ -381,6 +403,7 @@
     return Constructor;
   }
   function _defineProperty(obj, key, value) {
+    key = _toPropertyKey(key);
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -476,30 +499,6 @@
   function _iterableToArray(iter) {
     if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
   }
-  function _iterableToArrayLimit(arr, i) {
-    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-    if (_i == null) return;
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _s, _e;
-    try {
-      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"] != null) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-    return _arr;
-  }
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -569,6 +568,20 @@
         }
       }
     };
+  }
+  function _toPrimitive(input, hint) {
+    if (typeof input !== "object" || input === null) return input;
+    var prim = input[Symbol.toPrimitive];
+    if (prim !== undefined) {
+      var res = prim.call(input, hint || "default");
+      if (typeof res !== "object") return res;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return (hint === "string" ? String : Number)(input);
+  }
+  function _toPropertyKey(arg) {
+    var key = _toPrimitive(arg, "string");
+    return typeof key === "symbol" ? key : String(key);
   }
 
   function noop$1() { }
@@ -687,8 +700,9 @@
   }
   function set_data(text, data) {
       data = '' + data;
-      if (text.wholeText !== data)
-          text.data = data;
+      if (text.data === data)
+          return;
+      text.data = data;
   }
   function set_input_value(input, value) {
       input.value = value == null ? '' : value;
@@ -737,9 +751,9 @@
 
   const dirty_components = [];
   const binding_callbacks = [];
-  const render_callbacks = [];
+  let render_callbacks = [];
   const flush_callbacks = [];
-  const resolved_promise = Promise.resolve();
+  const resolved_promise = /* @__PURE__ */ Promise.resolve();
   let update_scheduled = false;
   function schedule_update() {
       if (!update_scheduled) {
@@ -771,15 +785,29 @@
   const seen_callbacks = new Set();
   let flushidx = 0; // Do *not* move this inside the flush() function
   function flush$1() {
+      // Do not reenter flush while dirty components are updated, as this can
+      // result in an infinite loop. Instead, let the inner flush handle it.
+      // Reentrancy is ok afterwards for bindings etc.
+      if (flushidx !== 0) {
+          return;
+      }
       const saved_component = current_component;
       do {
           // first, call beforeUpdate functions
           // and update components
-          while (flushidx < dirty_components.length) {
-              const component = dirty_components[flushidx];
-              flushidx++;
-              set_current_component(component);
-              update(component.$$);
+          try {
+              while (flushidx < dirty_components.length) {
+                  const component = dirty_components[flushidx];
+                  flushidx++;
+                  set_current_component(component);
+                  update(component.$$);
+              }
+          }
+          catch (e) {
+              // reset dirty state to not end up in a deadlocked state and then rethrow
+              dirty_components.length = 0;
+              flushidx = 0;
+              throw e;
           }
           set_current_component(null);
           dirty_components.length = 0;
@@ -815,6 +843,16 @@
           $$.fragment && $$.fragment.p($$.ctx, dirty);
           $$.after_update.forEach(add_render_callback);
       }
+  }
+  /**
+   * Useful for example to execute remaining `afterUpdate` callbacks before executing `destroy`.
+   */
+  function flush_render_callbacks(fns) {
+      const filtered = [];
+      const targets = [];
+      render_callbacks.forEach((c) => fns.indexOf(c) === -1 ? filtered.push(c) : targets.push(c));
+      targets.forEach((c) => c());
+      render_callbacks = filtered;
   }
   const outroing = new Set();
   let outros;
@@ -885,6 +923,7 @@
   function destroy_component(component, detaching) {
       const $$ = component.$$;
       if ($$.fragment !== null) {
+          flush_render_callbacks($$.after_update);
           run_all($$.on_destroy);
           $$.fragment && $$.fragment.d(detaching);
           // TODO null out other refs, including component.$$ (but need to
@@ -1113,7 +1152,7 @@
           run(value);
           return () => {
               subscribers.delete(subscriber);
-              if (subscribers.size === 0) {
+              if (subscribers.size === 0 && stop) {
                   stop();
                   stop = null;
               }
@@ -1170,10 +1209,10 @@
   (module.exports = function (key, value) {
     return sharedStore[key] || (sharedStore[key] = value !== undefined ? value : {});
   })('versions', []).push({
-    version: '3.26.1',
+    version: '3.30.0',
     mode: 'global',
-    copyright: '© 2014-2022 Denis Pushkarev (zloirock.ru)',
-    license: 'https://github.com/zloirock/core-js/blob/v3.26.1/LICENSE',
+    copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
+    license: 'https://github.com/zloirock/core-js/blob/v3.30.0/LICENSE',
     source: 'https://github.com/zloirock/core-js'
   });
   });
@@ -1241,37 +1280,11 @@
     return 'Symbol(' + (key === undefined ? '' : key) + ')_' + toString$1(++id + postfix, 36);
   };
 
-  var documentAll$2 = typeof document == 'object' && document.all;
+  var engineUserAgent = typeof navigator != 'undefined' && String(navigator.userAgent) || '';
 
-  // https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
-  var IS_HTMLDDA = typeof documentAll$2 == 'undefined' && documentAll$2 !== undefined;
-  var documentAll_1 = {
-    all: documentAll$2,
-    IS_HTMLDDA: IS_HTMLDDA
-  };
-
-  var documentAll$1 = documentAll_1.all;
-
-  // `IsCallable` abstract operation
-  // https://tc39.es/ecma262/#sec-iscallable
-  var isCallable = documentAll_1.IS_HTMLDDA ? function (argument) {
-    return typeof argument == 'function' || argument === documentAll$1;
-  } : function (argument) {
-    return typeof argument == 'function';
-  };
-
-  var aFunction = function (argument) {
-    return isCallable(argument) ? argument : undefined;
-  };
-  var getBuiltIn = function (namespace, method) {
-    return arguments.length < 2 ? aFunction(global_1[namespace]) : global_1[namespace] && global_1[namespace][method];
-  };
-
-  var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
-
-  var process$3 = global_1.process;
+  var process$4 = global_1.process;
   var Deno$1 = global_1.Deno;
-  var versions = process$3 && process$3.versions || Deno$1 && Deno$1.version;
+  var versions = process$4 && process$4.versions || Deno$1 && Deno$1.version;
   var v8 = versions && versions.v8;
   var match, version;
   if (v8) {
@@ -1310,20 +1323,12 @@
 
   var useSymbolAsUid = symbolConstructorDetection && !Symbol.sham && typeof Symbol.iterator == 'symbol';
 
-  var WellKnownSymbolsStore = shared('wks');
   var Symbol$1 = global_1.Symbol;
-  var symbolFor = Symbol$1 && Symbol$1['for'];
-  var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
+  var WellKnownSymbolsStore = shared('wks');
+  var createWellKnownSymbol = useSymbolAsUid ? Symbol$1['for'] || Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
   var wellKnownSymbol = function (name) {
-    if (!hasOwnProperty_1(WellKnownSymbolsStore, name) || !(symbolConstructorDetection || typeof WellKnownSymbolsStore[name] == 'string')) {
-      var description = 'Symbol.' + name;
-      if (symbolConstructorDetection && hasOwnProperty_1(Symbol$1, name)) {
-        WellKnownSymbolsStore[name] = Symbol$1[name];
-      } else if (useSymbolAsUid && symbolFor) {
-        WellKnownSymbolsStore[name] = symbolFor(description);
-      } else {
-        WellKnownSymbolsStore[name] = createWellKnownSymbol(description);
-      }
+    if (!hasOwnProperty_1(WellKnownSymbolsStore, name)) {
+      WellKnownSymbolsStore[name] = symbolConstructorDetection && hasOwnProperty_1(Symbol$1, name) ? Symbol$1[name] : createWellKnownSymbol('Symbol.' + name);
     }
     return WellKnownSymbolsStore[name];
   };
@@ -1332,6 +1337,26 @@
   var test = {};
   test[TO_STRING_TAG$2] = 'z';
   var toStringTagSupport = String(test) === '[object z]';
+
+  var documentAll$2 = typeof document == 'object' && document.all;
+
+  // https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
+  // eslint-disable-next-line unicorn/no-typeof-undefined -- required for testing
+  var IS_HTMLDDA = typeof documentAll$2 == 'undefined' && documentAll$2 !== undefined;
+  var documentAll_1 = {
+    all: documentAll$2,
+    IS_HTMLDDA: IS_HTMLDDA
+  };
+
+  var documentAll$1 = documentAll_1.all;
+
+  // `IsCallable` abstract operation
+  // https://tc39.es/ecma262/#sec-iscallable
+  var isCallable = documentAll_1.IS_HTMLDDA ? function (argument) {
+    return typeof argument == 'function' || argument === documentAll$1;
+  } : function (argument) {
+    return typeof argument == 'function';
+  };
 
   // Detect IE8's incomplete defineProperty implementation
   var descriptors = !fails(function () {
@@ -1389,6 +1414,13 @@
   var call$1 = Function.prototype.call;
   var functionCall = functionBindNative ? call$1.bind(call$1) : function () {
     return call$1.apply(call$1, arguments);
+  };
+
+  var aFunction = function (argument) {
+    return isCallable(argument) ? argument : undefined;
+  };
+  var getBuiltIn = function (namespace, method) {
+    return arguments.length < 2 ? aFunction(global_1[namespace]) : global_1[namespace] && global_1[namespace][method];
   };
 
   var objectIsPrototypeOf = functionUncurryThis({}.isPrototypeOf);
@@ -1620,8 +1652,12 @@
 
   var enforceInternalState = internalState.enforce;
   var getInternalState = internalState.get;
+  var $String = String;
   // eslint-disable-next-line es/no-object-defineproperty -- safe
   var defineProperty = Object.defineProperty;
+  var stringSlice = functionUncurryThis(''.slice);
+  var replace = functionUncurryThis(''.replace);
+  var join = functionUncurryThis([].join);
   var CONFIGURABLE_LENGTH = descriptors && !fails(function () {
     return defineProperty(function () {/* empty */}, 'length', {
       value: 8
@@ -1629,8 +1665,8 @@
   });
   var TEMPLATE = String(String).split('String');
   var makeBuiltIn = module.exports = function (value, name, options) {
-    if (String(name).slice(0, 7) === 'Symbol(') {
-      name = '[' + String(name).replace(/^Symbol\(([^)]*)\)/, '$1') + ']';
+    if (stringSlice($String(name), 0, 7) === 'Symbol(') {
+      name = '[' + replace($String(name), /^Symbol\(([^)]*)\)/, '$1') + ']';
     }
     if (options && options.getter) name = 'get ' + name;
     if (options && options.setter) name = 'set ' + name;
@@ -1655,7 +1691,7 @@
     } catch (error) {/* empty */}
     var state = enforceInternalState(value);
     if (!hasOwnProperty_1(state, 'source')) {
-      state.source = TEMPLATE.join(typeof name == 'string' ? name : '');
+      state.source = join(TEMPLATE, typeof name == 'string' ? name : '');
     }
     return value;
   };
@@ -1992,7 +2028,14 @@
     }
   };
 
-  var engineIsNode = classofRaw(global_1.process) == 'process';
+  var engineIsNode = typeof process != 'undefined' && classofRaw(process) == 'process';
+
+  var functionUncurryThisAccessor = function (object, key, method) {
+    try {
+      // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+      return functionUncurryThis(aCallable(Object.getOwnPropertyDescriptor(object, key)[method]));
+    } catch (error) {/* empty */}
+  };
 
   var $String$1 = String;
   var $TypeError$8 = TypeError;
@@ -2015,8 +2058,7 @@
     var test = {};
     var setter;
     try {
-      // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
-      setter = functionUncurryThis(Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set);
+      setter = functionUncurryThisAccessor(Object.prototype, '__proto__', 'set');
       setter(test, []);
       CORRECT_SETTER = test instanceof Array;
     } catch (error) {/* empty */}
@@ -2042,12 +2084,21 @@
     }
   };
 
+  var defineBuiltInAccessor = function (target, name, descriptor) {
+    if (descriptor.get) makeBuiltIn_1(descriptor.get, name, {
+      getter: true
+    });
+    if (descriptor.set) makeBuiltIn_1(descriptor.set, name, {
+      setter: true
+    });
+    return objectDefineProperty.f(target, name, descriptor);
+  };
+
   var SPECIES$6 = wellKnownSymbol('species');
   var setSpecies = function (CONSTRUCTOR_NAME) {
     var Constructor = getBuiltIn(CONSTRUCTOR_NAME);
-    var defineProperty = objectDefineProperty.f;
     if (descriptors && Constructor && !Constructor[SPECIES$6]) {
-      defineProperty(Constructor, SPECIES$6, {
+      defineBuiltInAccessor(Constructor, SPECIES$6, {
         configurable: true,
         get: function () {
           return this;
@@ -2160,27 +2211,28 @@
     return passed;
   };
 
+  // eslint-disable-next-line redos/no-vulnerable -- safe
   var engineIsIos = /(?:ipad|iphone|ipod).*applewebkit/i.test(engineUserAgent);
 
   var set = global_1.setImmediate;
   var clear = global_1.clearImmediate;
-  var process$2 = global_1.process;
+  var process$3 = global_1.process;
   var Dispatch = global_1.Dispatch;
   var Function$1 = global_1.Function;
   var MessageChannel = global_1.MessageChannel;
   var String$1 = global_1.String;
   var counter = 0;
-  var queue$1 = {};
+  var queue$2 = {};
   var ONREADYSTATECHANGE = 'onreadystatechange';
   var $location, defer, channel, port;
-  try {
+  fails(function () {
     // Deno throws a ReferenceError on `location` access without `--location` flag
     $location = global_1.location;
-  } catch (error) {/* empty */}
+  });
   var run = function (id) {
-    if (hasOwnProperty_1(queue$1, id)) {
-      var fn = queue$1[id];
-      delete queue$1[id];
+    if (hasOwnProperty_1(queue$2, id)) {
+      var fn = queue$2[id];
+      delete queue$2[id];
       fn();
     }
   };
@@ -2189,10 +2241,10 @@
       run(id);
     };
   };
-  var listener = function (event) {
+  var eventListener = function (event) {
     run(event.data);
   };
-  var post = function (id) {
+  var globalPostMessageDefer = function (id) {
     // old engines have not location.origin
     global_1.postMessage(String$1(id), $location.protocol + '//' + $location.host);
   };
@@ -2203,19 +2255,19 @@
       validateArgumentsLength(arguments.length, 1);
       var fn = isCallable(handler) ? handler : Function$1(handler);
       var args = arraySlice(arguments, 1);
-      queue$1[++counter] = function () {
+      queue$2[++counter] = function () {
         functionApply(fn, undefined, args);
       };
       defer(counter);
       return counter;
     };
     clear = function clearImmediate(id) {
-      delete queue$1[id];
+      delete queue$2[id];
     };
     // Node.js 0.8-
     if (engineIsNode) {
       defer = function (id) {
-        process$2.nextTick(runner(id));
+        process$3.nextTick(runner(id));
       };
       // Sphere (JS game engine) Dispatch API
     } else if (Dispatch && Dispatch.now) {
@@ -2227,13 +2279,13 @@
     } else if (MessageChannel && !engineIsIos) {
       channel = new MessageChannel();
       port = channel.port2;
-      channel.port1.onmessage = listener;
+      channel.port1.onmessage = eventListener;
       defer = functionBindContext(port.postMessage, port);
       // Browsers with postMessage, skip WebWorkers
       // IE8 has postMessage, but it's sync & typeof its postMessage is 'object'
-    } else if (global_1.addEventListener && isCallable(global_1.postMessage) && !global_1.importScripts && $location && $location.protocol !== 'file:' && !fails(post)) {
-      defer = post;
-      global_1.addEventListener('message', listener, false);
+    } else if (global_1.addEventListener && isCallable(global_1.postMessage) && !global_1.importScripts && $location && $location.protocol !== 'file:' && !fails(globalPostMessageDefer)) {
+      defer = globalPostMessageDefer;
+      global_1.addEventListener('message', eventListener, false);
       // IE8-
     } else if (ONREADYSTATECHANGE in documentCreateElement('script')) {
       defer = function (id) {
@@ -2254,7 +2306,32 @@
     clear: clear
   };
 
-  var engineIsIosPebble = /ipad|iphone|ipod/i.test(engineUserAgent) && global_1.Pebble !== undefined;
+  var Queue = function () {
+    this.head = null;
+    this.tail = null;
+  };
+  Queue.prototype = {
+    add: function (item) {
+      var entry = {
+        item: item,
+        next: null
+      };
+      var tail = this.tail;
+      if (tail) tail.next = entry;else this.head = entry;
+      this.tail = entry;
+    },
+    get: function () {
+      var entry = this.head;
+      if (entry) {
+        var next = this.head = entry.next;
+        if (next === null) this.tail = null;
+        return entry.item;
+      }
+    }
+  };
+  var queue$1 = Queue;
+
+  var engineIsIosPebble = /ipad|iphone|ipod/i.test(engineUserAgent) && typeof Pebble != 'undefined';
 
   var engineIsWebosWebkit = /web0s(?!.*chrome)/i.test(engineUserAgent);
 
@@ -2264,31 +2341,28 @@
 
 
 
+
   var MutationObserver = global_1.MutationObserver || global_1.WebKitMutationObserver;
   var document$2 = global_1.document;
-  var process$1 = global_1.process;
+  var process$2 = global_1.process;
   var Promise$1 = global_1.Promise;
   // Node.js 11 shows ExperimentalWarning on getting `queueMicrotask`
   var queueMicrotaskDescriptor = getOwnPropertyDescriptor(global_1, 'queueMicrotask');
-  var queueMicrotask = queueMicrotaskDescriptor && queueMicrotaskDescriptor.value;
-  var flush, head, last, notify$1, toggle, node, promise, then;
+  var microtask = queueMicrotaskDescriptor && queueMicrotaskDescriptor.value;
+  var notify$1, toggle, node, promise, then;
 
   // modern engines have queueMicrotask method
-  if (!queueMicrotask) {
-    flush = function () {
+  if (!microtask) {
+    var queue = new queue$1();
+    var flush = function () {
       var parent, fn;
-      if (engineIsNode && (parent = process$1.domain)) parent.exit();
-      while (head) {
-        fn = head.fn;
-        head = head.next;
-        try {
-          fn();
-        } catch (error) {
-          if (head) notify$1();else last = undefined;
-          throw error;
-        }
+      if (engineIsNode && (parent = process$2.domain)) parent.exit();
+      while (fn = queue.get()) try {
+        fn();
+      } catch (error) {
+        if (queue.head) notify$1();
+        throw error;
       }
-      last = undefined;
       if (parent) parent.enter();
     };
 
@@ -2316,7 +2390,7 @@
       // Node.js without promises
     } else if (engineIsNode) {
       notify$1 = function () {
-        process$1.nextTick(flush);
+        process$2.nextTick(flush);
       };
       // for other environments - macrotask based on:
       // - setImmediate
@@ -2325,31 +2399,24 @@
       // - onreadystatechange
       // - setTimeout
     } else {
-      // strange IE + webpack dev server bug - use .bind(global)
+      // `webpack` dev server bug on IE global methods - use bind(fn, global)
       macrotask = functionBindContext(macrotask, global_1);
       notify$1 = function () {
         macrotask(flush);
       };
     }
-  }
-  var microtask = queueMicrotask || function (fn) {
-    var task = {
-      fn: fn,
-      next: undefined
+    microtask = function (fn) {
+      if (!queue.head) notify$1();
+      queue.add(fn);
     };
-    if (last) last.next = task;
-    if (!head) {
-      head = task;
-      notify$1();
-    }
-    last = task;
-  };
+  }
+  var microtask_1 = microtask;
 
   var hostReportErrors = function (a, b) {
-    var console = global_1.console;
-    if (console && console.error) {
+    try {
+      // eslint-disable-next-line no-console -- safe
       arguments.length == 1 ? console.error(a) : console.error(a, b);
-    }
+    } catch (error) {/* empty */}
   };
 
   var perform = function (exec) {
@@ -2365,30 +2432,6 @@
       };
     }
   };
-
-  var Queue = function () {
-    this.head = null;
-    this.tail = null;
-  };
-  Queue.prototype = {
-    add: function (item) {
-      var entry = {
-        item: item,
-        next: null
-      };
-      if (this.head) this.tail.next = entry;else this.head = entry;
-      this.tail = entry;
-    },
-    get: function () {
-      var entry = this.head;
-      if (entry) {
-        this.head = entry.next;
-        if (this.tail === entry) this.tail = null;
-        return entry.item;
-      }
-    }
-  };
-  var queue = Queue;
 
   var promiseNativeConstructor = global_1.Promise;
 
@@ -2475,7 +2518,7 @@
   var PromisePrototype = NativePromisePrototype$1;
   var TypeError$1 = global_1.TypeError;
   var document$1 = global_1.document;
-  var process = global_1.process;
+  var process$1 = global_1.process;
   var newPromiseCapability = newPromiseCapability$1.f;
   var newGenericPromiseCapability = newPromiseCapability;
   var DISPATCH_EVENT = !!(document$1 && document$1.createEvent && global_1.dispatchEvent);
@@ -2529,7 +2572,7 @@
   var notify = function (state, isReject) {
     if (state.notified) return;
     state.notified = true;
-    microtask(function () {
+    microtask_1(function () {
       var reactions = state.reactions;
       var reaction;
       while (reaction = reactions.get()) {
@@ -2562,7 +2605,7 @@
       if (IS_UNHANDLED) {
         result = perform(function () {
           if (engineIsNode) {
-            process.emit('unhandledRejection', value, promise);
+            process$1.emit('unhandledRejection', value, promise);
           } else dispatchEvent(UNHANDLED_REJECTION, promise, value);
         });
         // Browsers should not trigger `rejectionHandled` event if it was handled here, NodeJS - should
@@ -2578,7 +2621,7 @@
     functionCall(task, global_1, function () {
       var promise = state.facade;
       if (engineIsNode) {
-        process.emit('rejectionHandled', promise);
+        process$1.emit('rejectionHandled', promise);
       } else dispatchEvent(REJECTION_HANDLED, promise, state.value);
     });
   };
@@ -2603,7 +2646,7 @@
       if (state.facade === value) throw TypeError$1("Promise can't be resolved itself");
       var then = isThenable(value);
       if (then) {
-        microtask(function () {
+        microtask_1(function () {
           var wrapper = {
             done: false
           };
@@ -2648,7 +2691,7 @@
         done: false,
         notified: false,
         parent: false,
-        reactions: new queue(),
+        reactions: new queue$1(),
         rejection: false,
         state: PENDING,
         value: undefined
@@ -2663,8 +2706,8 @@
       state.parent = true;
       reaction.ok = isCallable(onFulfilled) ? onFulfilled : true;
       reaction.fail = isCallable(onRejected) && onRejected;
-      reaction.domain = engineIsNode ? process.domain : undefined;
-      if (state.state == PENDING) state.reactions.add(reaction);else microtask(function () {
+      reaction.domain = engineIsNode ? process$1.domain : undefined;
+      if (state.state == PENDING) state.reactions.add(reaction);else microtask_1(function () {
         callReaction(reaction, state);
       });
       return reaction.promise;
@@ -3057,13 +3100,12 @@
     array[IS_CONCAT_SPREADABLE] = false;
     return array.concat()[0] !== array;
   });
-  var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('concat');
   var isConcatSpreadable = function (O) {
     if (!isObject(O)) return false;
     var spreadable = O[IS_CONCAT_SPREADABLE];
     return spreadable !== undefined ? !!spreadable : isArray(O);
   };
-  var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
+  var FORCED$1 = !IS_CONCAT_SPREADABLE_SUPPORT || !arrayMethodHasSpeciesSupport('concat');
 
   // `Array.prototype.concat` method
   // https://tc39.es/ecma262/#sec-array.prototype.concat
@@ -3072,7 +3114,7 @@
     target: 'Array',
     proto: true,
     arity: 1,
-    forced: FORCED
+    forced: FORCED$1
   }, {
     // eslint-disable-next-line no-unused-vars -- required for `.length`
     concat: function concat(arg) {
@@ -3184,32 +3226,30 @@
           return /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
             var result;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    _context.next = 2;
-                    return window.fetch("".concat(window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile"), "?filename=").concat(encodeURIComponent(fileName), "&dir=").concat(encodeURIComponent(dir)), {
-                      method: "GET",
-                      headers: {
-                        requesttoken: window.OC.requestToken
-                      }
-                    });
-                  case 2:
-                    result = _context.sent;
-                    if (!(result && result.ok)) {
-                      _context.next = 7;
-                      break;
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return window.fetch("".concat(window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile"), "?filename=").concat(encodeURIComponent(fileName), "&dir=").concat(encodeURIComponent(dir)), {
+                    method: "GET",
+                    headers: {
+                      requesttoken: window.OC.requestToken
                     }
-                    _context.next = 6;
-                    return result.json();
-                  case 6:
-                    return _context.abrupt("return", _context.sent);
-                  case 7:
-                    window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
-                  case 8:
-                  case "end":
-                    return _context.stop();
-                }
+                  });
+                case 2:
+                  result = _context.sent;
+                  if (!(result && result.ok)) {
+                    _context.next = 7;
+                    break;
+                  }
+                  _context.next = 6;
+                  return result.json();
+                case 6:
+                  return _context.abrupt("return", _context.sent);
+                case 7:
+                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+                case 8:
+                case "end":
+                  return _context.stop();
               }
             }, _callee);
           })();
@@ -3228,35 +3268,33 @@
           return /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
             var result;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-              while (1) {
-                switch (_context2.prev = _context2.next) {
-                  case 0:
-                    _context2.next = 2;
-                    return window.fetch(downloadUrl, {
-                      method: "GET",
-                      headers: {
-                        requesttoken: window.OC.requestToken
-                      }
-                    });
-                  case 2:
-                    result = _context2.sent;
-                    if (!(result && result.ok)) {
-                      _context2.next = 8;
-                      break;
+              while (1) switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.next = 2;
+                  return window.fetch(downloadUrl, {
+                    method: "GET",
+                    headers: {
+                      requesttoken: window.OC.requestToken
                     }
-                    _context2.next = 6;
-                    return result.text();
-                  case 6:
-                    _context2.t0 = _context2.sent;
-                    return _context2.abrupt("return", {
-                      filecontents: _context2.t0
-                    });
-                  case 8:
-                    window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
-                  case 9:
-                  case "end":
-                    return _context2.stop();
-                }
+                  });
+                case 2:
+                  result = _context2.sent;
+                  if (!(result && result.ok)) {
+                    _context2.next = 8;
+                    break;
+                  }
+                  _context2.next = 6;
+                  return result.text();
+                case 6:
+                  _context2.t0 = _context2.sent;
+                  return _context2.abrupt("return", {
+                    filecontents: _context2.t0
+                  });
+                case 8:
+                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+                case 9:
+                case "end":
+                  return _context2.stop();
               }
             }, _callee2);
           })();
@@ -3278,40 +3316,38 @@
           return /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
             var path, result;
             return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-              while (1) {
-                switch (_context3.prev = _context3.next) {
-                  case 0:
-                    // Send the PUT request
-                    path = "".concat(dir).concat(name);
-                    if (dir !== "/") {
-                      path = "".concat(dir, "/").concat(name);
+              while (1) switch (_context3.prev = _context3.next) {
+                case 0:
+                  // Send the PUT request
+                  path = "".concat(dir).concat(name);
+                  if (dir !== "/") {
+                    path = "".concat(dir, "/").concat(name);
+                  }
+                  _context3.next = 4;
+                  return window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
+                    method: "PUT",
+                    body: JSON.stringify({
+                      filecontents: fileContent,
+                      path: path,
+                      mtime: fileModifiedTime
+                    }),
+                    headers: {
+                      requesttoken: window.OC.requestToken,
+                      "Content-Type": "application/json"
                     }
-                    _context3.next = 4;
-                    return window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
-                      method: "PUT",
-                      body: JSON.stringify({
-                        filecontents: fileContent,
-                        path: path,
-                        mtime: fileModifiedTime
-                      }),
-                      headers: {
-                        requesttoken: window.OC.requestToken,
-                        "Content-Type": "application/json"
-                      }
-                    });
-                  case 4:
-                    result = _context3.sent;
-                    if (!(result && result.ok)) {
-                      _context3.next = 7;
-                      break;
-                    }
-                    return _context3.abrupt("return", true);
-                  case 7:
-                    window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
-                  case 8:
-                  case "end":
-                    return _context3.stop();
-                }
+                  });
+                case 4:
+                  result = _context3.sent;
+                  if (!(result && result.ok)) {
+                    _context3.next = 7;
+                    break;
+                  }
+                  return _context3.abrupt("return", true);
+                case 7:
+                  window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+                case 8:
+                case "end":
+                  return _context3.stop();
               }
             }, _callee3);
           })();
@@ -3611,37 +3647,35 @@
       unsubscribe = currentFile.subscribe( /*#__PURE__*/function () {
         var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(fileUpdate) {
           return _regeneratorRuntime().wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  $$invalidate(0, file = fileUpdate);
-                  if (!(file && file.isLoaded)) {
-                    _context.next = 7;
-                    break;
-                  }
-                  $$invalidate(1, loading = false);
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                $$invalidate(0, file = fileUpdate);
+                if (!(file && file.isLoaded)) {
+                  _context.next = 7;
+                  break;
+                }
+                $$invalidate(1, loading = false);
 
-                  // Show error when url is permanently empty (or maybe show editor?)
-                  if (file.url) {
-                    _context.next = 6;
-                    break;
-                  }
-                  OC.dialogs.alert(t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."), t("files_linkeditor", "A slight problem"));
-                  return _context.abrupt("return");
-                case 6:
-                  // Open the link without confirmation
-                  if (file.skipConfirmation && file.sameWindow) {
-                    window.location.href = file.url;
+                // Show error when url is permanently empty (or maybe show editor?)
+                if (file.url) {
+                  _context.next = 6;
+                  break;
+                }
+                OC.dialogs.alert(t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."), t("files_linkeditor", "A slight problem"));
+                return _context.abrupt("return");
+              case 6:
+                // Open the link without confirmation
+                if (file.skipConfirmation && file.sameWindow) {
+                  window.location.href = file.url;
 
-                    // Hide viewer
-                    viewMode.update(function () {
-                      return "none";
-                    });
-                  }
-                case 7:
-                case "end":
-                  return _context.stop();
-              }
+                  // Hide viewer
+                  viewMode.update(function () {
+                    return "none";
+                  });
+                }
+              case 7:
+              case "end":
+                return _context.stop();
             }
           }, _callee);
         }));
@@ -3698,14 +3732,14 @@
 
   var nativeIndexOf = functionUncurryThisClause([].indexOf);
   var NEGATIVE_ZERO = !!nativeIndexOf && 1 / nativeIndexOf([1], 1, -0) < 0;
-  var STRICT_METHOD = arrayMethodIsStrict('indexOf');
+  var FORCED = NEGATIVE_ZERO || !arrayMethodIsStrict('indexOf');
 
   // `Array.prototype.indexOf` method
   // https://tc39.es/ecma262/#sec-array.prototype.indexof
   _export({
     target: 'Array',
     proto: true,
-    forced: NEGATIVE_ZERO || !STRICT_METHOD
+    forced: FORCED
   }, {
     indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
       var fromIndex = arguments.length > 1 ? arguments[1] : undefined;
@@ -4100,6 +4134,7 @@
   var charAt$1 = functionUncurryThis(''.charAt);
   var replace$2 = functionUncurryThis(''.replace);
   var stringSlice$2 = functionUncurryThis(''.slice);
+  // eslint-disable-next-line redos/no-vulnerable -- safe
   var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d{1,2}|<[^>]*>)/g;
   var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d{1,2})/g;
 
@@ -4506,16 +4541,15 @@
   var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002' + '\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
 
   var replace = functionUncurryThis(''.replace);
-  var whitespace = '[' + whitespaces + ']';
-  var ltrim = RegExp('^' + whitespace + whitespace + '*');
-  var rtrim = RegExp(whitespace + whitespace + '*$');
+  var ltrim = RegExp('^[' + whitespaces + ']+');
+  var rtrim = RegExp('(^|[^' + whitespaces + '])[' + whitespaces + ']+$');
 
   // `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
   var createMethod = function (TYPE) {
     return function ($this) {
       var string = toString_1(requireObjectCoercible($this));
       if (TYPE & 1) string = replace(string, ltrim, '');
-      if (TYPE & 2) string = replace(string, rtrim, '');
+      if (TYPE & 2) string = replace(string, rtrim, '$1');
       return string;
     };
   };
@@ -8748,21 +8782,19 @@
           actionHandler: function () {
             var _actionHandler = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(fileName, context) {
               return _regeneratorRuntime().wrap(function _callee$(_context) {
-                while (1) {
-                  switch (_context.prev = _context.next) {
-                    case 0:
-                      _context.next = 2;
-                      return LinkeditorService.loadAndChangeViewMode({
-                        fileName: fileName,
-                        context: context,
-                        nextViewMode: "edit"
-                      });
-                    case 2:
-                      return _context.abrupt("return", _context.sent);
-                    case 3:
-                    case "end":
-                      return _context.stop();
-                  }
+                while (1) switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.next = 2;
+                    return LinkeditorService.loadAndChangeViewMode({
+                      fileName: fileName,
+                      context: context,
+                      nextViewMode: "edit"
+                    });
+                  case 2:
+                    return _context.abrupt("return", _context.sent);
+                  case 3:
+                  case "end":
+                    return _context.stop();
                 }
               }, _callee);
             }));
@@ -8783,35 +8815,33 @@
           actionHandler: function () {
             var _actionHandler2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(fileName, context) {
               return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-                while (1) {
-                  switch (_context2.prev = _context2.next) {
-                    case 0:
-                      if (!window.OC.currentUser) {
-                        _context2.next = 5;
-                        break;
-                      }
-                      _context2.next = 3;
-                      return LinkeditorService.loadAndChangeViewMode({
-                        fileName: fileName,
-                        context: context,
-                        nextViewMode: "view"
-                      });
-                    case 3:
-                      _context2.next = 7;
+                while (1) switch (_context2.prev = _context2.next) {
+                  case 0:
+                    if (!window.OC.currentUser) {
+                      _context2.next = 5;
                       break;
-                    case 5:
-                      _context2.next = 7;
-                      return LinkeditorService.loadAndChangeViewMode({
-                        fileName: fileName,
-                        context: context,
-                        nextViewMode: "view",
-                        downloadUrl: context.fileList.getDownloadUrl(fileName),
-                        publicUser: true
-                      });
-                    case 7:
-                    case "end":
-                      return _context2.stop();
-                  }
+                    }
+                    _context2.next = 3;
+                    return LinkeditorService.loadAndChangeViewMode({
+                      fileName: fileName,
+                      context: context,
+                      nextViewMode: "view"
+                    });
+                  case 3:
+                    _context2.next = 7;
+                    break;
+                  case 5:
+                    _context2.next = 7;
+                    return LinkeditorService.loadAndChangeViewMode({
+                      fileName: fileName,
+                      context: context,
+                      nextViewMode: "view",
+                      downloadUrl: context.fileList.getDownloadUrl(fileName),
+                      publicUser: true
+                    });
+                  case 7:
+                  case "end":
+                    return _context2.stop();
                 }
               }, _callee2);
             }));
@@ -8860,29 +8890,27 @@
                         var _onCreate = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(file) {
                           var newFile;
                           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-                            while (1) {
-                              switch (_context3.prev = _context3.next) {
-                                case 0:
-                                  _context3.next = 2;
-                                  return fileList.createFile(name, {
-                                    scrollTo: false
-                                  });
-                                case 2:
-                                  _context3.next = 4;
-                                  return FileService.load({
-                                    fileName: name,
-                                    dir: dir
-                                  });
-                                case 4:
-                                  newFile = _context3.sent;
-                                  _context3.next = 7;
-                                  return LinkeditorService.saveAndChangeViewMode(_objectSpread2(_objectSpread2({}, file), {}, {
-                                    fileModifiedTime: newFile.mtime
-                                  }));
-                                case 7:
-                                case "end":
-                                  return _context3.stop();
-                              }
+                            while (1) switch (_context3.prev = _context3.next) {
+                              case 0:
+                                _context3.next = 2;
+                                return fileList.createFile(name, {
+                                  scrollTo: false
+                                });
+                              case 2:
+                                _context3.next = 4;
+                                return FileService.load({
+                                  fileName: name,
+                                  dir: dir
+                                });
+                              case 4:
+                                newFile = _context3.sent;
+                                _context3.next = 7;
+                                return LinkeditorService.saveAndChangeViewMode(_objectSpread2(_objectSpread2({}, file), {}, {
+                                  fileModifiedTime: newFile.mtime
+                                }));
+                              case 7:
+                              case "end":
+                                return _context3.stop();
                             }
                           }, _callee3);
                         }));
@@ -8899,11 +8927,13 @@
             menuEntryFactory({
               id: "application-internet-shortcut",
               displayName: "".concat(window.t("files_linkeditor", "New link"), " (.URL)"),
+              // TRANSLATORS default filename when creating a new link file from the files list, keep .URL at the end
               templateName: window.t("files_linkeditor", "Link.URL")
             });
             menuEntryFactory({
               id: "application-internet-shortcut-webloc",
               displayName: "".concat(window.t("files_linkeditor", "New link"), " (.webloc)"),
+              // TRANSLATORS default filename when creating a new link file from the files list, keep .webloc at the end
               templateName: window.t("files_linkeditor", "Link.webloc")
             });
           }
@@ -8955,68 +8985,66 @@
           return /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
             var currentUrl, file, extension, parsedFile;
             return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-              while (1) {
-                switch (_context4.prev = _context4.next) {
-                  case 0:
-                    // Find out where we are to use this link for the cancel button.
-                    currentUrl = context ? encodeURI(context.fileList.linkTo() + "?path=" + context.dir) : window.location.href; // Get ready to show viewer
-                    viewMode.update(function () {
-                      return nextViewMode;
+              while (1) switch (_context4.prev = _context4.next) {
+                case 0:
+                  // Find out where we are to use this link for the cancel button.
+                  currentUrl = context ? encodeURI(context.fileList.linkTo() + "?path=" + context.dir) : window.location.href; // Get ready to show viewer
+                  viewMode.update(function () {
+                    return nextViewMode;
+                  });
+                  // Preliminary file config update
+                  currentFile.update(function () {
+                    return FileService.getFileConfig({
+                      name: fileName,
+                      currentUrl: currentUrl,
+                      dir: context ? context.dir : ""
                     });
-                    // Preliminary file config update
-                    currentFile.update(function () {
-                      return FileService.getFileConfig({
-                        name: fileName,
-                        currentUrl: currentUrl,
-                        dir: context ? context.dir : ""
-                      });
-                    });
-                    // Load file from backend
-                    file = {};
-                    if (!publicUser) {
-                      _context4.next = 10;
-                      break;
-                    }
-                    _context4.next = 7;
-                    return FileService.loadPublic({
-                      downloadUrl: downloadUrl
-                    });
-                  case 7:
-                    file = _context4.sent;
-                    _context4.next = 13;
+                  });
+                  // Load file from backend
+                  file = {};
+                  if (!publicUser) {
+                    _context4.next = 10;
                     break;
-                  case 10:
-                    _context4.next = 12;
-                    return FileService.load({
-                      fileName: fileName,
-                      dir: context.dir
-                    });
-                  case 12:
-                    file = _context4.sent;
-                  case 13:
-                    if (file) {
-                      // Read extension and run fitting parser.
-                      extension = Parser.getExtension(fileName); // Parse the filecontent to get to the URL.
-                      parsedFile = {};
-                      if (extension === "webloc") {
-                        parsedFile = Parser.parseWeblocFile(file.filecontents);
-                      } else {
-                        parsedFile = Parser.parseURLFile(file.filecontents);
-                      }
-                      // Update file info in store
-                      currentFile.update(function (fileConfig) {
-                        return FileService.getFileConfig(_objectSpread2(_objectSpread2(_objectSpread2({}, fileConfig), parsedFile), {}, {
-                          fileModifiedTime: file.mtime,
-                          isLoaded: true
-                        }));
-                      });
+                  }
+                  _context4.next = 7;
+                  return FileService.loadPublic({
+                    downloadUrl: downloadUrl
+                  });
+                case 7:
+                  file = _context4.sent;
+                  _context4.next = 13;
+                  break;
+                case 10:
+                  _context4.next = 12;
+                  return FileService.load({
+                    fileName: fileName,
+                    dir: context.dir
+                  });
+                case 12:
+                  file = _context4.sent;
+                case 13:
+                  if (file) {
+                    // Read extension and run fitting parser.
+                    extension = Parser.getExtension(fileName); // Parse the filecontent to get to the URL.
+                    parsedFile = {};
+                    if (extension === "webloc") {
+                      parsedFile = Parser.parseWeblocFile(file.filecontents);
                     } else {
-                      window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+                      parsedFile = Parser.parseURLFile(file.filecontents);
                     }
-                  case 14:
-                  case "end":
-                    return _context4.stop();
-                }
+                    // Update file info in store
+                    currentFile.update(function (fileConfig) {
+                      return FileService.getFileConfig(_objectSpread2(_objectSpread2(_objectSpread2({}, fileConfig), parsedFile), {}, {
+                        fileModifiedTime: file.mtime,
+                        isLoaded: true
+                      }));
+                    });
+                  } else {
+                    window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
+                  }
+                case 14:
+                case "end":
+                  return _context4.stop();
               }
             }, _callee4);
           })();
@@ -9039,34 +9067,32 @@
           return /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
             var extension, fileContent;
             return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-              while (1) {
-                switch (_context5.prev = _context5.next) {
-                  case 0:
-                    // Read extension and run fitting parser.
-                    extension = Parser.getExtension(name); // Parse the filecontent to get to the URL.
-                    fileContent = "";
-                    if (extension === "webloc") {
-                      fileContent = Parser.generateWeblocFileContent("", url, sameWindow, skipConfirmation);
-                    } else {
-                      fileContent = Parser.generateURLFileContent("", url, sameWindow, skipConfirmation);
-                    }
-                    // Save file
-                    _context5.next = 5;
-                    return FileService.save({
-                      fileContent: fileContent,
-                      name: name,
-                      dir: dir,
-                      fileModifiedTime: fileModifiedTime
-                    });
-                  case 5:
-                    // Hide editor
-                    viewMode.update(function () {
-                      return "none";
-                    });
-                  case 6:
-                  case "end":
-                    return _context5.stop();
-                }
+              while (1) switch (_context5.prev = _context5.next) {
+                case 0:
+                  // Read extension and run fitting parser.
+                  extension = Parser.getExtension(name); // Parse the filecontent to get to the URL.
+                  fileContent = "";
+                  if (extension === "webloc") {
+                    fileContent = Parser.generateWeblocFileContent("", url, sameWindow, skipConfirmation);
+                  } else {
+                    fileContent = Parser.generateURLFileContent("", url, sameWindow, skipConfirmation);
+                  }
+                  // Save file
+                  _context5.next = 5;
+                  return FileService.save({
+                    fileContent: fileContent,
+                    name: name,
+                    dir: dir,
+                    fileModifiedTime: fileModifiedTime
+                  });
+                case 5:
+                  // Hide editor
+                  viewMode.update(function () {
+                    return "none";
+                  });
+                case 6:
+                case "end":
+                  return _context5.stop();
               }
             }, _callee5);
           })();
