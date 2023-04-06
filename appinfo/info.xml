@@ -24,6 +24,6 @@ _[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGE
 	<repository type="git">https://github.com/te-online/files_linkeditor.git</repository>
 	<bugs>https://github.com/te-online/files_linkeditor/issues</bugs>
 	<dependencies>
-		<nextcloud min-version="20" max-version="25" />
+		<nextcloud min-version="20" max-version="26" />
 	</dependencies>
 </info>
