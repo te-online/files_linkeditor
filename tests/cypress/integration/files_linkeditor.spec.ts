@@ -192,7 +192,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		}
 
 		// Log out admin user
-		cy.get("div#settings div#expand").click({ timeout: 4000 });
+		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
 		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		cy.reload(true);
 
@@ -215,7 +215,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can edit shared link file", () => {
 		// Log out admin user
-		cy.get("div#settings div#expand").click({ timeout: 4000 });
+		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
 		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		cy.reload(true);
 
@@ -263,7 +263,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		});
 		cy.get("button.new-share-link").click();
 		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Copy public link to clipboard"]').then(($el) => {
+			cy.get('[aria-label^="Copy public link"]').then(($el) => {
 				publicSharingLink = $el.get(0).getAttribute("href");
 			});
 		} else {
@@ -273,7 +273,11 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		}
 
 		// Log out admin user
-		cy.get("div#settings div#expand").click({ timeout: 4000 });
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+		} else {
+			cy.get("div#settings div#expand").click({ timeout: 4000 });
+		}
 		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		cy.reload(true);
 
@@ -306,7 +310,7 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		cy.get("button.new-share-link").click();
 
 		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Copy public link to clipboard"]').then(($el) => {
+			cy.get('[aria-label^="Copy public link"]').then(($el) => {
 				publicSharingLink = $el.get(0).getAttribute("href");
 			});
 		} else {
@@ -316,7 +320,11 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		}
 
 		// Log out admin user
-		cy.get("div#settings div#expand").click({ timeout: 4000 });
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+		} else {
+			cy.get("div#settings div#expand").click({ timeout: 4000 });
+		}
 		cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
 		cy.reload(true);
 
