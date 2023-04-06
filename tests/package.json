@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "files_linkeditor.spec.js",
 	"scripts": {
-		"test": "cypress run",
+		"test": "cypress run --browser chrome",
 		"start": "cypress open --config baseUrl=http://localhost:8000"
 	},
 	"author": "",
