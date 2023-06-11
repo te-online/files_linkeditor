@@ -11,6 +11,7 @@ OC.L10N.register(
     "File path not supplied" : "Невідомий шлях файлу",
     "File mtime not supplied" : "Невідомий час модифікації файлу",
     "An error occurred!" : "Сталася помилка!",
+    "Edit link" : "Редагувати посилання",
     "Saving failed!" : "Не вдалося зберегти!",
     "Cancel" : "Скасувати",
     "Save" : "Зберегти"
