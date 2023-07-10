@@ -185,7 +185,9 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 					cy.get(".fileactions .action-share").click();
 				});
 		});
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
+		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 27) {
+			cy.get("#sharing-search-input").type(testusers[0]);
+		} else if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
 			cy.get("#sharing-search-input input").type(testusers[0]);
 		} else {
 			cy.get(".sharing-input input").type(testusers[0]);
