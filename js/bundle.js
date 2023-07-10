@@ -1184,7 +1184,7 @@
   // eslint-disable-next-line no-new-func -- fallback
   function () {
     return this;
-  }() || Function('return this')();
+  }() || commonjsGlobal || Function('return this')();
 
   // eslint-disable-next-line es/no-object-defineproperty -- safe
   var defineProperty$2 = Object.defineProperty;
@@ -1209,10 +1209,10 @@
   (module.exports = function (key, value) {
     return sharedStore[key] || (sharedStore[key] = value !== undefined ? value : {});
   })('versions', []).push({
-    version: '3.30.0',
+    version: '3.31.1',
     mode: 'global',
     copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
-    license: 'https://github.com/zloirock/core-js/blob/v3.30.0/LICENSE',
+    license: 'https://github.com/zloirock/core-js/blob/v3.31.1/LICENSE',
     source: 'https://github.com/zloirock/core-js'
   });
   });
@@ -1309,12 +1309,16 @@
 
 
 
+  var $String$4 = global_1.String;
+
   // eslint-disable-next-line es/no-object-getownpropertysymbols -- required for testing
   var symbolConstructorDetection = !!Object.getOwnPropertySymbols && !fails(function () {
     var symbol = Symbol();
     // Chrome 38 Symbol has incorrect toString conversion
     // `get-own-property-symbols` polyfill symbols converted to object are not Symbol instances
-    return !String(symbol) || !(Object(symbol) instanceof Symbol) ||
+    // nb: Do not call `String` directly to avoid this being optimized out to `symbol+''` which will,
+    // of course, fail.
+    return !$String$4(symbol) || !(Object(symbol) instanceof Symbol) ||
     // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
     !Symbol.sham && engineV8Version && engineV8Version < 41;
   });
