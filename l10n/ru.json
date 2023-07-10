@@ -11,8 +11,24 @@
     "File path not supplied" : "Неизвестен путь файла",
     "File mtime not supplied" : "Неизвестно время модификации файла",
     "An error occurred!" : "Произошла ошибка!",
+    "Edit link" : "Редактировать ссылку",
+    "View link" : "Показать ссылку",
+    "New link" : "Новая ссылка",
+    "Link.URL" : "Ссылка.URL",
+    "Link.webloc" : "Ссылка.webloc",
+    "You are about to visit:" : "Вы собираетесь посетить:",
     "Saving failed!" : "Не удалось сохранить",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Эта ссылка на файл, похоже, недействительна. – Вы можете исправить это, отредактировав файл.",
+    "A slight problem" : "Небольшая проблема",
     "Cancel" : "Отменить",
-    "Save" : "Сохранить"
+    "Visit link" : "Посетить ссылку",
+    "Link target URL" : "URL ссылки",
+    "e.g. https://example.org" : "например, https://example.org",
+    "Save" : "Сохранить",
+    "Open in same window" : "Открыть в том же окне",
+    "Skip confirmation dialog before open (has to open in same window)" : "Пропустить диалог подтверждения перед открытием (должен открываться в том же окне)",
+    "Link editor" : "Редактор ссылок",
+    "An app to read and edit .URL and .webloc files." : "Приложение для чтения и редактирования .URL и .webloc файлов",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Внешние web-ссылки в Nextcloud!\n* ✍️ **создавайте и редактируйте** .URL и .webloc ссылки в виде файлов\n* 🌍 **открывайте ссылки** нажимая на них и подтверждая, что вы хотите перейти на внешний сайт\n* 📤 **работает в общедоступных разделах**, так что вы можете легко делиться ссылками с другими пользователями\n* 🔄 **синхронизируйте свои ссылки** так как .URL и .webloc - это web-ссылки, общие для всех операционных систем.\n\n_[Посмотреть список изменений](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }
