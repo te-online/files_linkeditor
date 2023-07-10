@@ -7,6 +7,7 @@ Notable changes in each released version can be seen here.
 ### Added
 
 - Run tests for Nextcloud 27 and bump compatibility to Nextcloud 27 (#82)
+- Adjust controller naming to PSR-4 to fix compatibility with Nextcloud 27
 
 ### Changed
 
