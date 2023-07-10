@@ -2,6 +2,12 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.16, 10. July 2023
+
+### Fixed
+
+- Fix missing version bump
+
 ## 1.1.15, 10. July 2023
 
 ### Added
