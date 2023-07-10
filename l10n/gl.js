@@ -18,10 +18,10 @@ OC.L10N.register(
     "New link" : "Nova ligazón",
     "Link.URL" : "Link.URL",
     "Link.webloc" : "Link.webloc",
-    "You are about to visit:" : "Estás a piques de visitar:",
+    "You are about to visit:" : "Está a piques de visitar:",
     "Saving failed!" : "Produciuse un fallo ao gardar!",
     "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Este ficheiro de ligazón parece non ser válido. – Podes solucionar isto editando o ficheiro.",
-    "A slight problem" : "Un pequeno problema",
+    "A slight problem" : "Un problemiña",
     "Cancel" : "Cancelar",
     "Visit link" : "Visita a ligazón",
     "Link target URL" : "URL de destino da ligazón",
@@ -31,6 +31,6 @@ OC.L10N.register(
     "Skip confirmation dialog before open (has to open in same window)" : "Omitir o diálogo de confirmación antes de abrir (ten que abrirse na mesma xanela)",
     "Link editor" : "Editor de ligazóns",
     "An app to read and edit .URL and .webloc files." : "Unha aplicación para ler e editar ficheiros .URL e .webloc.",
-    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Ligazóns web externas en Nextcloud!\n* ✍️ **crear e editar** ligazóns .URL e .webloc na vista de ficheiros\n* 🌍 **abre ligazóns** facendo clic nelas e confirmando que queres ir ao sitio externo\n* 📤 **funciona en comparticións públicas** para que poidas compartir ligazóns facilmente con outras persoas\n* 🔄 **sincronice as súas ligazóns** como .URL e .webloc son ligazóns web creadas na maioría dos sistemas operativos.\n\n_[Ver rexistro de cambios](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Ligazóns web externas en Nextcloud!\n* ✍️ **Crear e editar** ligazóns .URL e .webloc na vista de ficheiros\n* 🌍 **Abrir ligazóns** premendo nelas e confirmando que quere ir ao sitio externo\n* 📤 **Funciona en comparticións públicas** para que poida compartir ligazóns facilmente con outras persoas\n* 🔄 **Sincronice as súas ligazóns** como .URL e .webloc son ligazóns web creadas na maioría dos sistemas operativos.\n\n_[Ver o rexistro de cambios](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },
 "nplurals=2; plural=(n != 1);");
