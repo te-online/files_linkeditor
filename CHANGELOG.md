@@ -2,6 +2,10 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.17, tba
+
+- Run tests for Nextcloud 28 and bump compatibility
+
 ## 1.1.16, 10. July 2023
 
 ### Fixed
