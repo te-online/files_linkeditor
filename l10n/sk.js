@@ -13,6 +13,7 @@ OC.L10N.register(
     "File path not supplied" : "Nebola uvedená cesta k súboru",
     "File mtime not supplied" : "Nebol uvedený mtime súboru",
     "An error occurred!" : "Vyskytla sa chyba!",
+    "New link" : "Nový odkaz",
     "Saving failed!" : "Ukladanie zlyhalo!",
     "Cancel" : "Zrušiť",
     "Save" : "Uložiť"
