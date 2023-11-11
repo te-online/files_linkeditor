@@ -13,6 +13,8 @@ OC.L10N.register(
     "File path not supplied" : "Percorso del file non fornito",
     "File mtime not supplied" : "mtime del file non fornito",
     "An error occurred!" : "Si è verificato un errore!",
+    "Link.URL" : "Collegamento.URL",
+    "Link.webloc" : "Link.webloc",
     "Saving failed!" : "Salvataggio non riuscito!",
     "Cancel" : "Annulla",
     "Save" : "Salva"
