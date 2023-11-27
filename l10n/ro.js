@@ -1,17 +1,32 @@
 OC.L10N.register(
     "files_linkeditor",
     {
+    "You can not open a folder" : "Nu se poate deschide un folder",
     "This file is too big to be opened. Please download the file instead." : "Fișierul este prea mare pentru a fi deschis. Descarcă-l în schimb.",
     "Cannot read the file." : "Fișierul nu poate fi citit.",
     "Invalid file path supplied." : "A fost furnizată o cale invalidă.",
     "The file is locked." : "Fișierul este blocat.",
     "An internal server error occurred." : "A apărut o eroare internp a serverului.",
+    "You can not write to a folder" : "Nu se poate scrie într-un folder",
     "Cannot save file as it has been modified since opening" : "Nu se poate salva fișierul, a fost modificat de la deschidere.",
     "Insufficient permissions" : "Permisiuni insuficiente",
     "File path not supplied" : "Calea fișierului nu este oferită",
+    "File mtime not supplied" : "Nu s-a furnizat mtime fișier",
     "An error occurred!" : "A apărut o eroare!",
+    "Edit link" : "Editare link",
+    "View link" : "Vizualizare link",
+    "New link" : "Link nou",
+    "You are about to visit:" : "Se vizitează:",
     "Saving failed!" : "Salvarea a eşuat!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Linkul la fișier nu pare să fie valid. - Puteți remedia editând fișierul.",
+    "A slight problem" : "O mică problemă",
     "Cancel" : "Anulare",
-    "Save" : "Salvează"
+    "Visit link" : "Vizitează link-ul",
+    "Link target URL" : "URL link",
+    "Save" : "Salvează",
+    "Open in same window" : "Deschide în aceeași fereastră",
+    "Skip confirmation dialog before open (has to open in same window)" : "Nu afișa dialogul de confirmare înainte de deschidere (trebuie deschis în aceeași fereastră)",
+    "Link editor" : "Editor link-uri",
+    "An app to read and edit .URL and .webloc files." : "Aplicație pentru citirea și editarea fișierelor .URL și .webloc."
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");
