@@ -5535,7 +5535,6 @@
       if (n.lesser(49)) return true;
       // we don't know if it's prime: let the other functions figure it out
     }
-
     function millerRabinTest(n, a) {
       var nPrev = n.prev(),
         b = nPrev,
@@ -5698,13 +5697,11 @@
         if (xSign) {
           xDigit = highestPower2 - 1 - xDigit; // two's complement for negative numbers
         }
-
         yDivMod = divModAny(yRem, highestPower2);
         yDigit = yDivMod[1].toJSNumber();
         if (ySign) {
           yDigit = highestPower2 - 1 - yDigit; // two's complement for negative numbers
         }
-
         xRem = xDivMod[0];
         yRem = yDivMod[0];
         result.push(fn(xDigit, yDigit));
@@ -6566,7 +6563,6 @@
   Buffer.isBuffer = function isBuffer(b) {
     return b != null && b._isBuffer === true && b !== Buffer.prototype; // so Buffer.isBuffer(Buffer.prototype) will be false
   };
-
   Buffer.compare = function compare(a, b) {
     if (isInstance(a, Uint8Array)) a = Buffer.from(a, a.offset, a.byteLength);
     if (isInstance(b, Uint8Array)) b = Buffer.from(b, b.offset, b.byteLength);
@@ -6677,7 +6673,6 @@
           if (loweredCase) {
             return mustMatch ? -1 : utf8ToBytes(string).length; // assume utf8
           }
-
           encoding = ('' + encoding).toLowerCase();
           loweredCase = true;
       }
