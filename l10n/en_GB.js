@@ -28,7 +28,7 @@ OC.L10N.register(
     "e.g. https://example.org" : "e.g. https://example.org",
     "Save" : "Save",
     "Open in same window" : "Open in same window",
-    "Skip confirmation dialog before open (has to open in same window)" : "Skip confirmation dialog before open (has to open in same window)",
+    "Skip confirmation dialog before open (has to open in same window)" : "Skip confirmation dialogue before open (has to open in same window)",
     "Link editor" : "Link editor",
     "An app to read and edit .URL and .webloc files." : "An app to read and edit .URL and .webloc files.",
     "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
