@@ -2,9 +2,13 @@
 
 Notable changes in each released version can be seen here.
 
-## 1.1.17, tba
+## 1.1.17, 2. December 2023
 
-- Run tests for Nextcloud 28 and bump compatibility
+### Added
+
+- Run (manual) tests for Nextcloud 28 (RC2) and bump compatibility (autotest pending docker-container release)
+- Update translations from the community
+- Required JS dependency updates
 
 ## 1.1.16, 10. July 2023
 
