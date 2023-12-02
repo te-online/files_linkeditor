@@ -3,6 +3,8 @@ OC.L10N.register(
     {
     "The file is locked." : "El ficheru ta bloquiáu.",
     "An internal server error occurred." : "Prodúxose un error internu del sirvidor.",
-    "An error occurred!" : "¡Prodúxose un error!"
+    "An error occurred!" : "¡Prodúxose un error!",
+    "Cancel" : "Encaboxar",
+    "Save" : "Guardar"
 },
 "nplurals=2; plural=(n != 1);");
