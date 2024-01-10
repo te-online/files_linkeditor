@@ -13,8 +13,15 @@ OC.L10N.register(
     "File path not supplied" : "파일 경로가 지정되지 않았음",
     "File mtime not supplied" : "파일 수정 시간이 지정되지 않았음",
     "An error occurred!" : "오류가 발생했습니다!",
+    "Edit link" : "링크 수정",
+    "View link" : "링크 보기",
+    "New link" : "새 링크",
     "Saving failed!" : "저장할 수 없습니다!",
     "Cancel" : "취소",
-    "Save" : "저장"
+    "Visit link" : "링크 열기",
+    "e.g. https://example.org" : "예시. https://example.org",
+    "Save" : "저장",
+    "Open in same window" : "같은 창에 열기",
+    "Link editor" : "링크 편집기"
 },
 "nplurals=1; plural=0;");
