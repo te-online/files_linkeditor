@@ -13,6 +13,7 @@ OC.L10N.register(
     "File path not supplied" : "Filbane ikke angitt",
     "File mtime not supplied" : "Filens mtime ikke angitt",
     "An error occurred!" : "En feil oppsto!",
+    "Edit link" : "Rediger kobling",
     "Saving failed!" : "Lagring mislyktes!",
     "Cancel" : "Avbryt",
     "Save" : "Lagre"
