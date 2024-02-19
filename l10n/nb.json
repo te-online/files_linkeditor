@@ -12,8 +12,23 @@
     "File mtime not supplied" : "Filens mtime ikke angitt",
     "An error occurred!" : "En feil oppsto!",
     "Edit link" : "Rediger kobling",
+    "View link" : "Se kobling",
+    "New link" : "Ny kobling",
+    "Link.URL" : "Kobling.URL",
+    "Link.webloc" : "Kobling.webloc",
+    "You are about to visit:" : "Du er i ferd med å besøke:",
     "Saving failed!" : "Lagring mislyktes!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Denne koblingsfilen ser ikke ut til å være gyldig. - Du kan fikse dette ved å redigere filen.",
+    "A slight problem" : "Et lite problem",
     "Cancel" : "Avbryt",
-    "Save" : "Lagre"
+    "Visit link" : "Besøk kobling",
+    "Link target URL" : "URL-adresse for koblingsmål",
+    "e.g. https://example.org" : "f.eks. https://example.org",
+    "Save" : "Lagre",
+    "Open in same window" : "Åpne i samme vindu",
+    "Skip confirmation dialog before open (has to open in same window)" : "Hopp over bekreftelsesdialogboks før åpning (må åpnes i samme vindu)",
+    "Link editor" : "Redigerer for kobling",
+    "An app to read and edit .URL and .webloc files." : "En app for å lese og redigere . URL- og .webloc-filer.",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Eksterne web-lenker i Nextcloud!\n* ✍️ **opprett og rediger ** . URL- og .webloc-koblinger i filvisningen\n* 🌍 **åpne koblinger** ved å klikke på dem og bekrefte at du vil gå til det eksterne nettstedet\n* 📤 **fungerer i offentlige delinger** slik at du lett kan dele koblinger med andre\n* 🔄 ** synkroniser koblingene dine ** som . URL og .webloc er webkoblinger som er opprettet på de fleste operativsystemer.\n\n_[Se endringslogg](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
