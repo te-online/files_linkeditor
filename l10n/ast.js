@@ -7,6 +7,7 @@ OC.L10N.register(
     "An internal server error occurred." : "Prodúxose un error internu del sirvidor.",
     "You can not write to a folder" : "Nun se pue escribir una carpeta",
     "An error occurred!" : "¡Prodúxose un error!",
+    "Edit link" : "Editar l'enllaz",
     "Cancel" : "Encaboxar",
     "Save" : "Guardar"
 },
