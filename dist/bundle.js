@@ -9411,8 +9411,7 @@ class _s {
     YS({
       id: "editLink",
       displayName: () => t("files_linkeditor", "Edit link"),
-      // TODO:
-      iconSvgInline: () => "link",
+      iconSvgInline: () => '<span class="icon-link"></span>',
       exec: async (e, n, i) => {
         await _s.loadAndChangeViewMode({
           fileName: e.basename,

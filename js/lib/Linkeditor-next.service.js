@@ -16,8 +16,7 @@ export class LinkeditorServiceNext {
 		registerFileAction({
 			id: "editLink",
 			displayName: () => t("files_linkeditor", "Edit link"),
-			// TODO:
-			iconSvgInline: () => "link",
+			iconSvgInline: () => '<span class="icon-link"></span>',
 			exec: async (file, view, dir) => {
 				await LinkeditorServiceNext.loadAndChangeViewMode({
 					fileName: file.basename,
