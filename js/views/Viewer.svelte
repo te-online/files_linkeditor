@@ -53,7 +53,7 @@
 	</div>
 	<div class="oc-dialog-buttonrow twobuttons">
 		<a
-			href={file.currentUrl}
+			href={window.location.href}
 			class="button"
 			on:click|preventDefault={() => {
 				viewMode.update(() => 'none');
@@ -63,7 +63,7 @@
 		{#if !loading}
 			{#if FileService.userCanEdit()}
 				<a
-					href={file.currentUrl}
+					href={window.location.href}
 					class="button"
 					on:click|preventDefault={() => {
 						viewMode.update(() => 'edit');

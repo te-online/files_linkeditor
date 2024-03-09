@@ -75,7 +75,7 @@
 		</div>
 		<div class="oc-dialog-buttonrow twobuttons">
 			<a
-				href={file.currentUrl}
+				href={window.location.href}
 				on:click|preventDefault={() => {
 					viewMode.update(() => "none");
 				}}
@@ -84,7 +84,7 @@
 				{t("files_linkeditor", "Cancel")}
 			</a>
 			{#if !loading}
-				<a href={file.currentUrl} on:click|preventDefault={save} class="primary button">
+				<a href={window.location.href} on:click|preventDefault={save} class="primary button">
 					{t("files_linkeditor", "Save")}
 				</a>
 			{/if}
