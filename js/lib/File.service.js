@@ -5,7 +5,6 @@ export class FileService {
 		name,
 		url,
 		downloadUrl,
-		currentUrl,
 		dir,
 		onCreate,
 		fileModifiedTime,
@@ -19,7 +18,6 @@ export class FileService {
 			downloadUrl: downloadUrl || "",
 			url: url ? sanitizeUrl(url) : "",
 			dir: dir || "",
-			currentUrl: currentUrl || "",
 			onCreate: onCreate,
 			fileModifiedTime: fileModifiedTime || null,
 			isNew: isNew || false,
@@ -32,14 +30,14 @@ export class FileService {
 	static async load({ fileName, dir } = {}) {
 		const result = await window.fetch(
 			`${window.OC.generateUrl("/apps/files_linkeditor/ajax/loadfile")}?filename=${encodeURIComponent(
-				fileName
+				fileName,
 			)}&dir=${encodeURIComponent(dir)}`,
 			{
 				method: "GET",
 				headers: {
 					requesttoken: window.OC.requestToken,
 				},
-			}
+			},
 		);
 		if (result && result.ok) {
 			return await result.json();

@@ -19,8 +19,11 @@ export class LinkeditorServiceNext {
 			// TODO:
 			iconSvgInline: () => "link",
 			exec: async (file, view, dir) => {
-				alert("Not implemented");
-				// await LinkeditorService.loadAndChangeViewMode({ fileName, context, nextViewMode: "edit" }),
+				await LinkeditorServiceNext.loadAndChangeViewMode({
+					fileName: file.basename,
+					dirName: file.dirname,
+					nextViewMode: "edit",
+				});
 			},
 			permissions: window.OC.currentUser && window.OC.PERMISSION_UPDATE,
 			enabled: (files, view) =>
@@ -30,17 +33,14 @@ export class LinkeditorServiceNext {
 		});
 	}
 
-	static async loadAndChangeViewMode({ fileName, context, nextViewMode, publicUser, downloadUrl }) {
-		// Find out where we are to use this link for the cancel button.
-		const currentUrl = context ? encodeURI(context.fileList.linkTo() + "?path=" + context.dir) : window.location.href;
+	static async loadAndChangeViewMode({ fileName, dirName, nextViewMode, publicUser, downloadUrl }) {
 		// Get ready to show viewer
 		viewMode.update(() => nextViewMode);
 		// Preliminary file config update
 		currentFile.update(() =>
 			FileService.getFileConfig({
 				name: fileName,
-				currentUrl,
-				dir: context ? context.dir : "",
+				dir: dirName ? dirName : "",
 			}),
 		);
 		// Load file from backend
@@ -48,7 +48,7 @@ export class LinkeditorServiceNext {
 		if (publicUser) {
 			file = await FileService.loadPublic({ downloadUrl });
 		} else {
-			file = await FileService.load({ fileName, dir: context.dir });
+			file = await FileService.load({ fileName, dir: dirName });
 		}
 		if (file) {
 			// Read extension and run fitting parser.
