@@ -44,7 +44,7 @@ services:
 
   app:
     <<: *restart_policy
-    image: nextcloud:27-fpm-alpine
+    image: nextcloud:28-fpm-alpine
     ports:
       - 9000:9000
     links:
@@ -53,6 +53,7 @@ services:
     volumes:
       - nextcloud:/var/www/html
       - ../:/var/www/html/custom_apps/files_linkeditor
+      - ./opcache-recommended.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini
     environment:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_HOST_PASSWORD=${REDIS_HOST_PASSWORD}
