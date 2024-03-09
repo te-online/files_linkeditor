@@ -1,13 +1,13 @@
 import "vite/modulepreload-polyfill";
 import App from "./views/App.svelte";
-import { LinkeditorService } from "./lib/Linkeditor.service";
+import { LinkeditorServiceNext } from "./lib/Linkeditor-next.service";
 const components = [];
 
 components.push(
 	new App({
 		target: document.body,
 		props: {},
-	})
+	}),
 );
 
-LinkeditorService.registerFileActions();
+LinkeditorServiceNext.registerFileActions();
