@@ -2,7 +2,7 @@
 
 Notable changes in each released version can be seen here.
 
-## 1.1.17, 2. December 2023
+## 1.1.17, tba
 
 ### Added
 
