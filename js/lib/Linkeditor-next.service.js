@@ -1,8 +1,8 @@
 import { viewMode, currentFile } from "./store.js";
-import { FileService } from "./File.service";
+import { FileServiceNext } from "./File-next.service";
 import { Parser } from "./Parser";
 import PublicButton from "../views/PublicButton.svelte";
-import { registerFileAction } from "@nextcloud/files";
+import { Permission, registerFileAction } from "@nextcloud/files";
 
 const supportedMimetype = "application/internet-shortcut";
 const buttons = [];
@@ -17,37 +17,68 @@ export class LinkeditorServiceNext {
 			id: "editLink",
 			displayName: () => t("files_linkeditor", "Edit link"),
 			iconSvgInline: () => '<span class="icon-link"></span>',
-			exec: async (file, view, dir) => {
+			exec: async (file) => {
 				await LinkeditorServiceNext.loadAndChangeViewMode({
 					fileName: file.basename,
 					dirName: file.dirname,
 					nextViewMode: "edit",
+					permissions: file.permissions,
 				});
 			},
-			permissions: window.OC.currentUser && window.OC.PERMISSION_UPDATE,
-			enabled: (files, view) =>
-				files.every((file) => supportedMimetype.includes(file.mime)) &&
+			enabled: (files) =>
 				window.OC.currentUser &&
-				window.OC.PERMISSION_UPDATE,
+				files.every((file) => file.permissions >= Permission.UPDATE && supportedMimetype.includes(file.mime)),
+		});
+
+		// View action on single file
+		registerFileAction({
+			id: "viewLink",
+			displayName: () => t("files_linkeditor", "View link"),
+			iconSvgInline: () => '<span class="icon-link"></span>',
+			exec: async (file) => {
+				if (window.OC.currentUser) {
+					// Logged in
+					await LinkeditorServiceNext.loadAndChangeViewMode({
+						fileName: file.basename,
+						dirName: file.dirname,
+						nextViewMode: "view",
+						permissions: file.permissions,
+					});
+				} else {
+					// Public share
+					await LinkeditorServiceNext.loadAndChangeViewMode({
+						fileName: file.basename,
+						dirName: file.dirname,
+						nextViewMode: "view",
+						// TODO:
+						downloadUrl: file.source,
+						publicUser: true,
+						permissions: file.permissions,
+					});
+				}
+			},
+			enabled: (files) =>
+				files.every((file) => file.permissions >= Permission.READ && supportedMimetype.includes(file.mime)),
 		});
 	}
 
-	static async loadAndChangeViewMode({ fileName, dirName, nextViewMode, publicUser, downloadUrl }) {
+	static async loadAndChangeViewMode({ fileName, dirName, nextViewMode, publicUser, downloadUrl, permissions }) {
 		// Get ready to show viewer
 		viewMode.update(() => nextViewMode);
 		// Preliminary file config update
 		currentFile.update(() =>
-			FileService.getFileConfig({
+			FileServiceNext.getFileConfig({
 				name: fileName,
 				dir: dirName ? dirName : "",
+				permissions,
 			}),
 		);
 		// Load file from backend
 		let file = {};
 		if (publicUser) {
-			file = await FileService.loadPublic({ downloadUrl });
+			file = await FileServiceNext.loadPublic({ downloadUrl });
 		} else {
-			file = await FileService.load({ fileName, dir: dirName });
+			file = await FileServiceNext.load({ fileName, dir: dirName });
 		}
 		if (file) {
 			// Read extension and run fitting parser.
@@ -61,7 +92,12 @@ export class LinkeditorServiceNext {
 			}
 			// Update file info in store
 			currentFile.update((fileConfig) =>
-				FileService.getFileConfig({ ...fileConfig, ...parsedFile, fileModifiedTime: file.mtime, isLoaded: true }),
+				FileServiceNext.getFileConfig({
+					...fileConfig,
+					...parsedFile,
+					fileModifiedTime: file.mtime,
+					isLoaded: true,
+				}),
 			);
 		} else {
 			window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
@@ -79,7 +115,7 @@ export class LinkeditorServiceNext {
 			fileContent = Parser.generateURLFileContent("", url, sameWindow, skipConfirmation);
 		}
 		// Save file
-		await FileService.save({ fileContent, name, dir, fileModifiedTime });
+		await FileServiceNext.save({ fileContent, name, dir, fileModifiedTime });
 		// Hide editor
 		viewMode.update(() => "none");
 	}
