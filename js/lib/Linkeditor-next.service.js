@@ -1,11 +1,10 @@
 import { viewMode, currentFile } from "./store.js";
 import { FileServiceNext } from "./File-next.service";
 import { Parser } from "./Parser";
-import PublicButton from "../views/PublicButton.svelte";
-import { Permission, registerFileAction } from "@nextcloud/files";
+import { Permission, registerFileAction, addNewFileMenuEntry, DefaultType } from "@nextcloud/files";
 
 const supportedMimetype = "application/internet-shortcut";
-const buttons = [];
+const getSpanWithIconClass = () => '<span class="icon-link"></span>';
 
 export class LinkeditorServiceNext {
 	/**
@@ -16,7 +15,7 @@ export class LinkeditorServiceNext {
 		registerFileAction({
 			id: "editLink",
 			displayName: () => t("files_linkeditor", "Edit link"),
-			iconSvgInline: () => '<span class="icon-link"></span>',
+			iconSvgInline: getSpanWithIconClass,
 			exec: async (file) => {
 				await LinkeditorServiceNext.loadAndChangeViewMode({
 					fileName: file.basename,
@@ -34,7 +33,7 @@ export class LinkeditorServiceNext {
 		registerFileAction({
 			id: "viewLink",
 			displayName: () => t("files_linkeditor", "View link"),
-			iconSvgInline: () => '<span class="icon-link"></span>',
+			iconSvgInline: getSpanWithIconClass,
 			exec: async (file) => {
 				if (window.OC.currentUser) {
 					// Logged in
@@ -59,6 +58,9 @@ export class LinkeditorServiceNext {
 			},
 			enabled: (files) =>
 				files.every((file) => file.permissions >= Permission.READ && supportedMimetype.includes(file.mime)),
+			default: () => DefaultType.DEFAULT,
+		});
+
 		});
 	}
 
