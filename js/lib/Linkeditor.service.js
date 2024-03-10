@@ -11,7 +11,7 @@ export class LinkeditorService {
 	 */
 	static registerFileActions() {
 		// Edit action on single file
-		window.OCA.Files.fileActions.registerAction({
+		window.OCA.Files?.fileActions?.registerAction({
 			name: "editLink",
 			displayName: t("files_linkeditor", "Edit link"),
 			mime: supportedMimetype,
@@ -22,7 +22,7 @@ export class LinkeditorService {
 		});
 
 		// View action on single file
-		window.OCA.Files.fileActions.registerAction({
+		window.OCA.Files?.fileActions?.registerAction({
 			name: "viewLink",
 			displayName: t("files_linkeditor", "View link"),
 			mime: supportedMimetype,
@@ -46,9 +46,9 @@ export class LinkeditorService {
 		});
 
 		// Use Link viewing as default action.
-		window.OCA.Files.fileActions.setDefault(supportedMimetype, "viewLink");
+		window.OCA.Files?.fileActions?.setDefault(supportedMimetype, "viewLink");
 
-		window.OC.Plugins.register("OCA.Files.NewFileMenu", {
+		window.OC.Plugins?.register?.("OCA.Files.NewFileMenu", {
 			attach: function (menu) {
 				const fileList = menu.fileList;
 
@@ -81,7 +81,7 @@ export class LinkeditorService {
 										const newFile = await FileService.load({ fileName: name, dir });
 										await LinkeditorService.saveAndChangeViewMode({ ...file, fileModifiedTime: newFile.mtime });
 									},
-								})
+								}),
 							);
 						},
 					});
@@ -129,7 +129,7 @@ export class LinkeditorService {
 								});
 							},
 						},
-					})
+					}),
 				);
 			}
 		}
@@ -146,7 +146,7 @@ export class LinkeditorService {
 				name: fileName,
 				currentUrl,
 				dir: context ? context.dir : "",
-			})
+			}),
 		);
 		// Load file from backend
 		let file = {};
@@ -167,7 +167,7 @@ export class LinkeditorService {
 			}
 			// Update file info in store
 			currentFile.update((fileConfig) =>
-				FileService.getFileConfig({ ...fileConfig, ...parsedFile, fileModifiedTime: file.mtime, isLoaded: true })
+				FileService.getFileConfig({ ...fileConfig, ...parsedFile, fileModifiedTime: file.mtime, isLoaded: true }),
 			);
 		} else {
 			window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
