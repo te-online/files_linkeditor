@@ -60,8 +60,6 @@ export class LinkeditorServiceNext {
 				files.every((file) => file.permissions >= Permission.READ && supportedMimetype.includes(file.mime)),
 			default: () => DefaultType.DEFAULT,
 		});
-
-		});
 	}
 
 	static async loadAndChangeViewMode({ fileName, dirName, nextViewMode, publicUser, downloadUrl, permissions }) {
