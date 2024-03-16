@@ -1,5 +1,7 @@
 import { sanitizeUrl } from "@braintree/sanitize-url";
-import { Permission } from "@nextcloud/files";
+import { Permission, davGetClient, davRootPath, File, davRemoteURL } from "@nextcloud/files";
+import { getCurrentUser } from "@nextcloud/auth";
+import { emit } from "@nextcloud/event-bus";
 
 export class FileServiceNext {
 	static getFileConfig({
@@ -14,6 +16,7 @@ export class FileServiceNext {
 		sameWindow,
 		skipConfirmation,
 		permissions,
+		existingContents,
 	} = {}) {
 		return {
 			name: name || "?",
@@ -27,6 +30,7 @@ export class FileServiceNext {
 			sameWindow: sameWindow || false,
 			skipConfirmation: skipConfirmation || false,
 			permissions: permissions || Permission.NONE,
+			existingContents,
 		};
 	}
 
@@ -61,26 +65,34 @@ export class FileServiceNext {
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}
 
-	static async save({ fileContent, name, fileModifiedTime, dir } = {}) {
+	static async save({ fileContent, name, dir } = {}) {
 		// Send the PUT request
-		let path = `${dir}${name}`;
+		let path = `${dir}${encodeURIComponent(name)}`;
 		if (dir !== "/") {
-			path = `${dir}/${name}`;
+			path = `${dir}/${encodeURIComponent(name)}`;
 		}
-		const result = await window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
-			method: "PUT",
-			body: JSON.stringify({
-				filecontents: fileContent,
-				path,
-				mtime: fileModifiedTime,
-			}),
-			headers: {
-				requesttoken: window.OC.requestToken,
-				"Content-Type": "application/json",
-			},
-		});
-		if (result && result.ok) {
-			return true;
+		// Use dav client to save file
+		const client = davGetClient();
+		try {
+			const result = await client.putFileContents(`${davRootPath}${path}`, fileContent);
+			if (result) {
+				const fileNode = new File({
+					source: `${davRemoteURL}${davRootPath}${path}`,
+					// TODO:
+					// id: fileid,
+					mtime: new Date(),
+					mime: "application/internet-shortcut",
+					owner: getCurrentUser()?.uid || null,
+					permissions: Permission.ALL,
+					root: "/files/" + getCurrentUser()?.uid,
+				});
+				// Notify Nextcloud UI
+				emit("files:node:created", fileNode);
+
+				return true;
+			}
+		} catch (error) {
+			console.error(error);
 		}
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}

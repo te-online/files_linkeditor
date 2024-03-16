@@ -41,7 +41,7 @@
 </script>
 
 <Overlay {loading}>
-	<div class="urledit push-bottom">
+	<div class="edit push-bottom">
 		<h3>{file.name}</h3>
 		{#if !loading}
 			<p class="urldisplay">

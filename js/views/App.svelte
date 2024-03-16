@@ -1,6 +1,7 @@
 <script>
 	import Viewer from "./Viewer.svelte";
 	import Editor from "./Editor.svelte";
+	import FileNameEditor from "./FileNameEditor.svelte";
 	import { onDestroy, onMount } from "svelte";
 	import { viewMode as viewModeStore } from "../lib/store";
 
@@ -19,6 +20,9 @@
 	});
 </script>
 
+{#if viewMode === 'filename'}
+	<FileNameEditor />
+{/if}
 {#if viewMode === 'view'}
 	<Viewer />
 {/if}

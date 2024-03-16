@@ -60,6 +60,56 @@ export class LinkeditorServiceNext {
 				files.every((file) => file.permissions >= Permission.READ && supportedMimetype.includes(file.mime)),
 			default: () => DefaultType.DEFAULT,
 		});
+
+		const menuEntryFactory = ({ id, displayName, templateName }) => {
+			// Register the new menu entry
+			addNewFileMenuEntry({
+				id,
+				displayName,
+				enabled: (context) => context.permissions >= Permission.CREATE,
+				iconClass: "icon-link",
+				handler: (context, contents) => {
+					const dir = context.dirname;
+					// First name the file
+					viewMode.update(() => "filename");
+					currentFile.update(() =>
+						FileServiceNext.getFileConfig({
+							name: templateName,
+							dir,
+							isNew: true,
+							existingContents: contents,
+							onCreate: async (file) => {
+								// Now edit and create the file
+								viewMode.update(() => "edit");
+								currentFile.update(() =>
+									FileServiceNext.getFileConfig({
+										name: file.name,
+										dir: file.dir,
+										isNew: true,
+										onCreate: async (file) => {
+											await LinkeditorServiceNext.saveAndChangeViewMode(file);
+										},
+									}),
+								);
+							},
+						}),
+					);
+				},
+			});
+		};
+
+		menuEntryFactory({
+			id: "application-internet-shortcut",
+			displayName: `${window.t("files_linkeditor", "New link")} (.URL)`,
+			// TRANSLATORS default filename when creating a new link file from the files list, keep .URL at the end
+			templateName: window.t("files_linkeditor", "Link.URL"),
+		});
+		menuEntryFactory({
+			id: "application-internet-shortcut-webloc",
+			displayName: `${window.t("files_linkeditor", "New link")} (.webloc)`,
+			// TRANSLATORS default filename when creating a new link file from the files list, keep .webloc at the end
+			templateName: window.t("files_linkeditor", "Link.webloc"),
+		});
 	}
 
 	static async loadAndChangeViewMode({ fileName, dirName, nextViewMode, publicUser, downloadUrl, permissions }) {

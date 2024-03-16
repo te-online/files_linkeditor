@@ -2,14 +2,21 @@
 	import Overlay from "./Overlay.svelte";
 	import { viewMode, currentFile } from "../lib/store";
 	import { onDestroy, onMount } from "svelte";
-	import { FileService } from "../lib/File.service";
+	import { FileServiceNext } from "../lib/File-next.service";
 	import { LinkeditorService } from "../lib/Linkeditor.service";
-	import { sanitizeUrl } from "@braintree/sanitize-url";
 	const t = window.t;
 	const OC = window.OC;
 
-	$: file = FileService.getFileConfig();
+	// I would have loved to use `hasConflict` from `@nextcloud/upload`,
+	// but the entire module seems to depend on Vue. So this is a cheap copy
+	const hasConflict = (fileName, contents) => {
+		const fileNames = contents?.map((oneFile) => oneFile.basename) ?? [];
+		return fileNames.includes(fileName);
+	};
+
+	$: file = FileServiceNext.getFileConfig();
 	$: loading = true;
+	$: isConflicting = true;
 	let unsubscribe;
 	onMount(() => {
 		// Subscribe to changes of the current file
@@ -17,6 +24,7 @@
 			file = fileUpdate;
 			if (file && (file.isLoaded || file.isNew)) {
 				loading = false;
+				checkConflicts();
 			}
 		});
 	});
@@ -25,6 +33,14 @@
 		// Unsubscribe from store to avoid memory leaks
 		unsubscribe();
 	});
+
+	const checkConflicts = () => {
+		if (hasConflict(file.name, file.existingContents)) {
+			isConflicting = true;
+		} else {
+			isConflicting = false;
+		}
+	};
 
 	const save = () => {
 		loading = true;
@@ -39,38 +55,21 @@
 <Overlay {loading}>
 	<form action={OC.generateUrl("/")} on:submit|preventDefault={save} method="post">
 		<div class="edit">
-			<h3>{file.name}</h3>
+			<h3>{window.t("files_linkeditor", "New link")}</h3>
 			{#if !loading}
 				<label>
-					{t("files_linkeditor", "Link target URL")}
+					{t("files_linkeditor", "File name")}
 					<br />
 					<input
 						type="text"
 						style="width: 100%;"
 						class="input-wide"
-						bind:value={file.url}
+						bind:value={file.name}
+						on:keyup={checkConflicts}
 						autofocus
-						data-cy="url-input"
-						placeholder={t("files_linkeditor", "e.g. https://example.org")}
+						data-cy="name-input"
 					/>
 				</label>
-				<input type="checkbox" bind:checked={file.sameWindow} id="linkeditor_sameWindow" class="checkbox" />
-				<label for="linkeditor_sameWindow" class="space-top">{t("files_linkeditor", "Open in same window")}</label>
-				<input
-					type="checkbox"
-					disabled={!file.sameWindow}
-					bind:checked={file.skipConfirmation}
-					id="linkeditor_skipConfirmation"
-					class="checkbox"
-				/>
-				<label for="linkeditor_skipConfirmation">
-					{t("files_linkeditor", "Skip confirmation dialog before open (has to open in same window)")}
-				</label>
-			{/if}
-		</div>
-		<div class="oc-dialog-buttonrow onebutton urlvisit">
-			{#if !loading}
-				<a href={sanitizeUrl(file.url)} target="_blank" class="button">{t("files_linkeditor", "Visit link")}</a>
 			{/if}
 		</div>
 		<div class="oc-dialog-buttonrow twobuttons">
@@ -84,9 +83,9 @@
 				{t("files_linkeditor", "Cancel")}
 			</a>
 			{#if !loading}
-				<a href={window.location.href} on:click|preventDefault={save} class="primary button">
-					{t("files_linkeditor", "Save")}
-				</a>
+				<button type="button" on:click|preventDefault={save} disabled={isConflicting} class="primary button">
+					{t("files_linkeditor", "Create")}
+				</button>
 			{/if}
 		</div>
 	</form>
