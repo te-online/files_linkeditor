@@ -66,15 +66,15 @@ export class FileServiceNext {
 
 	static async save({ fileContent, name, dir } = {}) {
 		// Send the PUT request
-		let path = `${dir}${encodeURIComponent(name)}`;
+		let path = `${dir}${name}`;
 		if (dir !== "/") {
-			path = `${dir}/${encodeURIComponent(name)}`;
+			path = `${dir}/${name}`;
 		}
 		// Use dav client to save file
 		const client = davGetClient();
 		const absolutePath = `${davRootPath}${path}`;
 		try {
-			const result = await client.putFileContents(absolutePath, fileContent);
+			const result = await client.putFileContents(absolutePath, fileContent, { overwrite: false });
 			if (result) {
 				const stat = await client.stat(absolutePath, { details: true, data: davGetDefaultPropfind() });
 				emit("files:node:created", davResultToNode(stat.data));
