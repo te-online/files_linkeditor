@@ -31,21 +31,58 @@ Unit tests are run using [Jest](https://jestjs.io/). Tests can be found in the `
 
 ### End-to-end tests
 
-Some end-to-end testing is done using [Cypress](https://www.cypress.io/). Tests currently cover basic features of the app and run in a headless Chrome browser on a dockerized Nextcloud instance. For this repository tests run on [a mirror repository on Gitlab](https://gitlab.com/te-online/files_linkeditor).
+#### Introduction and docker-compose setup
 
-To run tests locally, change into the `tests` directory. Before running or working on tests, run `npm install` to install dependencies. Make sure to create a `.env` file based on `.env.example` and a `cypress.env.json` based on `cypress.env.example.json`; values can be chosen freely, only make sure they align between the two files.
+Make sure to create a `.env` file based on `.env.example` in the `tests` folder.
 
-To run the app install docker and docker-compose on your machine. Then run `docker-compose up`, followed by `docker exec $(docker ps -qf "name=app") sh -c 'chown www-data:root custom_apps'`. Wait for the app to be ready, then run `docker exec -u www-data $(docker ps -qf "name=app") sh -c 'php -f ./occ app:disable firstrunwizard'`.
+To run the app, install docker and docker-compose on your machine. Then run
 
-Finally, run `npm start` and use Cypress' UI to start running the tests included in the spec file.
+```bash
+$ docker-compose up
+```
 
-To shut down containers and delete the temporary volumes, run `docker-compose down -v` in a second terminal while you're in the same `tests` directory.
+Let this run to be able to see the output. Add `-d` if you want docker-compose to run in the background.
+
+In a new terminal run
+
+```bash
+# ATTENTION: You have to be quick with this command, before installation times out
+$ docker exec $(docker ps -qf "name=app") sh -c 'chown www-data:root custom_apps'
+# ATTENTION: Wait here for the app to be ready, then run:
+$ docker exec -u www-data $(docker ps -qf "name=app") sh -c 'php -f ./occ app:disable firstrunwizard'
+$ docker exec -u www-data $(docker ps -qf "name=app") sh -c 'php -f ./occ app:enable files_linkeditor'
+```
+
+To shut down containers and delete the temporary volumes, run
+
+```bash
+# This will DELETE your test data
+$ docker-compose down -v
+```
+
+in a second terminal while you're in the same `tests` directory.
 
 Test cases might depend on running in a specific order. This means you might need to wind down your docker containers and start them again as described above when re-running tests.
 
 **New features** are supposed to be covered by end-to-end tests in a way that reflects their average usage.
 
 **Bugfixes** are supposed to include a test case that demonstrates the bug being fixed and prevent it to be re-introduced in the future.
+
+#### Nextcloud < 28: Cypress
+
+End-to-end testing is done using [Cypress](https://www.cypress.io/). Tests currently cover basic features of the app and run in a headless Chrome browser on a dockerized Nextcloud instance. For this repository tests run on [a mirror repository on Gitlab](https://gitlab.com/te-online/files_linkeditor).
+
+To run tests locally, change into the `tests` directory. Before running or working on tests, run `npm install` to install dependencies. Make sure you have created a `.env` file based on `.env.example` and a `cypress.env.json` based on `cypress.env.example.json` in the `tests` folder; values can be chosen freely, only make sure they align between the two files.
+
+Run `npm start` and use Cypress' UI to start running the tests included in the spec file.
+
+#### Nextcloud >= 28: Playwright
+
+End-to-end testing (manually before release) is done using [Playwright](https://playwright.dev/). Tests currently cover basic features of the app and run in a headless Chrome browser on a dockerized Nextcloud instance.
+
+To run tests locally, install the ["Playwright Test for VSCode extension"](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright). Before running or working on tests, run `npm install` to install dependencies. Make sure you have create a `.env` file based on `.env.example` in the `tests` folder; values can be chosen freely.
+
+Use the "Testing" section in VSCode to run the Playwright tests (or [consult the official documentation](https://playwright.dev/docs/running-tests) to find alternative run methods).
 
 ## Changelog
 
