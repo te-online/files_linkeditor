@@ -4,6 +4,7 @@
 	import { onDestroy, onMount } from "svelte";
 	import { FileService } from "../lib/File.service";
 	import { sanitizeUrl } from "@braintree/sanitize-url";
+	import { Permission } from "@nextcloud/files";
 	const t = window.t;
 
 	$: file = FileService.getFileConfig();
@@ -40,7 +41,7 @@
 </script>
 
 <Overlay {loading}>
-	<div class="urledit push-bottom">
+	<div class="edit push-bottom">
 		<h3>{file.name}</h3>
 		{#if !loading}
 			<p class="urldisplay">
@@ -53,7 +54,7 @@
 	</div>
 	<div class="oc-dialog-buttonrow twobuttons">
 		<a
-			href={file.currentUrl}
+			href={window.location.href}
 			class="button"
 			on:click|preventDefault={() => {
 				viewMode.update(() => 'none');
@@ -61,9 +62,9 @@
 			{t('files_linkeditor', 'Cancel')}
 		</a>
 		{#if !loading}
-			{#if FileService.userCanEdit()}
+			{#if FileService.userCanEdit() || file.permissions >= Permission.UPDATE}
 				<a
-					href={file.currentUrl}
+					href={window.location.href}
 					class="button"
 					on:click|preventDefault={() => {
 						viewMode.update(() => 'edit');

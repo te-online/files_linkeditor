@@ -2,9 +2,15 @@
 
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Parser } from "../js/lib/Parser";
-import fs from "fs";
+import { suite, describe, it, expect, vi } from "vitest";
+import { readFileSync } from "node:fs";
+import { JSDOM } from "jsdom";
+const binaryContent = readFileSync("./unittest/Example Domain.webloc", "binary");
 
-describe("Sanitizer", function () {
+const { window } = new JSDOM(`...`);
+vi.stubGlobal("window", window);
+
+suite("Sanitizer", function () {
 	it("replaces javascript urls with about:blank", function () {
 		expect(sanitizeUrl("javascript:alert(document.domain)")).toEqual("about:blank");
 	});
@@ -25,7 +31,7 @@ describe("Sanitizer", function () {
 	});
 });
 
-describe("Parser", function () {
+suite("Parser", function () {
 	describe(".webloc files", function () {
 		it("creates a .webloc file with just a URL", function () {
 			const url = "https://example.org";
@@ -79,7 +85,7 @@ describe("Parser", function () {
 </plist>`);
 		});
 
-		it("updates a .webloc file removing the newWindow option and keeping the skipConfirmation option", function () {
+		it("updates a .webloc file removing the newWindow option and keeping the skipConfirmation option", function () {
 			const url = "https://example.org";
 			const previousFile = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -171,7 +177,7 @@ describe("Parser", function () {
 <key>URL</key>
 <string>${file.url}</string>
 </dict>
-</plist>`)
+</plist>`),
 			).toEqual(file);
 		});
 
@@ -193,7 +199,7 @@ describe("Parser", function () {
 <key>X-Target</key>
 <string>_self</string>
 </extra> -->
-</plist>`)
+</plist>`),
 			).toEqual(file);
 		});
 
@@ -219,7 +225,7 @@ describe("Parser", function () {
 <key>X-Target</key>
 <string>_self</string>
 </extra> -->
-</plist>`)
+</plist>`),
 			).toEqual(file);
 		});
 
@@ -241,7 +247,7 @@ describe("Parser", function () {
 <key>X-Skip-Confirm-Navigation</key>
 <string>1</string>
 </extra> -->
-</plist>`)
+</plist>`),
 			).toEqual(file);
 		});
 
@@ -267,17 +273,18 @@ describe("Parser", function () {
 <key>X-Target</key>
 <string>_self</string>
 </extra> -->
-</plist>`)
+</plist>`),
 			).toEqual(file);
 		});
+	});
 
-		it("reads a .webloc file that is a binary plist file", function () {
+	describe(".webloc binary files", function () {
+		it("reads a .webloc file that is a binary plist file", async function () {
 			const file = {
 				url: "https://example.org/",
 				sameWindow: false,
 				skipConfirmation: false,
 			};
-			const binaryContent = fs.readFileSync("./jest/Example Domain.webloc", "binary");
 			expect(Parser.parseWeblocFile(binaryContent)).toEqual(file);
 		});
 	});
@@ -351,7 +358,7 @@ X-Target=_self\r
 			};
 			expect(
 				Parser.parseURLFile(`[InternetShortcut]
-URL=${file.url}`)
+URL=${file.url}`),
 			).toEqual(file);
 		});
 
@@ -364,7 +371,7 @@ URL=${file.url}`)
 			expect(
 				Parser.parseURLFile(`[InternetShortcut]
 URL=${file.url}
-X-Target=_self`)
+X-Target=_self`),
 			).toEqual(file);
 		});
 
@@ -378,7 +385,7 @@ X-Target=_self`)
 				Parser.parseURLFile(`[InternetShortcut]
 URL=${file.url}
 X-Skip-Confirm-Navigation=1
-X-Target=_self`)
+X-Target=_self`),
 			).toEqual(file);
 		});
 
@@ -391,7 +398,7 @@ X-Target=_self`)
 			expect(
 				Parser.parseURLFile(`[InternetShortcut]
 URL=${file.url}
-X-Skip-Confirm-Navigation=1`)
+X-Skip-Confirm-Navigation=1`),
 			).toEqual(file);
 		});
 
@@ -405,7 +412,7 @@ X-Skip-Confirm-Navigation=1`)
 				Parser.parseURLFile(`[InternetShortcut]
 URL=${file.url}
 X-It's-Fine=I'm fine
-X-Target=_self`)
+X-Target=_self`),
 			).toEqual(file);
 		});
 	});

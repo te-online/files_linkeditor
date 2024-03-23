@@ -1,6 +1,8 @@
 import { sanitizeUrl } from "@braintree/sanitize-url";
+import { Permission, davGetClient, davRootPath, davGetDefaultPropfind, davResultToNode } from "@nextcloud/files";
+import { emit } from "@nextcloud/event-bus";
 
-export class FileService {
+export class FileServiceNext {
 	static getFileConfig({
 		name,
 		url,
@@ -12,6 +14,8 @@ export class FileService {
 		isLoaded,
 		sameWindow,
 		skipConfirmation,
+		permissions,
+		existingContents,
 	} = {}) {
 		return {
 			name: name || "?",
@@ -24,6 +28,8 @@ export class FileService {
 			isLoaded: isLoaded || false,
 			sameWindow: sameWindow || false,
 			skipConfirmation: skipConfirmation || false,
+			permissions: permissions || Permission.NONE,
+			existingContents,
 		};
 	}
 
@@ -58,37 +64,26 @@ export class FileService {
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}
 
-	static async save({ fileContent, name, fileModifiedTime, dir } = {}) {
+	static async save({ fileContent, name, dir } = {}) {
 		// Send the PUT request
 		let path = `${dir}${name}`;
 		if (dir !== "/") {
 			path = `${dir}/${name}`;
 		}
-		const result = await window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
-			method: "PUT",
-			body: JSON.stringify({
-				filecontents: fileContent,
-				path,
-				mtime: fileModifiedTime,
-			}),
-			headers: {
-				requesttoken: window.OC.requestToken,
-				"Content-Type": "application/json",
-			},
-		});
-		if (result && result.ok) {
-			return true;
+		// Use dav client to save file
+		const client = davGetClient();
+		const absolutePath = `${davRootPath}${path}`;
+		try {
+			const result = await client.putFileContents(absolutePath, fileContent, { overwrite: false });
+			if (result) {
+				const stat = await client.stat(absolutePath, { details: true, data: davGetDefaultPropfind() });
+				emit("files:node:created", davResultToNode(stat.data));
+
+				return true;
+			}
+		} catch (error) {
+			console.error(error);
 		}
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
-	}
-
-	static userCanEdit() {
-		return (
-			window.FileList &&
-			window.OC &&
-			window.OC.currentUser &&
-			(window.OC.PERMISSION_ALL === window.FileList?.getDirectoryPermissions?.() ||
-				window.OC.PERMISSION_UPDATE === window.FileList?.getDirectoryPermissions?.())
-		);
 	}
 }
