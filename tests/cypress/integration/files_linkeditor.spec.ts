@@ -9,6 +9,12 @@ const waitForOcDialog = () => {
 
 describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 	beforeEach(() => {
+		cy.on("uncaught:exception", (e) => {
+			if (e.message.includes("ResizeObserver loop completed with undelivered notifications.")) {
+				// we expected this error, so let's ignore it and let the test continue
+				return false;
+			}
+		});
 		// Log in
 		cy.visit("/");
 		cy.get('input[name="user"]').type(Cypress.env("NEXTCLOUD_ADMIN_USER"));
@@ -21,76 +27,105 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		for (const username of testusers) {
 			// It can take a while until the user from the previous run is created
 			cy.get("button#new-user-button").click({ timeout: 30000 });
-			cy.get('input[name="username"]').type(username);
-			cy.get('input[name="password"]').type(`${username}-password`);
-			cy.contains("button", "Add a new user").click();
+			if (Cypress.env("NC_VERSION") >= 28) {
+				cy.get('[data-test="username"]').type(username);
+				cy.get('[data-test="password"]').type(`${username}-password`);
+				cy.get('[data-test="submit"]').click();
+			} else {
+				cy.get('input[name="username"]').type(username);
+				cy.get('input[name="password"]').type(`${username}-password`);
+				cy.contains("button", "Add a new user").click();
+			}
 		}
 	});
 
 	it("can activate app", () => {
-		cy.visit("/settings/apps");
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get(".apps-list-container div.section")
-				.contains("Link editor")
-				.parent()
-				.within(() => {
-					cy.contains("Enable").click();
-				});
-			cy.get(".apps-list-container div.section")
-				.contains("Link editor")
-				.parent()
-				.within(() => {
-					cy.contains("Enable").should("not.exist");
-				});
-		} else {
-			cy.get(".apps-list-container div.section").contains("Link editor").parent().find("input[value='Enable']").click();
-			cy.get(".apps-list-container div.section")
-				.contains("Link editor")
-				.parent()
-				.find("input[value='Enable']")
-				.should("not.exist");
+		if (Cypress.env("NC_VERSION") >= 28) {
+			throw "Not implemented";
 		}
+		cy.visit("/settings/apps");
+		cy.get(".apps-list-container div.section")
+			.contains("Link editor")
+			.parent()
+			.within(() => {
+				cy.contains("Enable").click();
+			});
+		cy.get(".apps-list-container div.section")
+			.contains("Link editor")
+			.parent()
+			.within(() => {
+				cy.contains("Enable").should("not.exist");
+			});
 	});
 
 	it("can create a URL link file", () => {
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
-		cy.get("a.button.new").click();
-		cy.contains("a", "New link (.URL)").click();
-		cy.focused().type("Test File");
-		cy.focused().parent().submit();
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.contains('button[aria-haspopup="menu"]', "New").click();
+		} else {
+			cy.get("a.button.new").click();
+		}
+		cy.contains(Cypress.env("NC_VERSION") >= 28 ? "button" : "a", "New link (.URL)").click();
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.focused().clear();
+			cy.focused().type("Test File.URL");
+			cy.contains("button", "Create").click();
+		} else {
+			cy.focused().type("Test File");
+			cy.focused().parent().submit();
+		}
 
 		waitForOcDialog();
 		cy.get('[data-cy="url-input"]').type("https://example.org");
 		cy.contains("a", "Save").click();
 		waitForOcDialog();
 
-		cy.contains(".nametext", "Test File.URL").should("be.visible");
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.get('[download="Test File.URL"]').scrollIntoView().should("be.visible");
+		} else {
+			cy.contains(".nametext", "Test File.URL").should("be.visible");
+		}
 	});
 
 	it("can create a webloc link file", () => {
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
-		cy.get("a.button.new").click();
-		cy.contains("a", "New link (.webloc)").click();
-		cy.focused().type("Test File");
-		cy.focused().parent().submit();
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.contains('button[aria-haspopup="menu"]', "New").click();
+		} else {
+			cy.get("a.button.new").click();
+		}
+		cy.contains(Cypress.env("NC_VERSION") >= 28 ? "button" : "a", "New link (.webloc)").click();
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.focused().clear();
+			cy.focused().type("Test File.webloc");
+			cy.contains("button", "Create").click();
+		} else {
+			cy.focused().type("Test File");
+			cy.focused().parent().submit();
+		}
 
 		waitForOcDialog();
 		cy.get('[data-cy="url-input"]').type("https://example.org");
 		cy.contains("a", "Save").click();
 		waitForOcDialog();
 
-		cy.contains(".nametext", "Test File.webloc").should("be.visible");
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.get('[download="Test File.webloc"]').scrollIntoView().should("be.visible");
+		} else {
+			cy.contains(".nametext", "Test File.webloc").should("be.visible");
+		}
 	});
 
 	it("can open an existing URL link file", () => {
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
-		cy.contains(".nametext", "Test File.URL").click();
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.get('[download="Test File.URL"]').scrollIntoView().click();
+		} else {
+			cy.contains(".nametext", "Test File.URL").click();
+		}
 
 		waitForOcDialog();
 		cy.contains("h3", "Test File.URL").should("be.visible");
@@ -101,9 +136,12 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 
 	it("can open an existing webloc link file", () => {
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
-		cy.contains(".nametext", "Test File.webloc").click();
+		if (Cypress.env("NC_VERSION") >= 28) {
+			cy.get('[download="Test File.webloc"]').scrollIntoView().click();
+		} else {
+			cy.contains(".nametext", "Test File.webloc").click();
+		}
 
 		waitForOcDialog();
 		cy.contains("h3", "Test File.webloc").should("be.visible");
@@ -113,8 +151,10 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 	});
 
 	it("can open link in same tab", () => {
+		if (Cypress.env("NC_VERSION") >= 28) {
+			throw "Not implemented";
+		}
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.URL").within(() => {
 			cy.root()
@@ -143,8 +183,10 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 	});
 
 	it("can open link in same tab without confirmation", () => {
+		if (Cypress.env("NC_VERSION") >= 28) {
+			throw "Not implemented";
+		}
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.URL").within(() => {
 			cy.root()
@@ -175,8 +217,10 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 	});
 
 	it("can open shared link file", () => {
+		if (Cypress.env("NC_VERSION") >= 28) {
+			throw "Not implemented";
+		}
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.webloc").within(() => {
 			cy.root()
@@ -187,31 +231,22 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		});
 		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 27) {
 			cy.get("#sharing-search-input").type(testusers[0]);
-		} else if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get("#sharing-search-input input").type(testusers[0]);
 		} else {
-			cy.get(".sharing-input input").type(testusers[0]);
+			cy.get("#sharing-search-input input").type(testusers[0]);
 		}
 		cy.contains(`[sharewith="${testusers[0]}"]`, testusers[0]).click();
 
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Copy internal link to clipboard"]').then(($el) => {
-				sharingLink = $el.get(0).getAttribute("href");
-			});
-		} else {
-			cy.get("a.icon-clippy").then(($el) => {
-				sharingLink = $el.get(0).getAttribute("href");
-			});
+		if (Cypress.env("NC_VERSION") >= 27) {
+			cy.contains("button", "Save share").click();
 		}
 
+		cy.get('[aria-label^="Copy internal link to clipboard"]').then(($el) => {
+			sharingLink = $el.get(0).getAttribute("href");
+		});
+
 		// Log out admin user
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
-			cy.contains("a", "Log out").click({ timeout: 4000 });
-		} else {
-			cy.get("div#settings div#expand").click({ timeout: 4000 });
-			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
-		}
+		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+		cy.contains("a", "Log out").click({ timeout: 4000 });
 		cy.reload(true);
 
 		// Log in as test user
@@ -232,14 +267,12 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 	});
 
 	it("can edit shared link file", () => {
-		// Log out admin user
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
-			cy.contains("a", "Log out").click({ timeout: 4000 });
-		} else {
-			cy.get("div#settings div#expand").click({ timeout: 4000 });
-			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
+		if (Cypress.env("NC_VERSION") >= 28) {
+			throw "Not implemented";
 		}
+		// Log out admin user
+		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+		cy.contains("a", "Log out").click({ timeout: 4000 });
 		cy.reload(true);
 
 		// Log in as test user
@@ -275,8 +308,10 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 	});
 
 	it("can open publicly shared link file", () => {
+		if (Cypress.env("NC_VERSION") >= 28) {
+			throw "Not implemented";
+		}
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.URL").within(() => {
 			cy.root()
@@ -286,24 +321,13 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 				});
 		});
 		cy.get("button.new-share-link").click();
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label^="Copy public link"]').then(($el) => {
-				publicSharingLink = $el.get(0).getAttribute("href");
-			});
-		} else {
-			cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
-				publicSharingLink = $el.get(0).getAttribute("href");
-			});
-		}
+		cy.get('[aria-label^="Copy public link"]').then(($el) => {
+			publicSharingLink = $el.get(0).getAttribute("href");
+		});
 
 		// Log out admin user
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
-			cy.contains("a", "Log out").click({ timeout: 4000 });
-		} else {
-			cy.get("div#settings div#expand").click({ timeout: 4000 });
-			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
-		}
+		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+		cy.contains("a", "Log out").click({ timeout: 4000 });
 		cy.reload(true);
 
 		cy.then(() => {
@@ -323,8 +347,10 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 	});
 
 	it("cannot edit publicly shared link file", () => {
+		if (Cypress.env("NC_VERSION") >= 28) {
+			throw "Not implemented";
+		}
 		cy.visit("/apps/files/?dir=/");
-		cy.wait(10000); // wait for Readme editor to steal focus
 
 		cy.contains(".nametext", "Test File.webloc").within(() => {
 			cy.root()
@@ -335,24 +361,13 @@ describe("Linkeditor", { defaultCommandTimeout: 5000 }, () => {
 		});
 		cy.get("button.new-share-link").click();
 
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label^="Copy public link"]').then(($el) => {
-				publicSharingLink = $el.get(0).getAttribute("href");
-			});
-		} else {
-			cy.get("a.icon-clippy.sharing-entry__copy").then(($el) => {
-				publicSharingLink = $el.get(0).getAttribute("href");
-			});
-		}
+		cy.get('[aria-label^="Copy public link"]').then(($el) => {
+			publicSharingLink = $el.get(0).getAttribute("href");
+		});
 
 		// Log out admin user
-		if (Cypress.env("NC_VERSION") && Cypress.env("NC_VERSION") >= 25) {
-			cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
-			cy.contains("a", "Log out").click({ timeout: 4000 });
-		} else {
-			cy.get("div#settings div#expand").click({ timeout: 4000 });
-			cy.get('[data-id="logout"] > a').click({ timeout: 4000 });
-		}
+		cy.get('[aria-label="Open settings menu"]').click({ timeout: 4000 });
+		cy.contains("a", "Log out").click({ timeout: 4000 });
 		cy.reload(true);
 
 		cy.then(() => {
