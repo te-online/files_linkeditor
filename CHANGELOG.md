@@ -2,13 +2,21 @@
 
 Notable changes in each released version can be seen here.
 
-## 1.1.17, tba
+## 1.1.17, 23. March 2024
 
 ### Added
 
-- Run (manual) tests for Nextcloud 28 (RC2) and bump compatibility (autotest pending docker-container release)
+- Both, next-generation and legacy Nextcloud file apps are supported, thereby adding support for Nextcloud 28 (#92)
+- Public sharing seems to still use the legacy files app as is still supported that way (no editing)
+- End-to-end tests for Nextcloud 28 have been recreated using Playwright
 - Update translations from the community
-- Required JS dependency updates
+- JS dependency updates
+
+### Changed
+
+- Required Nextcloud version is now 26+, in line with the [Maintenance and Release Schedule](https://github.com/nextcloud/server/wiki/Maintenance-and-Release-Schedule)
+- Move JS build to `vite`
+- Move unit tests to `vitetest`
 
 ## 1.1.16, 10. July 2023
 
