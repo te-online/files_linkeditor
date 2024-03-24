@@ -5,7 +5,7 @@ package-lock.json
 package.json
 test
 .deployignore
-js
+src
 vite.config.js
 svelte.config.js
 .prettierrc

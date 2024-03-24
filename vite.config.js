@@ -4,9 +4,10 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
 	build: {
+		outDir: "js",
 		lib: {
 			name: "files_linkeditor",
-			entry: "js/main.js",
+			entry: "src/main.js",
 			fileName: "bundle",
 			formats: ["es"],
 		},

@@ -1,7 +1,7 @@
 "use strict";
 
 import { sanitizeUrl } from "@braintree/sanitize-url";
-import { Parser } from "../js/lib/Parser";
+import { Parser } from "../src/lib/Parser";
 import { suite, describe, it, expect, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { JSDOM } from "jsdom";

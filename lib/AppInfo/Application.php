@@ -29,13 +29,13 @@ class Application extends App implements IBootstrap {
 class BeforeTemplateRenderedListener implements IEventListener {
 	public function handle(Event $event): void {
 		Util::addStyle("files_linkeditor", "linkeditor");
-		Util::addScript("files_linkeditor", "../dist/bundle");
+		Util::addScript("files_linkeditor", "bundle");
 	}
 }
 
 class LoadAdditionalScriptsListener implements IEventListener {
 	public function handle(Event $event): void {
 		Util::addStyle("files_linkeditor", "linkeditor");
-		Util::addScript("files_linkeditor", "../dist/bundle");
+		Util::addScript("files_linkeditor", "bundle");
 	}
 }
