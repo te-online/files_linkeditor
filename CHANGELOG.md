@@ -2,6 +2,12 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.18, 24. March 2024
+
+### Fixed
+
+- Change structure to accomodate Nextcloud's weird and undocumented JS bundle resolution
+
 ## 1.1.17, 23. March 2024
 
 ### Added
