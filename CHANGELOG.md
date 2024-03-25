@@ -2,6 +2,15 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.19, 25. March 2024
+
+**I'm sorry about the frequent updates, this has been a steep hill to climb. If you want to be sure everything works, maybe hold off a few days with updating from 1.1.16. There's no beta channel currently, so I'm listening closely to feedback people provide on the production version.**
+
+### Fixed
+
+- In Nextcloud 28, link files could not be created in subdirectories using the "New" button, but would always be created in the user's root (mentioned in #92)
+- In Nextcloud 28, files could be created without the proper extension (.URL or .webloc), rendering them unusable. The extension is now forced when creating a new file
+
 ## 1.1.18, 24. March 2024
 
 ### Fixed
