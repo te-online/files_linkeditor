@@ -16,6 +16,7 @@ export class FileServiceNext {
 		skipConfirmation,
 		permissions,
 		existingContents,
+		templateName,
 	} = {}) {
 		return {
 			name: name || "?",
@@ -30,6 +31,7 @@ export class FileServiceNext {
 			skipConfirmation: skipConfirmation || false,
 			permissions: permissions || Permission.NONE,
 			existingContents,
+			templateName,
 		};
 	}
 

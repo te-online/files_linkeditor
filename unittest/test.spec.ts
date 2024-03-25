@@ -5,6 +5,7 @@ import { Parser } from "../src/lib/Parser";
 import { suite, describe, it, expect, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { JSDOM } from "jsdom";
+import { checkAndFixExtension } from "../src/lib/helpers";
 const binaryContent = readFileSync("./unittest/Example Domain.webloc", "binary");
 
 const { window } = new JSDOM(`...`);
@@ -414,6 +415,53 @@ URL=${file.url}
 X-It's-Fine=I'm fine
 X-Target=_self`),
 			).toEqual(file);
+		});
+	});
+
+	describe("Helpers", function () {
+		it("can fix a missing .webloc extension", () => {
+			expect(checkAndFixExtension({ templateName: "File.webloc", name: "File" })).toStrictEqual({
+				templateName: "File.webloc",
+				name: "File.webloc",
+			});
+		});
+
+		it("can fix a missing .URL extension", () => {
+			expect(checkAndFixExtension({ templateName: "File.URL", name: "File" })).toStrictEqual({
+				templateName: "File.URL",
+				name: "File.URL",
+			});
+		});
+
+		it("can fix a wrong .png extension", () => {
+			expect(checkAndFixExtension({ templateName: "File.URL", name: "File my space.png" })).toStrictEqual({
+				templateName: "File.URL",
+				name: "File my space.png.URL",
+			});
+		});
+
+		it("leaves a lowercase extension", () => {
+			expect(checkAndFixExtension({ templateName: "File.URL", name: "all my files are lowercase.url" })).toStrictEqual({
+				templateName: "File.URL",
+				name: "all my files are lowercase.url",
+			});
+		});
+
+		it("leaves a partly uppercase extension", () => {
+			expect(checkAndFixExtension({ templateName: "File.webloc", name: "WeBLoc rUlEz.wEBloC" })).toStrictEqual({
+				templateName: "File.webloc",
+				name: "WeBLoc rUlEz.wEBloC",
+			});
+		});
+
+		it("can handle a missing template", () => {
+			expect(checkAndFixExtension({ name: "nothing" })).toStrictEqual({
+				name: "nothing",
+			});
+		});
+
+		it("can handle an empty file", () => {
+			expect(checkAndFixExtension({})).toStrictEqual({});
 		});
 	});
 });

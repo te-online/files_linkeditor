@@ -3,15 +3,17 @@
 	import { viewMode, currentFile } from "../lib/store";
 	import { onDestroy, onMount } from "svelte";
 	import { FileServiceNext } from "../lib/File-next.service";
-	import { LinkeditorService } from "../lib/Linkeditor.service";
+	import { checkAndFixExtension } from "../lib/helpers";
 	const t = window.t;
 	const OC = window.OC;
 
 	// I would have loved to use `hasConflict` from `@nextcloud/upload`,
 	// but the entire module seems to depend on Vue. So this is a cheap copy
 	const hasConflict = (fileName, contents) => {
+		const tempFile = { name: fileName, templateName: file.templateName };
+		const fixedFile = checkAndFixExtension(tempFile);
 		const fileNames = contents?.map((oneFile) => oneFile.basename) ?? [];
-		return fileNames.includes(fileName);
+		return fileNames.includes(fixedFile.name);
 	};
 
 	$: file = FileServiceNext.getFileConfig();
@@ -43,11 +45,9 @@
 	};
 
 	const save = () => {
-		loading = true;
-		if (file.isNew && file.onCreate) {
-			file.onCreate({ ...file });
-		} else {
-			LinkeditorService.saveAndChangeViewMode({ ...file });
+		if (!hasConflict(file.name, file.existingContents)) {
+			loading = true;
+			file.onCreate(checkAndFixExtension({ ...file }));
 		}
 	};
 </script>

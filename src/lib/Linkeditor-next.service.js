@@ -75,6 +75,7 @@ export class LinkeditorServiceNext {
 					currentFile.update(() =>
 						FileServiceNext.getFileConfig({
 							name: templateName,
+							templateName,
 							dir,
 							isNew: true,
 							existingContents: contents,
