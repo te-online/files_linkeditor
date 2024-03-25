@@ -97,6 +97,23 @@ test.describe("Link File Creation", () => {
 		await expect(page.getByRole("link", { name: "Test File .webloc" })).toBeVisible();
 	});
 
+	test("create a .webloc link file in a subdirectory", async ({ page }) => {
+		await adminLogin(page);
+
+		await page.getByLabel("Files", { exact: true }).click();
+
+		await page.getByRole("link", { name: "Documents" }).click();
+
+		await page.getByRole("button", { name: "New" }).click();
+		await page.getByRole("menuitem", { name: "New link (.webloc)" }).click();
+		await page.getByLabel("File name").fill("Test File.webloc");
+		await page.getByRole("button", { name: "Create" }).click();
+		await page.getByPlaceholder("e.g. https://example.org").fill("https://example.org");
+		await page.getByRole("link", { name: "Save" }).click();
+		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("link", { name: "Test File .webloc" })).toBeVisible();
+	});
+
 	test("open an existing .URL link file", async ({ page }) => {
 		await adminLogin(page);
 
