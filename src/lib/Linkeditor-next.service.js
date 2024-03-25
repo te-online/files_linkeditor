@@ -69,7 +69,7 @@ export class LinkeditorServiceNext {
 				enabled: (context) => context.permissions >= Permission.CREATE,
 				iconClass: "icon-link",
 				handler: (context, contents) => {
-					const dir = context.dirname;
+					const dir = context.path;
 					// First name the file
 					viewMode.update(() => "filename");
 					currentFile.update(() =>

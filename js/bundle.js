@@ -10334,7 +10334,7 @@ class dn {
         enabled: (c) => c.permissions >= lt.CREATE,
         iconClass: "icon-link",
         handler: (c, h) => {
-          const f = c.dirname;
+          const f = c.path;
           Ct.update(() => "filename"), cr.update(
             () => _r.getFileConfig({
               name: s,
