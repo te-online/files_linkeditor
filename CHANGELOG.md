@@ -2,6 +2,17 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.20, 8. April 2024
+
+### Added
+
+- Tested compatibility with [Nextcloud 29 RC2](https://help.nextcloud.com/t/second-rc-of-nextcloud-29/187230), enabled support for NC29
+
+### Changed
+
+- Updated JS dependencies and rebuilt bundle
+- Updated translations from Transifex
+
 ## 1.1.19, 25. March 2024
 
 **I'm sorry about the frequent updates, this has been a steep hill to climb. If you want to be sure everything works, maybe hold off a few days with updating from 1.1.16. There's no beta channel currently, so I'm listening closely to feedback people provide on the production version.**
