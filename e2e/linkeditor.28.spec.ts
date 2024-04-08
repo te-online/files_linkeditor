@@ -1,16 +1,16 @@
 import { test, expect, type Page } from "@playwright/test";
 
 const adminLogin = async (page: Page) => {
-	await page.getByPlaceholder("Account name or email").fill(process.env.NEXTCLOUD_ADMIN_USER!);
-	await page.getByPlaceholder("Account name or email").press("Tab");
+	await page.getByPlaceholder("Login with username or email").fill(process.env.NEXTCLOUD_ADMIN_USER!);
+	await page.getByPlaceholder("Login with username or email").press("Tab");
 	await page.getByPlaceholder("Password").fill(process.env.NEXTCLOUD_ADMIN_PASSWORD!);
 	await page.getByPlaceholder("Password").press("Enter");
 };
 
 const testUserLogin = async (page: Page) => {
 	// Log in as other user
-	await page.getByPlaceholder("Account name or email").fill("testuser-1");
-	await page.getByPlaceholder("Account name or email").press("Tab");
+	await page.getByPlaceholder("Login with username or email").fill("testuser-1");
+	await page.getByPlaceholder("Login with username or email").press("Tab");
 	await page.getByPlaceholder("Password").fill("testuser-1-password");
 	await page.getByPlaceholder("Password").press("Enter");
 };
