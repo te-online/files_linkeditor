@@ -25,7 +25,7 @@ OC.L10N.register(
     "Cancel" : "Cancelar",
     "Visit link" : "Visita a ligazón",
     "Link target URL" : "URL de destino da ligazón",
-    "e.g. https://example.org" : "p. ex. https://examplo.gal",
+    "e.g. https://example.org" : "p. ex. https://example.org",
     "Save" : "Gardar",
     "Open in same window" : "Abrir na mesma xanela",
     "Skip confirmation dialog before open (has to open in same window)" : "Omitir o diálogo de confirmación antes de abrir (ten que abrirse na mesma xanela)",
