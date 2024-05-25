@@ -1,6 +1,7 @@
 OC.L10N.register(
     "files_linkeditor",
     {
+    "Edit link" : "Cuir nasc in eagar",
     "Cancel" : "Cealaigh",
     "Save" : "Sábháil"
 },
