@@ -4,7 +4,7 @@ OC.L10N.register(
     "You can not open a folder" : "Vde. non pode abrir un cartafol",
     "This file is too big to be opened. Please download the file instead." : "O ficheiro é grande de máis para ser aberto. Descargue o ficheiro no canto de abrilo.",
     "Cannot read the file." : "Non é posíbel ler o ficheiro.",
-    "Invalid file path supplied." : "Forneceu unha ruta incorrecta.",
+    "Invalid file path supplied." : "Forneceuse unha ruta de ficheiro non válida.",
     "The file is locked." : "O ficheiro está bloqueado.",
     "An internal server error occurred." : "Produciuse un erro interno no servidor.",
     "You can not write to a folder" : "Vde. non pode escribir nun cartafol",
