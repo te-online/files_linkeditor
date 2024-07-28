@@ -13,6 +13,7 @@ OC.L10N.register(
     "File path not supplied" : "Η διαδρομή του αρχείου δεν παρέχεται.",
     "File mtime not supplied" : "Ο χρόνος τροποποίησης  του αρχείου δεν παρέχεται",
     "An error occurred!" : "Παρουσιάστηκε σφάλμα!",
+    "Edit link" : "Επεξεργασία συνδέσμου",
     "Saving failed!" : "Απέτυχε η αποθήκευση!",
     "Cancel" : "Ακύρωση",
     "Save" : "Αποθήκευση"
