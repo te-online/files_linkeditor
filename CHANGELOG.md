@@ -2,6 +2,16 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.21, 29. September 2024
+
+### Added
+
+- Tested compatibility with Nextcloud 30, enabled support for NC30
+
+### Changed
+
+- Updated JS dependencies and rebuild bundle
+
 ## 1.1.20, 8. April 2024
 
 ### Added
