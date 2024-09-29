@@ -102,7 +102,7 @@ test.describe("Link File Creation", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("link", { name: "Documents" }).click();
+		await page.getByRole("button", { name: "Documents" }).click();
 
 		await page.getByRole("button", { name: "New" }).click();
 		await page.getByRole("menuitem", { name: "New link (.webloc)" }).click();
@@ -118,9 +118,9 @@ test.describe("Link File Creation", () => {
 		await adminLogin(page);
 
 		await page.getByLabel("Files", { exact: true }).click();
-		await page.getByRole("link", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
-		await expect(page.getByRole("link", { name: "Test File .URL" })).toBeVisible();
-		await page.getByRole("link", { name: "Test File .URL" }).click();
+		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("button", { name: "Test File .URL" })).toBeVisible();
+		await page.getByRole("button", { name: "Test File .URL" }).click();
 
 		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org", _blank: true });
 	});
@@ -129,9 +129,9 @@ test.describe("Link File Creation", () => {
 		await adminLogin(page);
 
 		await page.getByLabel("Files", { exact: true }).click();
-		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
-		await expect(page.getByRole("link", { name: "Test File .webloc" })).toBeVisible();
-		await page.getByRole("link", { name: "Test File .webloc" }).click();
+		await page.getByRole("button", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("button", { name: "Test File .webloc" })).toBeVisible();
+		await page.getByRole("button", { name: "Test File .webloc" }).click();
 
 		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org", _blank: true });
 	});
@@ -140,7 +140,7 @@ test.describe("Link File Creation", () => {
 		await adminLogin(page);
 
 		await page.getByLabel("Files", { exact: true }).click();
-		await page.getByRole("link", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
 		await page
 			.getByRole("row", { name: 'Toggle selection for file "Test File.URL" Test File .URL Show sharing options' })
 			.getByLabel("Actions")
@@ -148,7 +148,7 @@ test.describe("Link File Creation", () => {
 		await page.getByRole("menuitem", { name: "Edit link" }).click();
 		await page.getByText("Open in same window", { exact: true }).click();
 		await page.getByRole("link", { name: "Save" }).click();
-		await page.getByRole("link", { name: "Test File .URL" }).click();
+		await page.getByRole("button", { name: "Test File .URL" }).click();
 
 		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org", _blank: false, close: false });
 
@@ -161,12 +161,12 @@ test.describe("Link File Creation", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("link", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
 		await page.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' }).getByLabel("Actions").click();
 		await page.getByRole("menuitem", { name: "Edit link" }).click();
 		await page.getByText("Skip confirmation dialog").click();
 		await page.getByRole("link", { name: "Save" }).click();
-		await page.getByRole("link", { name: "Test File .URL" }).click();
+		await page.getByRole("button", { name: "Test File .URL" }).click();
 
 		await page.waitForURL("https://example.org/");
 	});
@@ -178,11 +178,11 @@ test.describe("Link File Sharing", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
 		await page
 			.getByRole("row", { name: 'Toggle selection for file "Test File.webloc" Test File .webloc Show sharing' })
 			.getByRole("button")
-			.first()
+			.nth(1)
 			.click();
 
 		await page.getByPlaceholder("Name, email, or Federated").click();
@@ -211,8 +211,8 @@ test.describe("Link File Sharing", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
-		await page.getByRole("link", { name: "Test File .webloc" }).click();
+		await page.getByRole("button", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button", { name: "Test File .webloc" }).click();
 
 		await testFileViewer(page, {
 			fileName: "Test File.webloc",
@@ -226,7 +226,7 @@ test.describe("Link File Sharing", () => {
 		await page.getByPlaceholder("e.g. https://example.org").fill("https://nextcloud.com");
 		await page.getByPlaceholder("e.g. https://example.org").press("Enter");
 
-		await page.getByRole("link", { name: "Test File .webloc" }).click();
+		await page.getByRole("button", { name: "Test File .webloc" }).click();
 
 		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://nextcloud.com", _blank: true });
 	});
@@ -238,11 +238,11 @@ test.describe("Public Link File Sharing", () => {
 		await page.getByLabel("Files", { exact: true }).click();
 
 		// Share the file
-		await page.getByRole("link", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
 		await page
-			.getByRole("row", { name: 'Toggle selection for file "Test File.URL" Test File .URL Show sharing options' })
+			.getByRole("row", { name: 'Toggle selection for file "Test File.URL" Test File .URL Show sharing' })
 			.getByRole("button")
-			.first()
+			.nth(1)
 			.click();
 
 		// Create and copy the public link
@@ -264,7 +264,7 @@ test.describe("Public Link File Sharing", () => {
 		await page.getByLabel("Files", { exact: true }).click();
 
 		// Share the file
-		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
 		await page
 			.getByRole("row", { name: 'Toggle selection for file "Test File.webloc" Test File .webloc Shared Actions' })
 			.getByLabel("Shared")
@@ -288,6 +288,6 @@ test.describe("Public Link File Sharing", () => {
 			close: false,
 		});
 
-		await expect(page.getByRole("link", { name: "Edit link" })).not.toBeVisible();
+		await expect(page.getByRole("button", { name: "Edit link" })).not.toBeVisible();
 	});
 });
