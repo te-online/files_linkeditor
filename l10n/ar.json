@@ -4,7 +4,7 @@
     "Cannot read the file." : "لا يمكن قراءة الملف.",
     "Invalid file path supplied." : "مسار الملف المُعطى غير صالح.",
     "The file is locked." : "الملف مقفل.",
-    "An internal server error occurred." : "حدث خطأ داخلي في الخادوم.",
+    "An internal server error occurred." : "حدث خطأ داخلي في الخادم.",
     "You can not write to a folder" : "لا يمكنك الكتابة في مجلد",
     "Cannot save file as it has been modified since opening" : "لا يمكنك حفظ الملف بسبب أنه تمّ تعديله بعد الفتح",
     "Insufficient permissions" : "صلاحيات غير كافية",
