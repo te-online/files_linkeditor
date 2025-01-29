@@ -13,6 +13,7 @@ OC.L10N.register(
     "File path not supplied" : "Skrá slóð fylgir ekki",
     "File mtime not supplied" : "mtime skrá fylgir ekki",
     "An error occurred!" : "Villa kom upp!",
+    "Edit link" : "Breyta tengli",
     "Saving failed!" : "Vistun mistókst!",
     "Cancel" : "Hætta við",
     "Save" : "Vista"
