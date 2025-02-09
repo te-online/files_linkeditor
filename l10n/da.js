@@ -13,7 +13,7 @@ OC.L10N.register(
     "File path not supplied" : "Filstien er ikke angivet",
     "File mtime not supplied" : "Filens mtime er ikke angivet",
     "An error occurred!" : "Der er opstået en fejl!",
-    "Edit link" : "Redigér link",
+    "Edit link" : "Rediger link",
     "View link" : "Vis link",
     "New link" : "Nyt link",
     "Link.URL" : "Link.URL",
