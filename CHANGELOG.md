@@ -2,6 +2,21 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.22, tba
+
+TODO:
+
+- Migrate to @nextcloud/dialog, cannot use OC.dialog
+- Fix tests are crashing Chromium for some reason
+
+### Added
+
+- Support for Nextcloud 31
+
+### Fixed
+
+- Updated JS dependencies via `npm audit` and manually
+
 ## 1.1.21, 29. September 2024
 
 ### Added
