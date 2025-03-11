@@ -13,6 +13,10 @@ TODO:
 
 - Support for Nextcloud 31
 
+### Changed
+
+- Updated translations from Transifex
+
 ### Fixed
 
 - Updated JS dependencies via `npm audit` and manually
