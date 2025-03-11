@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Björn Schießle <schiessle@nextcloud.com>,
  * adjustments by Thomas Ebert <thomas@thomasebert.net>
@@ -35,13 +36,14 @@ use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\Lock\LockedException;
+use Psr\Log\LoggerInterface;
 
-class LinkHandlingController extends Controller{
+class LinkHandlingController extends Controller {
 
 	/** @var IL10N */
 	private $l;
 
-	/** @var ILogger */
+	/** @var LoggerInterface logger */
 	private $logger;
 
 	/** @var Folder */
@@ -56,11 +58,13 @@ class LinkHandlingController extends Controller{
 	 * @param ILogger $logger
 	 * @param Folder $userFolder
 	 */
-	public function __construct($AppName,
-								IRequest $request,
-								IL10N $l10n,
-								ILogger $logger,
-								Folder $userFolder) {
+	public function __construct(
+		$AppName,
+		IRequest $request,
+		IL10N $l10n,
+		LoggerInterface $logger,
+		Folder $userFolder
+	) {
 		parent::__construct($AppName, $request);
 		$this->l = $l10n;
 		$this->logger = $logger;
@@ -119,7 +123,6 @@ class LinkHandlingController extends Controller{
 			} else {
 				return new DataResponse(['message' => (string)$this->l->t('Invalid file path supplied.')], Http::STATUS_BAD_REQUEST);
 			}
-
 		} catch (LockedException $e) {
 			$message = (string) $this->l->t('The file is locked.');
 			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
@@ -146,7 +149,7 @@ class LinkHandlingController extends Controller{
 	 */
 	public function save($path, $filecontents, $mtime) {
 		try {
-			if($path !== '' && (is_int($mtime) && $mtime > 0)) {
+			if ($path !== '' && (is_int($mtime) && $mtime > 0)) {
 
 				/** @var File $file */
 				$file = $this->userFolder->get($path);
@@ -157,16 +160,19 @@ class LinkHandlingController extends Controller{
 
 				// Get file mtime
 				$filemtime = $file->getMTime();
-				if($mtime !== $filemtime) {
+				if ($mtime !== $filemtime) {
 					// Then the file has changed since opening
-					$this->logger->error('File: ' . $path . ' modified since opening.',
-						['app' => 'files_linkeditor']);
+					$this->logger->error(
+						'File: ' . $path . ' modified since opening.',
+						['app' => 'files_linkeditor']
+					);
 					return new DataResponse(
 						['message' => $this->l->t('Cannot save file as it has been modified since opening')],
-						Http::STATUS_BAD_REQUEST);
+						Http::STATUS_BAD_REQUEST
+					);
 				} else {
 					// File same as when opened, save file
-					if($file->isUpdateable()) {
+					if ($file->isUpdateable()) {
 						$filecontents = iconv(mb_detect_encoding($filecontents), 'UTF-8', $filecontents);
 						try {
 							$file->putContent($filecontents);
@@ -184,10 +190,14 @@ class LinkHandlingController extends Controller{
 						return new DataResponse(['mtime' => $newmtime, 'size' => $newsize], Http::STATUS_OK);
 					} else {
 						// Not writeable!
-						$this->logger->error('User does not have permission to write to file: ' . $path,
-							['app' => 'files_linkeditor']);
-						return new DataResponse([ 'message' => $this->l->t('Insufficient permissions')],
-							Http::STATUS_BAD_REQUEST);
+						$this->logger->error(
+							'User does not have permission to write to file: ' . $path,
+							['app' => 'files_linkeditor']
+						);
+						return new DataResponse(
+							['message' => $this->l->t('Insufficient permissions')],
+							Http::STATUS_BAD_REQUEST
+						);
 					}
 				}
 			} else if ($path === '') {
@@ -197,7 +207,6 @@ class LinkHandlingController extends Controller{
 				$this->logger->error('No file mtime supplied', ['app' => 'files_linkeditor']);
 				return new DataResponse(['message' => $this->l->t('File mtime not supplied')], Http::STATUS_BAD_REQUEST);
 			}
-
 		} catch (HintException $e) {
 			$message = (string)$e->getHint();
 			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
@@ -206,5 +215,4 @@ class LinkHandlingController extends Controller{
 			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
 		}
 	}
-
 }
