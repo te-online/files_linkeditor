@@ -42,7 +42,7 @@ services:
 
   app:
     <<: *restart_policy
-    image: nextcloud:30-fpm-alpine
+    image: nextcloud:31-fpm-alpine
     ports:
       - 9000:9000
     links:
