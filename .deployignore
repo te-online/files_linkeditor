@@ -12,7 +12,6 @@ svelte.config.js
 .l10nignore
 .babelrc
 .gitlab-ci.yml
-cypress
 .tx
 dev
 tests
