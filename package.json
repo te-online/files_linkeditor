@@ -42,7 +42,7 @@
 		"vitest": "^3.0.8"
 	},
 	"dependencies": {
-		"@braintree/sanitize-url": "^7.1.1",
+		"@braintree/sanitize-url": "7.0.1",
 		"@nextcloud/files": "^3.10.2",
 		"@sveltejs/vite-plugin-svelte": "^3.0.2",
 		"path": "^0.12.7",
