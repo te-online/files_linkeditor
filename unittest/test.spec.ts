@@ -3,10 +3,9 @@
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Parser } from "../src/lib/Parser";
 import { suite, describe, it, expect, vi } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFile } from "fs/promises";
 import { JSDOM } from "jsdom";
 import { checkAndFixExtension } from "../src/lib/helpers";
-const binaryContent = readFileSync("./unittest/Example Domain.webloc", "binary");
 
 const { window } = new JSDOM(`...`);
 vi.stubGlobal("window", window);
@@ -281,6 +280,7 @@ suite("Parser", function () {
 
 	describe(".webloc binary files", function () {
 		it("reads a .webloc file that is a binary plist file", async function () {
+			const binaryContent = await readFile("./unittest/Example Domain.webloc", "binary");
 			const file = {
 				url: "https://example.org/",
 				sameWindow: false,
