@@ -1,4 +1,5 @@
 import { sanitizeUrl } from "@braintree/sanitize-url";
+import { Permission } from "@nextcloud/files";
 
 export class FileService {
 	static getFileConfig({
@@ -82,13 +83,14 @@ export class FileService {
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}
 
-	static userCanEdit() {
+	static userCanEdit(permission) {
 		return (
-			window.FileList &&
-			window.OC &&
-			window.OC.currentUser &&
-			(window.OC.PERMISSION_ALL === window.FileList?.getDirectoryPermissions?.() ||
-				window.OC.PERMISSION_UPDATE === window.FileList?.getDirectoryPermissions?.())
+			(window.FileList &&
+				window.OC &&
+				window.OC.currentUser &&
+				(window.OC.PERMISSION_ALL === window.FileList?.getDirectoryPermissions?.() ||
+					window.OC.PERMISSION_UPDATE === window.FileList?.getDirectoryPermissions?.())) ||
+			(permission >= Permission.UPDATE && permission < Permission.SHARE)
 		);
 	}
 }
