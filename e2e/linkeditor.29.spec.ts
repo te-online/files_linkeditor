@@ -27,7 +27,7 @@ const testFileViewer = async (
 		const page1Promise = page.waitForEvent("popup");
 		await page.getByRole("link", { name: url }).click();
 		const page1 = await page1Promise;
-		expect(page1.url()).toBe(`${url}/`);
+		expect(page1.url()).toBe(url);
 		page1.close();
 	}
 
@@ -76,11 +76,11 @@ test.describe("Link File Creation", () => {
 		await page.getByRole("menuitem", { name: "New link (.URL)" }).click();
 		await page.getByLabel("File name").fill("Test File.URL");
 		await page.getByRole("button", { name: "Create" }).click();
-		await page.getByPlaceholder("e.g. https://example.org").fill("https://example.org");
+		await page.getByPlaceholder("e.g. https://example.org").fill("https://example.org/");
 		await page.getByRole("link", { name: "Save" }).click();
 		// Space is produced by two <span> around filename and suffix
-		await page.getByRole("link", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
-		await expect(page.getByRole("link", { name: "Test File .URL" })).toBeVisible();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("button").filter({ hasText: "Test File .URL" })).toBeVisible();
 	});
 
 	test("create a .webloc link file", async ({ page }) => {
@@ -91,10 +91,10 @@ test.describe("Link File Creation", () => {
 		await page.getByRole("menuitem", { name: "New link (.webloc)" }).click();
 		await page.getByLabel("File name").fill("Test File.webloc");
 		await page.getByRole("button", { name: "Create" }).click();
-		await page.getByPlaceholder("e.g. https://example.org").fill("https://example.org");
+		await page.getByPlaceholder("e.g. https://example.org").fill("https://example.org/");
 		await page.getByRole("link", { name: "Save" }).click();
-		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
-		await expect(page.getByRole("link", { name: "Test File .webloc" })).toBeVisible();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("button").filter({ hasText: "Test File .webloc" })).toBeVisible();
 	});
 
 	test("create a .webloc link file in a subdirectory", async ({ page }) => {
@@ -102,55 +102,52 @@ test.describe("Link File Creation", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("link", { name: "Documents" }).click();
+		await page.getByRole("button", { name: "Documents" }).click();
 
 		await page.getByRole("button", { name: "New" }).click();
 		await page.getByRole("menuitem", { name: "New link (.webloc)" }).click();
 		await page.getByLabel("File name").fill("Test File.webloc");
 		await page.getByRole("button", { name: "Create" }).click();
-		await page.getByPlaceholder("e.g. https://example.org").fill("https://example.org");
+		await page.getByPlaceholder("e.g. https://example.org").fill("https://example.org/");
 		await page.getByRole("link", { name: "Save" }).click();
-		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
-		await expect(page.getByRole("link", { name: "Test File .webloc" })).toBeVisible();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("button").filter({ hasText: "Test File .webloc" })).toBeVisible();
 	});
 
 	test("open an existing .URL link file", async ({ page }) => {
 		await adminLogin(page);
 
 		await page.getByLabel("Files", { exact: true }).click();
-		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
-		await expect(page.getByRole("button", { name: "Test File .URL" })).toBeVisible();
-		await page.getByRole("button", { name: "Test File .URL" }).click();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("button").filter({ hasText: "Test File .URL" })).toBeVisible();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).click();
 
-		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org/", _blank: true });
 	});
 
 	test("open an existing .webloc link file", async ({ page }) => {
 		await adminLogin(page);
 
 		await page.getByLabel("Files", { exact: true }).click();
-		await page.getByRole("button", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
-		await expect(page.getByRole("button", { name: "Test File .webloc" })).toBeVisible();
-		await page.getByRole("button", { name: "Test File .webloc" }).click();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole("button").filter({ hasText: "Test File .webloc" })).toBeVisible();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).click();
 
-		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org/", _blank: true });
 	});
 
 	test("open link in same tab", async ({ page }) => {
 		await adminLogin(page);
 
 		await page.getByLabel("Files", { exact: true }).click();
-		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
-		await page
-			.getByRole("row", { name: 'Toggle selection for file "Test File.URL" Test File .URL Show sharing options' })
-			.getByLabel("Actions")
-			.click();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await page.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' }).getByLabel("Actions").click();
 		await page.getByRole("menuitem", { name: "Edit link" }).click();
 		await page.getByText("Open in same window", { exact: true }).click();
 		await page.getByRole("link", { name: "Save" }).click();
-		await page.getByRole("button", { name: "Test File .URL" }).click();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).click();
 
-		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org", _blank: false, close: false });
+		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org/", _blank: false, close: false });
 
 		await page.getByRole("link", { name: "Visit link" }).click();
 		expect(page.url()).toBe("https://example.org/");
@@ -161,12 +158,12 @@ test.describe("Link File Creation", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).scrollIntoViewIfNeeded();
 		await page.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' }).getByLabel("Actions").click();
 		await page.getByRole("menuitem", { name: "Edit link" }).click();
 		await page.getByText("Skip confirmation dialog").click();
 		await page.getByRole("link", { name: "Save" }).click();
-		await page.getByRole("button", { name: "Test File .URL" }).click();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).click();
 
 		await page.waitForURL("https://example.org/");
 	});
@@ -178,9 +175,9 @@ test.describe("Link File Sharing", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("button", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).scrollIntoViewIfNeeded();
 		await page
-			.getByRole("row", { name: 'Toggle selection for file "Test File.webloc" Test File .webloc Show sharing' })
+			.getByRole("row", { name: 'Toggle selection for file "Test File.webloc"' })
 			.getByRole("button")
 			.nth(1)
 			.click();
@@ -203,7 +200,7 @@ test.describe("Link File Sharing", () => {
 		const copiedUrl = await handle.jsonValue();
 		await page.goto(copiedUrl);
 
-		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org/", _blank: true });
 	});
 
 	test("edit a shared link file", async ({ page }) => {
@@ -211,24 +208,24 @@ test.describe("Link File Sharing", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
-		await page.getByRole("button", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
-		await page.getByRole("button", { name: "Test File .webloc" }).click();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).click();
 
 		await testFileViewer(page, {
 			fileName: "Test File.webloc",
-			url: "https://example.org",
+			url: "https://example.org/",
 			_blank: true,
 			close: false,
 		});
 
 		await page.getByRole("link", { name: "Edit link" }).click();
 		await page.getByPlaceholder("e.g. https://example.org").click();
-		await page.getByPlaceholder("e.g. https://example.org").fill("https://nextcloud.com");
+		await page.getByPlaceholder("e.g. https://example.org").fill("https://nextcloud.com/");
 		await page.getByPlaceholder("e.g. https://example.org").press("Enter");
 
-		await page.getByRole("button", { name: "Test File .webloc" }).click();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).click();
 
-		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://nextcloud.com", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://nextcloud.com/", _blank: true });
 	});
 });
 
@@ -238,9 +235,9 @@ test.describe("Public Link File Sharing", () => {
 		await page.getByLabel("Files", { exact: true }).click();
 
 		// Share the file
-		await page.getByRole("button", { name: "Test File .URL" }).scrollIntoViewIfNeeded();
+		await page.getByRole("button").filter({ hasText: "Test File .URL" }).scrollIntoViewIfNeeded();
 		await page
-			.getByRole("row", { name: 'Toggle selection for file "Test File.URL" Test File .URL Show sharing options' })
+			.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' })
 			.getByRole("button")
 			.nth(1)
 			.click();
@@ -264,11 +261,8 @@ test.describe("Public Link File Sharing", () => {
 		await page.getByLabel("Files", { exact: true }).click();
 
 		// Share the file
-		await page.getByRole("link", { name: "Test File .webloc" }).scrollIntoViewIfNeeded();
-		await page
-			.getByRole("row", { name: 'Toggle selection for file "Test File.webloc" Test File .webloc Shared Actions' })
-			.getByLabel("Shared")
-			.click();
+		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).scrollIntoViewIfNeeded();
+		await page.getByRole("row", { name: 'Toggle selection for file "Test File.webloc"' }).getByLabel("Shared").click();
 
 		// Create and copy the public link
 		await page.getByLabel("Create a new share link").click();
@@ -283,7 +277,7 @@ test.describe("Public Link File Sharing", () => {
 
 		await testFileViewer(page, {
 			fileName: "Test File.webloc",
-			url: "https://nextcloud.com",
+			url: "https://nextcloud.com/",
 			_blank: true,
 			close: false,
 		});
