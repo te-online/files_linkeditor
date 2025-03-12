@@ -24,7 +24,8 @@
 					return;
 				}
 				// Open the link without confirmation
-				if (file.skipConfirmation && file.sameWindow) {
+				// Don't do this for public shares to keep behaviour consistent with < NC 31 public files app
+				if (file.skipConfirmation && file.sameWindow && window.OC.currentUser) {
 					window.location.href = file.url;
 					// Hide viewer
 					viewMode.update(() => "none");
