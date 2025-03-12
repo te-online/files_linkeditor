@@ -27,7 +27,7 @@ const testFileViewer = async (
 		const page1Promise = page.waitForEvent("popup");
 		await page.getByRole("link", { name: url }).click();
 		const page1 = await page1Promise;
-		expect(page1.url()).toBe(url);
+		expect(page1.url()).toBe(`${url}/`);
 		page1.close();
 	}
 
@@ -123,7 +123,7 @@ test.describe("Link File Creation", () => {
 		await expect(row).toBeVisible();
 		await row.click();
 
-		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org/", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org", _blank: true });
 	});
 
 	test("open an existing .webloc link file", async ({ page }) => {
@@ -135,20 +135,21 @@ test.describe("Link File Creation", () => {
 		await expect(row).toBeVisible();
 		await row.click();
 
-		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org/", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org", _blank: true });
 	});
 
 	test("open link in same tab", async ({ page }) => {
 		await adminLogin(page);
 
 		await page.getByLabel("Files", { exact: true }).click();
+		await page.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' }).scrollIntoViewIfNeeded();
 		await page.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' }).getByLabel("Actions").click();
 		await page.getByRole("menuitem", { name: "Edit link" }).click();
 		await page.getByText("Open in same window", { exact: true }).click();
 		await page.getByRole("link", { name: "Save" }).click();
 		await page.getByRole("button").filter({ hasText: "Test File .URL" }).click();
 
-		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org/", _blank: false, close: false });
+		await testFileViewer(page, { fileName: "Test File.URL", url: "https://example.org", _blank: false, close: false });
 
 		await page.getByRole("link", { name: "Visit link" }).click();
 		expect(page.url()).toBe("https://example.org/");
@@ -159,13 +160,14 @@ test.describe("Link File Creation", () => {
 
 		await page.getByLabel("Files", { exact: true }).click();
 
+		await page.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' }).scrollIntoViewIfNeeded();
 		await page.getByRole("row", { name: 'Toggle selection for file "Test File.URL"' }).getByLabel("Actions").click();
 		await page.getByRole("menuitem", { name: "Edit link" }).click();
 		await page.getByText("Skip confirmation dialog").click();
 		await page.getByRole("link", { name: "Save" }).click();
 		await page.getByRole("button").filter({ hasText: "Test File .URL" }).click();
 
-		await page.waitForURL("https://example.org/");
+		await page.waitForURL("https://example.org");
 	});
 });
 
@@ -199,7 +201,7 @@ test.describe("Link File Sharing", () => {
 		const copiedUrl = await handle.jsonValue();
 		await page.goto(copiedUrl);
 
-		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org/", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://example.org", _blank: true });
 	});
 
 	test("edit a shared link file", async ({ page }) => {
@@ -211,7 +213,7 @@ test.describe("Link File Sharing", () => {
 
 		await testFileViewer(page, {
 			fileName: "Test File.webloc",
-			url: "https://example.org/",
+			url: "https://example.org",
 			_blank: true,
 			close: false,
 		});
@@ -223,7 +225,7 @@ test.describe("Link File Sharing", () => {
 
 		await page.getByRole("button").filter({ hasText: "Test File .webloc" }).click();
 
-		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://nextcloud.com/", _blank: true });
+		await testFileViewer(page, { fileName: "Test File.webloc", url: "https://nextcloud.com", _blank: true });
 	});
 });
 
@@ -249,7 +251,7 @@ test.describe("Public Link File Sharing", () => {
 
 		await page.getByRole("link", { name: "Visit link" }).click();
 
-		await page.waitForURL("https://example.org/");
+		await page.waitForURL("https://example.org");
 	});
 
 	test("cannot edit publicly shared link file", async ({ page }) => {
@@ -275,7 +277,7 @@ test.describe("Public Link File Sharing", () => {
 
 		await testFileViewer(page, {
 			fileName: "Test File.webloc",
-			url: "https://nextcloud.com/",
+			url: "https://nextcloud.com",
 			_blank: true,
 			close: false,
 		});
