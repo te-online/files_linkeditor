@@ -63,7 +63,7 @@
 			{t("files_linkeditor", "Cancel")}
 		</a>
 		{#if !loading}
-			{#if FileService.userCanEdit(file.permissions)}
+			{#if FileService.userCanEdit(file.permissions) && !file.isPublicLink}
 				<a
 					href={window.location.href}
 					class="button"

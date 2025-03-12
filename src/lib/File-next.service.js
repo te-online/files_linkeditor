@@ -17,6 +17,7 @@ export class FileServiceNext {
 		permissions,
 		existingContents,
 		templateName,
+		isPublicLink,
 	} = {}) {
 		return {
 			name: name || "?",
@@ -32,6 +33,7 @@ export class FileServiceNext {
 			permissions: permissions || Permission.NONE,
 			existingContents,
 			templateName,
+			isPublicLink: isPublicLink || false,
 		};
 	}
 

@@ -134,6 +134,7 @@ export class LinkeditorServiceNext {
 				name: fileName,
 				dir: dirName ? dirName : "",
 				permissions,
+				isPublicLink: publicUser,
 			}),
 		);
 		// Load file from backend

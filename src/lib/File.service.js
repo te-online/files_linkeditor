@@ -13,6 +13,7 @@ export class FileService {
 		isLoaded,
 		sameWindow,
 		skipConfirmation,
+		isPublicLink,
 	} = {}) {
 		return {
 			name: name || "?",
@@ -25,6 +26,7 @@ export class FileService {
 			isLoaded: isLoaded || false,
 			sameWindow: sameWindow || false,
 			skipConfirmation: skipConfirmation || false,
+			isPublicLink: isPublicLink || false,
 		};
 	}
 
@@ -90,7 +92,7 @@ export class FileService {
 				window.OC.currentUser &&
 				(window.OC.PERMISSION_ALL === window.FileList?.getDirectoryPermissions?.() ||
 					window.OC.PERMISSION_UPDATE === window.FileList?.getDirectoryPermissions?.())) ||
-			(permission >= Permission.UPDATE && permission < Permission.SHARE)
+			permission >= Permission.UPDATE
 		);
 	}
 }

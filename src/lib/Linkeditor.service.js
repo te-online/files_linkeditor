@@ -146,6 +146,7 @@ export class LinkeditorService {
 				name: fileName,
 				currentUrl,
 				dir: context ? context.dir : "",
+				isPublicLink: publicUser,
 			}),
 		);
 		// Load file from backend
