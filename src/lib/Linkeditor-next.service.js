@@ -55,8 +55,10 @@ export class LinkeditorServiceNext {
 					});
 				} else {
 					// Public share
+					// From Nextcloud 31, the filename is in `displayname`
+					// while `basename` is the share key
 					await LinkeditorServiceNext.loadAndChangeViewMode({
-						fileName: file.basename,
+						fileName: file.displayname ?? file.basename,
 						dirName: file.dirname,
 						nextViewMode: "view",
 						// TODO:
