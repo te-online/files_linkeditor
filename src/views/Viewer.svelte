@@ -24,8 +24,11 @@
 					return;
 				}
 				// Open the link without confirmation
-				// Don't do this for public shares to keep behaviour consistent with < NC 31 public files app
-				if (file.skipConfirmation && file.sameWindow && window.OC.currentUser) {
+				// ---
+				// Don't do this for public shares to keep behaviour
+				// mostly consistent with < NC 31 public files app
+				const isPublicAndFileFocussed = file.isPublicLink && window.location.toString().includes("openfile=true");
+				if (file.skipConfirmation && file.sameWindow && !isPublicAndFileFocussed) {
 					window.location.href = file.url;
 					// Hide viewer
 					viewMode.update(() => "none");
