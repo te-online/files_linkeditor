@@ -11,7 +11,6 @@ Notable changes in each released version can be seen here.
 
 ### Changed
 
-- **Potentially breaking change:** A slash (`/`) is now appended after the TLD (e.g. `.org`) if none is provided. This is consistent with the behaviour of `new URL()` in browsers and is enforced by the sanitisation libary this app depends on.
 - Updated translations from Transifex
 
 ### Fixed
