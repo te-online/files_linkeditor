@@ -3,9 +3,10 @@
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Parser } from "../src/lib/Parser";
 import { suite, describe, it, expect, vi } from "vitest";
-import { readFile } from "fs/promises";
+import { readFileSync } from "node:fs";
 import { JSDOM } from "jsdom";
 import { checkAndFixExtension } from "../src/lib/helpers";
+const binaryContent = readFileSync("./unittest/Example Domain.webloc", "binary");
 
 const { window } = new JSDOM(`...`);
 vi.stubGlobal("window", window);
@@ -34,7 +35,7 @@ suite("Sanitizer", function () {
 suite("Parser", function () {
 	describe(".webloc files", function () {
 		it("creates a .webloc file with just a URL", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			expect(Parser.generateWeblocFileContent("", url)).toEqual(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -46,7 +47,7 @@ suite("Parser", function () {
 		});
 
 		it("creates a .webloc file with a URL and the newWindow option", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			const sameWindow = true;
 			expect(Parser.generateWeblocFileContent("", url, sameWindow)).toEqual(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -63,7 +64,7 @@ suite("Parser", function () {
 		});
 
 		it("creates a .webloc file with a URL, the newWindow option and the skipConfirmation option", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			const sameWindow = true;
 			const skipConfirmation = true;
 			expect(Parser.generateWeblocFileContent("", url, sameWindow, skipConfirmation))
@@ -86,7 +87,7 @@ suite("Parser", function () {
 		});
 
 		it("updates a .webloc file removing the newWindow option and keeping the skipConfirmation option", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			const previousFile = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -123,7 +124,7 @@ suite("Parser", function () {
 		});
 
 		it("updates a .webloc file removing the skipConfirmation option, keeping an unknown option and adding sameWindow option", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			const previousFile = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -165,7 +166,7 @@ suite("Parser", function () {
 
 		it("reads a .webloc file with a link", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: false,
 				skipConfirmation: false,
 			};
@@ -183,7 +184,7 @@ suite("Parser", function () {
 
 		it("reads a .webloc file with a link and a sameWindow field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: true,
 				skipConfirmation: false,
 			};
@@ -205,7 +206,7 @@ suite("Parser", function () {
 
 		it("reads a .webloc file with a link, a sameWindow field and a skipConfirmation field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: true,
 				skipConfirmation: true,
 			};
@@ -231,7 +232,7 @@ suite("Parser", function () {
 
 		it("reads a .webloc file with a link, and a skipConfirmation field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: false,
 				skipConfirmation: true,
 			};
@@ -253,7 +254,7 @@ suite("Parser", function () {
 
 		it("reads a .webloc file with a link, an unknown field and a sameWindow field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: true,
 				skipConfirmation: false,
 			};
@@ -280,7 +281,6 @@ suite("Parser", function () {
 
 	describe(".webloc binary files", function () {
 		it("reads a .webloc file that is a binary plist file", async function () {
-			const binaryContent = await readFile("./unittest/Example Domain.webloc", "binary");
 			const file = {
 				url: "https://example.org/",
 				sameWindow: false,
@@ -292,14 +292,14 @@ suite("Parser", function () {
 
 	describe(".URL files", function () {
 		it("creates a .URL file with just a URL", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			expect(Parser.generateURLFileContent("", url)).toEqual(`[InternetShortcut]\r
 URL=${url}\r
 `);
 		});
 
 		it("creates a .URL file with a URL and the newWindow option", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			const sameWindow = true;
 			expect(Parser.generateURLFileContent("", url, sameWindow)).toEqual(`[InternetShortcut]\r
 URL=${url}\r
@@ -308,7 +308,7 @@ X-Target=_self\r
 		});
 
 		it("creates a .URL file with a URL, the newWindow option and the skipConfirmation option", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			const sameWindow = true;
 			const skipConfirmation = true;
 			expect(Parser.generateURLFileContent("", url, sameWindow, skipConfirmation)).toEqual(`[InternetShortcut]\r
@@ -318,8 +318,8 @@ X-Skip-Confirm-Navigation=1\r
 `);
 		});
 
-		it("updates a .URL file removing the newWindow option and keeping the skipConfirmation option", function () {
-			const url = "https://example.org/";
+		it("updates a .URL file removing the newWindow option and keeping the skipConfirmation option", function () {
+			const url = "https://example.org";
 			const previousFile = `[InternetShortcut]\r
 URL=${url}\r
 X-Target=_self\r
@@ -335,7 +335,7 @@ X-Skip-Confirm-Navigation=1\r
 		});
 
 		it("updates a .URL file removing the skipConfirmation option, keeping an unknown option and adding sameWindow option", function () {
-			const url = "https://example.org/";
+			const url = "https://example.org";
 			const previousFile = `[InternetShortcut]\r
 URL=${url}\r
 X-Skip-Confirm-Navigation=1\r
@@ -353,7 +353,7 @@ X-Target=_self\r
 
 		it("reads a .URL file with a link", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: false,
 				skipConfirmation: false,
 			};
@@ -365,7 +365,7 @@ URL=${file.url}`),
 
 		it("reads a .URL file with a link and a sameWindow field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: true,
 				skipConfirmation: false,
 			};
@@ -378,7 +378,7 @@ X-Target=_self`),
 
 		it("reads a .URL file with a link, a sameWindow field and a skipConfirmation field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: true,
 				skipConfirmation: true,
 			};
@@ -392,7 +392,7 @@ X-Target=_self`),
 
 		it("reads a .URL file with a link, and a skipConfirmation field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: false,
 				skipConfirmation: true,
 			};
@@ -405,7 +405,7 @@ X-Skip-Confirm-Navigation=1`),
 
 		it("reads a .URL file with a link, an unknown field and a sameWindow field", function () {
 			const file = {
-				url: "https://example.org/",
+				url: "https://example.org",
 				sameWindow: true,
 				skipConfirmation: false,
 			};
