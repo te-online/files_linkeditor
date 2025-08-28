@@ -5,6 +5,8 @@ OC.L10N.register(
     "Cannot read the file." : "Немагчыма прачытаць файл.",
     "The file is locked." : "Файл заблакіраваны.",
     "An internal server error occurred." : "Узнікла ўнутраная памылка сервера.",
+    "Edit link" : "Рэдагаваць спасылку",
+    "New link" : "Новая спасылка",
     "Cancel" : "Скасаваць",
     "Save" : "Захаваць"
 },
