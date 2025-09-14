@@ -20,7 +20,7 @@ OC.L10N.register(
     "Link.webloc" : "Link.webloc",
     "You are about to visit:" : "Está a piques de visitar:",
     "Saving failed!" : "Produciuse un fallo ao gardar!",
-    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Este ficheiro de ligazón parece non ser válido. – Podes solucionar isto editando o ficheiro.",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Este ficheiro de ligazón semella non ser válido. — Pode solucionar isto editando o ficheiro.",
     "A slight problem" : "Un problemiña",
     "Cancel" : "Cancelar",
     "Visit link" : "Visita a ligazón",
