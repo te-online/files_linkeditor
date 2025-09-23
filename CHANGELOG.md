@@ -2,6 +2,17 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.23, 23. September 2025
+
+### Added
+
+- Support for Nextcloud 32
+- New end-to-end test spec for Nextcloud 32
+
+### Changed
+
+- Updated translations from Transifex
+
 ## 1.1.22, 12. March 2025
 
 ### Added
