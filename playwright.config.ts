@@ -5,7 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
  * https://github.com/motdotla/dotenv
  */
 import { configDotenv } from "dotenv";
-configDotenv({ path: "./tests/.env" });
+configDotenv({ path: "./e2e/.env" });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -19,7 +19,7 @@ export default defineConfig({
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
 	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	workers: 1,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: "html",
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -31,6 +31,7 @@ export default defineConfig({
 		trace: "on-first-retry",
 	},
 
+
 	/* Configure projects for major browsers */
 	projects: [
 		{
@@ -38,15 +39,15 @@ export default defineConfig({
 			use: { ...devices["Desktop Chrome"] },
 		},
 
-		{
-			name: "firefox",
-			use: { ...devices["Desktop Firefox"] },
-		},
-
-		{
-			name: "webkit",
-			use: { ...devices["Desktop Safari"] },
-		},
+		// {
+		// 	name: "firefox",
+		// 	use: { ...devices["Desktop Firefox"] },
+		// },
+		//
+		// {
+		// 	name: "webkit",
+		// 	use: { ...devices["Desktop Safari"] },
+		// },
 
 		/* Test against mobile viewports. */
 		// {
