@@ -9898,7 +9898,7 @@ class Uh extends kr {
     super(), Fr(this, e, Mh, kh, gr, {});
   }
 }
-const Js = "application/internet-shortcut", Ks = () => '<span class="icon-link"></span>';
+const Js = "application/internet-shortcut", Ks = () => '<span class="icon-link" style="display: block;"></span>';
 window.OC.dialogs.alert = function(n, e) {
   window.OC.dialogs.message(
     t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."),

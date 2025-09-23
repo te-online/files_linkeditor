@@ -4,7 +4,7 @@ import { Parser } from "./Parser";
 import { Permission, registerFileAction, addNewFileMenuEntry, DefaultType } from "@nextcloud/files";
 
 const supportedMimetype = "application/internet-shortcut";
-const getSpanWithIconClass = () => '<span class="icon-link"></span>';
+const getSpanWithIconClass = () => '<span class="icon-link" style="display: block;"></span>';
 
 // Mokey-patch OC.dialogs, since somebody misspelled Dialogs.OK_BUTTON/S/...
 window.OC.dialogs.alert = function (title, message) {
