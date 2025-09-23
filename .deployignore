@@ -14,6 +14,5 @@ svelte.config.js
 .gitlab-ci.yml
 .tx
 dev
-tests
 node_modules
 jest

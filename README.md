@@ -33,12 +33,10 @@ Unit tests are run using [Vitest](https://github.com/vitest-dev/vitest). Tests c
 
 #### Introduction and podman-compose setup
 
-Make sure to create a `.env` file based on `.env.example` in the `tests` folder.
-
 To run the app, install podman and podman-compose on your machine. Then run
 
 ```bash
-$ podman-compose up
+$ cd dev && podman-compose up
 ```
 
 Let this run to be able to see the output. Add `-d` if you want podman-compose to run in the background.
@@ -46,11 +44,8 @@ Let this run to be able to see the output. Add `-d` if you want podman-compose t
 In a new terminal run
 
 ```bash
-# ATTENTION: You have to be quick with this command, before installation times out
-$ podman exec $(podman ps -qf "name=app") sh -c 'chown www-data:root custom_apps'
 # ATTENTION: Wait here for the app to be ready, then run:
-$ podman exec -u www-data $(podman ps -qf "name=app") sh -c 'php -f ./occ app:disable firstrunwizard'
-$ podman exec -u www-data $(podman ps -qf "name=app") sh -c 'php -f ./occ app:enable files_linkeditor'
+$ podman exec -u www-data $(podman ps -qf "name=nextcloud-dev") sh -c 'php -f ./occ app:enable files_linkeditor'
 ```
 
 To shut down containers and delete the temporary volumes, run
@@ -60,7 +55,7 @@ To shut down containers and delete the temporary volumes, run
 $ podman-compose down -v
 ```
 
-in a second terminal while you're in the same `tests` directory.
+in a second terminal while you're in the same `dev` directory.
 
 Test cases might depend on running in a specific order. This means you might need to wind down your containers and start them again as described above when re-running tests.
 
