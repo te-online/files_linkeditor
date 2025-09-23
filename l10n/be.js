@@ -1,6 +1,12 @@
 OC.L10N.register(
     "files_linkeditor",
     {
+    "This file is too big to be opened. Please download the file instead." : "Гэты файл занадта вялікі, каб яго можна было адкрыць. Замест гэтага спампуйце файл.",
+    "Cannot read the file." : "Немагчыма прачытаць файл.",
+    "The file is locked." : "Файл заблакіраваны.",
+    "An internal server error occurred." : "Узнікла ўнутраная памылка сервера.",
+    "Edit link" : "Рэдагаваць спасылку",
+    "New link" : "Новая спасылка",
     "Cancel" : "Скасаваць",
     "Save" : "Захаваць"
 },

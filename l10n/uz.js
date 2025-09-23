@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "You can not open a folder" : "Siz jildni ocholmaysiz",
     "This file is too big to be opened. Please download the file instead." : "Bu faylni ochish uchun juda katta. Buning o'rniga faylni yuklab oling.",
-    "Cancel" : "Cancel",
-    "Save" : "Save"
+    "Cancel" : "Bekor qilish",
+    "Save" : "Saqlash"
 },
 "nplurals=1; plural=0;");
