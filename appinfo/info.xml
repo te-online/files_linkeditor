@@ -27,6 +27,6 @@ _[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGE
 	<bugs>https://github.com/te-online/files_linkeditor/issues</bugs>
 	<namespace>Files_Linkeditor</namespace>
 	<dependencies>
-		<nextcloud min-version="26" max-version="31" />
+		<nextcloud min-version="26" max-version="32" />
 	</dependencies>
 </info>
