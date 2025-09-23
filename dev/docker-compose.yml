@@ -16,7 +16,6 @@ services:
     ports:
       - 8080:80
     volumes:
-      - /tmp/server:/var/www/html
       - ../:/var/www/html/apps-extra/files_linkeditor
     environment:
       - SERVER_BRANCH=${SERVER_BRANCH}
