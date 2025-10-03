@@ -12,8 +12,23 @@
     "File mtime not supplied" : "Ο χρόνος τροποποίησης  του αρχείου δεν παρέχεται",
     "An error occurred!" : "Παρουσιάστηκε σφάλμα!",
     "Edit link" : "Επεξεργασία συνδέσμου",
+    "View link" : "Προβολή συνδέσμου",
+    "New link" : "Νέος σύνδεσμος",
+    "Link.URL" : "Σύνδεσμος.URL",
+    "Link.webloc" : "Σύνδεσμος.webloc",
+    "You are about to visit:" : "Πρόκειται να επισκεφθείτε:",
     "Saving failed!" : "Απέτυχε η αποθήκευση!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Αυτό το αρχείο συνδέσμου δεν φαίνεται να είναι έγκυρο. – Μπορείτε να το διορθώσετε επεξεργαζόμενοι το αρχείο.",
+    "A slight problem" : "Ένα μικρό πρόβλημα",
     "Cancel" : "Ακύρωση",
-    "Save" : "Αποθήκευση"
+    "Visit link" : "Επίσκεψη συνδέσμου",
+    "Link target URL" : "URL προορισμού συνδέσμου",
+    "e.g. https://example.org" : "π.χ. https://example.org",
+    "Save" : "Αποθήκευση",
+    "Open in same window" : "Άνοιγμα στο ίδιο παράθυρο",
+    "Skip confirmation dialog before open (has to open in same window)" : "Παράλειψη διαλόγου επιβεβαίωσης πριν το άνοιγμα (πρέπει να ανοίξει στο ίδιο παράθυρο)",
+    "Link editor" : "Επεξεργαστής συνδέσμων",
+    "An app to read and edit .URL and .webloc files." : "Μια εφαρμογή για ανάγνωση και επεξεργασία αρχείων .URL και .webloc.",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Εξωτερικοί ιστότοποι στο Nextcloud!\n* ✍️ **δημιουργία και επεξεργασία** συνδέσμων .URL και .webloc στην προβολή αρχείων\n* 🌍 **άνοιγμα συνδέσμων** κάνοντας κλικ σε αυτούς και επιβεβαιώνοντας ότι θέλετε να μεταβείτε στον εξωτερικό ιστότοπο\n* 📤 **λειτουργεί σε δημόσιους συνδέσμους κοινής χρήσης** ώστε να μπορείτε να μοιράζεστε εύκολα συνδέσμους με άλλους\n* 🔄 **συγχρονίστε τους συνδέσμους σας** καθώς τα .URL και .webloc είναι ιστοσύνδεσμοι όπως δημιουργούνται στα περισσότερα λειτουργικά συστήματα.\n\n_[Προβολή ιστορικού αλλαγών](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
