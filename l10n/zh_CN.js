@@ -12,7 +12,7 @@ OC.L10N.register(
     "Insufficient permissions" : "权限不足",
     "File path not supplied" : "未提供文件路径",
     "File mtime not supplied" : "未提供 mtime",
-    "An error occurred!" : "出错了！",
+    "An error occurred!" : "发生错误！",
     "Edit link" : "编辑链接",
     "View link" : "查看链接",
     "New link" : "新建链接",
