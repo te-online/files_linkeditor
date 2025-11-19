@@ -1,4 +1,5 @@
 { "translations": {
+    "An error occurred!" : "An error occurred!",
     "Cancel" : "ຍົກເລີກ",
     "Save" : "ບັນທຶກ"
 },"pluralForm" :"nplurals=1; plural=0;"
