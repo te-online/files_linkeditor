@@ -11,8 +11,24 @@
     "File path not supplied" : "Nije isporučen put datoteke",
     "File mtime not supplied" : "Nije isporučen mtime datoteke",
     "An error occurred!" : "Došlo je do pogreške!",
+    "Edit link" : "Uredi poveznicu",
+    "View link" : "Prikaži poveznicu",
+    "New link" : "Nova poveznica",
+    "Link.URL" : "Poveznica.URL",
+    "Link.webloc" : "Poveznica.webloc",
+    "You are about to visit:" : "Upravo ćete posjetiti:",
     "Saving failed!" : "Spremanje nije uspjelo!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Ova datoteka s poveznicom ne izgleda ispravno. – To možete popraviti uređivanjem datoteke.",
+    "A slight problem" : "Mali problem",
     "Cancel" : "Odustani",
-    "Save" : "Spremi"
+    "Visit link" : "Posjeti poveznicu",
+    "Link target URL" : "Ciljni URL poveznice",
+    "e.g. https://example.org" : "npr. https://example.org",
+    "Save" : "Spremi",
+    "Open in same window" : "Otvori u istom prozoru",
+    "Skip confirmation dialog before open (has to open in same window)" : "Preskoči dijalog potvrde prije otvaranja (mora se otvoriti u istom prozoru)",
+    "Link editor" : "Uređivač poveznica",
+    "An app to read and edit .URL and .webloc files." : "Aplikacija za čitanje i uređivanje .URL i .webloc datoteka.",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Vanjske web-poveznice u Nextcloudu!\n* ✍️ **stvaranje i uređivanje** .URL i .webloc poveznica u prikazu datoteka\n* 🌍 **otvaranje poveznica** klikom uz potvrdu da želite posjetiti vanjsku stranicu\n* 📤 **radi u javnim dijeljenjima** kako biste jednostavno dijelili poveznice s drugima\n* 🔄 **sinkronizacija poveznica** jer su .URL i .webloc web-poveznice kakve se stvaraju na većini operacijskih sustava\n\n_[Prikaži zapis promjena](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },"pluralForm" :"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;"
 }
