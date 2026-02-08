@@ -6,7 +6,7 @@ OC.L10N.register(
     "Cannot read the file." : "Неможливо прочитати файл.",
     "Invalid file path supplied." : "Помилковий шлях до файлу.",
     "The file is locked." : "Файл заблоковано.",
-    "An internal server error occurred." : "Виникла внутрішня помилка серверу.",
+    "An internal server error occurred." : "Виникла внутрішня помилка сервера.",
     "You can not write to a folder" : "Каталог тільки для читання",
     "Cannot save file as it has been modified since opening" : "Неможливо зберегти файл оскільки його було змінено після відкриття вами",
     "Insufficient permissions" : "Недостатньо прав доступу",
