@@ -83,7 +83,7 @@
 				{t("files_linkeditor", "Cancel")}
 			</a>
 			{#if !loading}
-				<button type="button" on:click|preventDefault={save} disabled={isConflicting} class="primary button">
+				<button type="submit" on:click|preventDefault={save} disabled={isConflicting} class="primary button">
 					{t("files_linkeditor", "Create")}
 				</button>
 			{/if}
