@@ -1,7 +1,7 @@
 import { viewMode, currentFile } from "./store.js";
 import { FileServiceNext } from "./File-next.service";
 import { Parser } from "./Parser";
-import { Permission, registerFileAction, addNewFileMenuEntry, DefaultType } from "@nextcloud/files";
+import { Permission, registerFileAction, addNewFileMenuEntry, DefaultType, NewMenuEntryCategory } from "@nextcloud/files";
 
 const supportedMimetype = "application/internet-shortcut";
 const getSpanWithIconClass = () => '<span class="icon-link" style="display: block;"></span>';
@@ -26,51 +26,50 @@ export class LinkeditorServiceNext {
 			id: "editLink",
 			displayName: () => t("files_linkeditor", "Edit link"),
 			iconSvgInline: getSpanWithIconClass,
-			exec: async (file) => {
+			exec: async ({ folder }) => {
 				await LinkeditorServiceNext.loadAndChangeViewMode({
-					fileName: file.basename,
-					dirName: file.dirname,
+					fileName: folder.basename,
+					dirName: folder.dirname,
 					nextViewMode: "edit",
-					permissions: file.permissions,
+					permissions: folder.permissions,
 				});
 			},
-			enabled: (files) =>
-				window.OC.currentUser &&
-				files.every((file) => file.permissions >= Permission.UPDATE && supportedMimetype.includes(file.mime)),
+			enabled: ({ nodes }) => window.OC.currentUser &&
+				nodes.every((file) => file.permissions >= Permission.UPDATE && supportedMimetype.includes(file.mime)),
 		});
 
 		// View action on single file
 		registerFileAction({
 			id: "viewLink",
 			displayName: () => t("files_linkeditor", "View link"),
+			title: () => "Hello",
 			iconSvgInline: getSpanWithIconClass,
-			exec: async (file) => {
+			exec: async ({ folder }) => {
 				if (window.OC.currentUser) {
 					// Logged in
 					await LinkeditorServiceNext.loadAndChangeViewMode({
-						fileName: file.basename,
-						dirName: file.dirname,
+						fileName: folder.basename,
+						dirName: folder.dirname,
 						nextViewMode: "view",
-						permissions: file.permissions,
+						permissions: folder.permissions,
 					});
 				} else {
 					// Public share
 					// From Nextcloud 31, the filename is in `displayname`
 					// while `basename` is the share key
 					await LinkeditorServiceNext.loadAndChangeViewMode({
-						fileName: file.displayname ?? file.basename,
-						dirName: file.dirname,
+						fileName: folder.displayname ?? folder.basename,
+						dirName: folder.dirname,
 						nextViewMode: "view",
 						// TODO:
-						downloadUrl: file.source,
+						downloadUrl: folder.source,
 						publicUser: true,
-						permissions: file.permissions,
+						permissions: folder.permissions,
 					});
 				}
 			},
-			enabled: (files) =>
-				files.every((file) => file.permissions >= Permission.READ && supportedMimetype.includes(file.mime)),
-			default: () => DefaultType.DEFAULT,
+			enabled: ({ nodes }) => nodes.every((file) => file.permissions >= Permission.READ && supportedMimetype.includes(file.mime)),
+			default: DefaultType.DEFAULT,
 		});
 
 		const menuEntryFactory = ({ id, displayName, templateName }) => {
@@ -79,7 +78,8 @@ export class LinkeditorServiceNext {
 				id,
 				displayName,
 				enabled: (context) => context.permissions >= Permission.CREATE,
-				iconClass: "icon-link",
+				iconSvgInline: getSpanWithIconClass(),
+				category: NewMenuEntryCategory.CreateNew,
 				handler: (context, contents) => {
 					const dir = context.path;
 					// First name the file

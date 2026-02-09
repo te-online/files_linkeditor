@@ -1,5 +1,6 @@
 import { sanitizeUrl } from "@braintree/sanitize-url";
-import { Permission, davGetClient, davRootPath, davGetDefaultPropfind, davResultToNode } from "@nextcloud/files";
+import { Permission } from "@nextcloud/files";
+import { getClient, defaultRootPath, getDefaultPropfind, resultToNode } from '@nextcloud/files/dav';
 import { emit } from "@nextcloud/event-bus";
 
 export class FileServiceNext {
@@ -75,13 +76,13 @@ export class FileServiceNext {
 			path = `${dir}/${name}`;
 		}
 		// Use dav client to save file
-		const client = davGetClient();
-		const absolutePath = `${davRootPath}${path}`;
+		const client = getClient();
+		const absolutePath = `${defaultRootPath}${path}`;
 		try {
 			const result = await client.putFileContents(absolutePath, fileContent, { overwrite: false });
 			if (result) {
-				const stat = await client.stat(absolutePath, { details: true, data: davGetDefaultPropfind() });
-				emit("files:node:created", davResultToNode(stat.data));
+				const stat = await client.stat(absolutePath, { details: true, data: getDefaultPropfind() });
+				emit("files:node:created", resultToNode(stat.data));
 
 				return true;
 			}
