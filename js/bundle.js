@@ -5455,7 +5455,7 @@ class ut {
   }
   static userCanEdit(e) {
     var n, i, o, a;
-    return window.FileList && window.OC && window.OC.currentUser && (window.OC.PERMISSION_ALL === ((i = (n = window.FileList) == null ? void 0 : n.getDirectoryPermissions) == null ? void 0 : i.call(n)) || window.OC.PERMISSION_UPDATE === ((a = (o = window.FileList) == null ? void 0 : o.getDirectoryPermissions) == null ? void 0 : a.call(o))) || e >= We.UPDATE;
+    return window.FileList && window.OC && window.OC.currentUser && (window.OC.PERMISSION_ALL === ((i = (n = window.FileList) == null ? void 0 : n.getDirectoryPermissions) == null ? void 0 : i.call(n)) || window.OC.PERMISSION_UPDATE === ((a = (o = window.FileList) == null ? void 0 : o.getDirectoryPermissions) == null ? void 0 : a.call(o))) || e >= We.WRITE;
   }
 }
 const $t = us(""), cr = us(ut.getFileConfig());
@@ -7751,7 +7751,7 @@ class fr {
           permissions: i.permissions
         });
       },
-      enabled: ({ nodes: n }) => window.OC.currentUser && n.every((i) => i.permissions >= We.UPDATE && Vo.includes(i.mime))
+      enabled: ({ nodes: n }) => window.OC.currentUser && n.every((i) => i.permissions >= We.WRITE && Vo.includes(i.mime))
     }), lo({
       id: "viewLink",
       displayName: () => t("files_linkeditor", "View link"),

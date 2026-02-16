@@ -39,7 +39,7 @@ export class LinkeditorService {
 				});
 			},
 			enabled: ({ nodes }) => window.OC.currentUser &&
-				nodes.every((file) => file.permissions >= Permission.UPDATE && supportedMimetype.includes(file.mime)),
+				nodes.every((file) => file.permissions >= Permission.WRITE && supportedMimetype.includes(file.mime)),
 		});
 
 		// View action on single file
