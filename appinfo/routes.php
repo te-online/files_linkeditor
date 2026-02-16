@@ -25,11 +25,6 @@ return [
 			'name' => 'LinkHandling#load',
 			'url' => '/ajax/loadfile',
 			'verb' => 'GET'
-		],
-		[
-			'name' => 'LinkHandling#save',
-			'url' => '/ajax/savefile',
-			'verb' => 'PUT'
 		]
 	]
 ];
