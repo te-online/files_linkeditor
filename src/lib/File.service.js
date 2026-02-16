@@ -1,5 +1,7 @@
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Permission } from "@nextcloud/files";
+import { getClient, defaultRootPath, getDefaultPropfind, resultToNode } from '@nextcloud/files/dav';
+import { emit } from "@nextcloud/event-bus";
 
 export class FileService {
 	static getFileConfig({
@@ -13,6 +15,9 @@ export class FileService {
 		isLoaded,
 		sameWindow,
 		skipConfirmation,
+		permissions,
+		existingContents,
+		templateName,
 		isPublicLink,
 	} = {}) {
 		return {
@@ -26,6 +31,9 @@ export class FileService {
 			isLoaded: isLoaded || false,
 			sameWindow: sameWindow || false,
 			skipConfirmation: skipConfirmation || false,
+			permissions: permissions || Permission.NONE,
+			existingContents,
+			templateName,
 			isPublicLink: isPublicLink || false,
 		};
 	}
@@ -61,26 +69,25 @@ export class FileService {
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}
 
-	static async save({ fileContent, name, fileModifiedTime, dir } = {}) {
+	static async save({ fileContent, name, dir } = {}) {
 		// Send the PUT request
 		let path = `${dir}${name}`;
 		if (dir !== "/") {
 			path = `${dir}/${name}`;
 		}
-		const result = await window.fetch(window.OC.generateUrl("/apps/files_linkeditor/ajax/savefile"), {
-			method: "PUT",
-			body: JSON.stringify({
-				filecontents: fileContent,
-				path,
-				mtime: fileModifiedTime,
-			}),
-			headers: {
-				requesttoken: window.OC.requestToken,
-				"Content-Type": "application/json",
-			},
-		});
-		if (result && result.ok) {
-			return true;
+		// Use dav client to save file
+		const client = getClient();
+		const absolutePath = `${defaultRootPath}${path}`;
+		try {
+			const result = await client.putFileContents(absolutePath, fileContent, { overwrite: true });
+			if (result) {
+				const stat = await client.stat(absolutePath, { details: true, data: getDefaultPropfind() });
+				emit("files:node:created", resultToNode(stat.data));
+
+				return true;
+			}
+		} catch (error) {
+			console.error(error);
 		}
 		window.OC.dialogs.alert("", window.t("files_linkeditor", "An error occurred!"));
 	}

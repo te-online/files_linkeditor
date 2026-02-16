@@ -2,7 +2,7 @@
 	import Overlay from "./Overlay.svelte";
 	import { viewMode, currentFile } from "../lib/store";
 	import { onDestroy, onMount } from "svelte";
-	import { FileServiceNext } from "../lib/File-next.service";
+	import { FileService } from "../lib/File.service.js";
 	import { checkAndFixExtension } from "../lib/helpers";
 	const t = window.t;
 	const OC = window.OC;
@@ -16,7 +16,7 @@
 		return fileNames.includes(fixedFile.name);
 	};
 
-	$: file = FileServiceNext.getFileConfig();
+	$: file = FileService.getFileConfig();
 	$: loading = true;
 	$: isConflicting = true;
 	let unsubscribe;
