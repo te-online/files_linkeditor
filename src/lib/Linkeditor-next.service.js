@@ -26,12 +26,16 @@ export class LinkeditorServiceNext {
 			id: "editLink",
 			displayName: () => t("files_linkeditor", "Edit link"),
 			iconSvgInline: getSpanWithIconClass,
-			exec: async ({ folder }) => {
+			exec: async ({ nodes }) => {
+				const [node] = nodes;
+				if (!node) {
+					return;
+				}
 				await LinkeditorServiceNext.loadAndChangeViewMode({
-					fileName: folder.basename,
-					dirName: folder.dirname,
+					fileName: node.basename,
+					dirName: node.dirname,
 					nextViewMode: "edit",
-					permissions: folder.permissions,
+					permissions: node.permissions,
 				});
 			},
 			enabled: ({ nodes }) => window.OC.currentUser &&
@@ -44,27 +48,31 @@ export class LinkeditorServiceNext {
 			displayName: () => t("files_linkeditor", "View link"),
 			title: () => "Hello",
 			iconSvgInline: getSpanWithIconClass,
-			exec: async ({ folder }) => {
+			exec: async ({ nodes }) => {
+				const [node] = nodes;
+				if (!node) {
+					return;
+				}
 				if (window.OC.currentUser) {
 					// Logged in
 					await LinkeditorServiceNext.loadAndChangeViewMode({
-						fileName: folder.basename,
-						dirName: folder.dirname,
+						fileName: node.basename,
+						dirName: node.dirname,
 						nextViewMode: "view",
-						permissions: folder.permissions,
+						permissions: node.permissions,
 					});
 				} else {
 					// Public share
 					// From Nextcloud 31, the filename is in `displayname`
 					// while `basename` is the share key
 					await LinkeditorServiceNext.loadAndChangeViewMode({
-						fileName: folder.displayname ?? folder.basename,
-						dirName: folder.dirname,
+						fileName: node.displayname ?? node.basename,
+						dirName: node.dirname,
 						nextViewMode: "view",
 						// TODO:
-						downloadUrl: folder.source,
+						downloadUrl: node.source,
 						publicUser: true,
-						permissions: folder.permissions,
+						permissions: node.permissions,
 					});
 				}
 			},
