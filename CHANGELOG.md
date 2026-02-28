@@ -2,6 +2,21 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.24, 28. February 2026
+
+### Added
+
+- Support for Nextcloud 33
+- New end-to-end test spec for Nextcloud 33
+
+### Changed
+
+- Updated translations from Transifex
+
+### Fixed
+
+- Updated JS dependencies via `npm audit` and manually
+
 ## 1.1.23, 23. September 2025
 
 ### Added
