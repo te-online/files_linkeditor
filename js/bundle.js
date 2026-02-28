@@ -7946,15 +7946,6 @@ const jt = (n) => n && n.length > 0 && n[0].childNodes && n[0].childNodes.length
   return a.appendChild(n.createTextNode(r)), i.appendChild(a), i;
 }, Dp = (n) => n.replace(/></g, `>
 <`), kp = (n) => n.replace(/<extra>/g, "<!-- <extra>").replace(/<\/extra>/g, "</extra> -->"), Cs = (n) => n.replace(/<!-- <extra>/g, "<extra>").replace(/<\/extra> -->/g, "</extra>"), Ls = "application/internet-shortcut", Ii = () => '<span class="icon-link" style="display: block;"></span>';
-window.OC.dialogs.alert = function(n, e) {
-  window.OC.dialogs.message(
-    t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."),
-    t("files_linkeditor", "A slight problem"),
-    "alert",
-    71
-    // Dialogs.OK_BUTTONS
-  );
-};
 class Cn {
   /**
    * Registers the file actions with files app
