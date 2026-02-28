@@ -15,7 +15,12 @@ Notable changes in each released version can be seen here.
 
 ### Fixed
 
-- Updated JS dependencies via `npm audit` and manually
+- Updated JS dependencies via `npm audit` and Dependabot
+
+### Removed
+
+- Drop support for Nextcloud versions < 32 anymore, since they are End of Life
+- End-to-end test specs for Nextcloud versions < 32
 
 ## 1.1.23, 23. September 2025
 
