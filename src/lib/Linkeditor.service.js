@@ -6,16 +6,6 @@ import { Permission, registerFileAction, addNewFileMenuEntry, DefaultType, NewMe
 const supportedMimetype = "application/internet-shortcut";
 const getSpanWithIconClass = () => '<span class="icon-link" style="display: block;"></span>';
 
-// Mokey-patch OC.dialogs, since somebody misspelled Dialogs.OK_BUTTON/S/...
-window.OC.dialogs.alert = function (title, message) {
-	window.OC.dialogs.message(
-		t("files_linkeditor", "This link-file doesn't seem to be valid. – You can fix this by editing the file."),
-		t("files_linkeditor", "A slight problem"),
-		"alert",
-		71, // Dialogs.OK_BUTTONS
-	);
-};
-
 export class LinkeditorService {
 	/**
 	 * Registers the file actions with files app
