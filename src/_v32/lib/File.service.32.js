@@ -78,7 +78,7 @@ export class FileService32 {
 		const client = davGetClient();
 		const absolutePath = `${davRootPath}${path}`;
 		try {
-			const result = await client.putFileContents(absolutePath, fileContent, { overwrite: false });
+			const result = await client.putFileContents(absolutePath, fileContent, { overwrite: true });
 			if (result) {
 				const stat = await client.stat(absolutePath, { details: true, data: davGetDefaultPropfind() });
 				emit("files:node:created", davResultToNode(stat.data));

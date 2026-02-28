@@ -10479,7 +10479,7 @@ class kt {
     i !== "/" && (o = `${i}/${r}`);
     const a = sd(), l = `${Fl}${o}`;
     try {
-      if (await a.putFileContents(l, e, { overwrite: !1 })) {
+      if (await a.putFileContents(l, e, { overwrite: !0 })) {
         const c = await a.stat(l, { details: !0, data: rd() });
         return Pa("files:node:created", ad(c.data)), !0;
       }
