@@ -1,14 +1,54 @@
+.oc-dialog-dim {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    inset-inline-start: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    --backdrop-color: 0, 0, 0;
+    background-color: rgba(var(--backdrop-color), 0.5);
+}
+
+.oc-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    flex-flow: column;
+    padding: 0;
+}
+
 .oc-dialog .urlvisit {
-	margin-bottom: 25px;
+	padding-bottom: 25px;
 }
 .oc-dialog .edit {
-	padding-left: 10px;
-	padding-right: 10px;
+	padding-left: 20px;
+    padding-right: 20px;
 	min-width: 300px;
 	max-width: 400px;
+    border-radius: var(--border-radius-container) var(--border-radius-container) 0 0;
+    background-color: var(--color-main-background);
+    color: var(--color-main-text);
+    display: flex;
+    flex-flow: column;
+}
+.oc-dialog-buttonrow {
+    padding: 10px 20px;
+    min-width: 300px;
+    max-width: 400px;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--color-main-background);
+    color: var(--color-main-text);
+}
+.oc-dialog-buttonrow:last-of-type {
+    border-radius: 0 0 var(--border-radius-container) var(--border-radius-container);
 }
 .oc-dialog .edit.push-bottom {
-	margin-bottom: 15px;
+    padding-bottom: 12px;
 }
 .oc-dialog .edit .urldisplay {
 	word-wrap: break-word;
@@ -17,5 +57,5 @@
 	display: block;
 }
 .oc-dialog .edit .space-top {
-	margin-top: 5px;
+	padding-top: 5px;
 }
