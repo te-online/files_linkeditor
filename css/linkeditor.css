@@ -1,4 +1,4 @@
-.oc-dialog-dim {
+.linkeditor-oc-dialog-dim {
     position: fixed;
     z-index: 9998;
     top: 0;
@@ -10,7 +10,7 @@
     background-color: rgba(var(--backdrop-color), 0.5);
 }
 
-.oc-dialog {
+.linkeditor-oc-dialog {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,10 +21,10 @@
     padding: 0;
 }
 
-.oc-dialog .urlvisit {
+.linkeditor-oc-dialog .urlvisit {
 	padding-bottom: 25px;
 }
-.oc-dialog .edit {
+.linkeditor-oc-dialog .edit {
 	padding-left: 20px;
     padding-right: 20px;
 	min-width: 300px;
@@ -35,7 +35,7 @@
     display: flex;
     flex-flow: column;
 }
-.oc-dialog-buttonrow {
+.linkeditor-oc-dialog-buttonrow {
     padding: 10px 20px;
     min-width: 300px;
     max-width: 400px;
@@ -44,18 +44,18 @@
     background-color: var(--color-main-background);
     color: var(--color-main-text);
 }
-.oc-dialog-buttonrow:last-of-type {
+.linkeditor-oc-dialog-buttonrow:last-of-type {
     border-radius: 0 0 var(--border-radius-container) var(--border-radius-container);
 }
-.oc-dialog .edit.push-bottom {
+.linkeditor-oc-dialog .edit.push-bottom {
     padding-bottom: 12px;
 }
-.oc-dialog .edit .urldisplay {
+.linkeditor-oc-dialog .edit .urldisplay {
 	word-wrap: break-word;
 }
-.oc-dialog .edit label {
+.linkeditor-oc-dialog .edit label {
 	display: block;
 }
-.oc-dialog .edit .space-top {
+.linkeditor-oc-dialog .edit .space-top {
 	padding-top: 5px;
 }

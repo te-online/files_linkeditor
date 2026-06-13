@@ -332,7 +332,7 @@ function uu(n) {
   );
   return {
     c() {
-      e = H("div"), r = le(), i = H("div"), f && f.c(), B(e, "class", "oc-dialog-dim"), B(i, "class", o = `oc-dialog ${/*loading*/
+      e = H("div"), r = le(), i = H("div"), f && f.c(), B(e, "class", "linkeditor-oc-dialog-dim"), B(i, "class", o = `linkeditor-oc-dialog ${/*loading*/
       n[0] ? "icon-loading" : ""}`), Nr(i, "position", "fixed");
     },
     m(c, h) {
@@ -358,7 +358,7 @@ function uu(n) {
         ),
         null
       ), (!a || h & /*loading*/
-      1 && o !== (o = `oc-dialog ${/*loading*/
+      1 && o !== (o = `linkeditor-oc-dialog ${/*loading*/
       c[0] ? "icon-loading" : ""}`)) && B(i, "class", o);
     },
     i(c) {
@@ -6815,7 +6815,7 @@ function Np(n) {
   n[1] && Os(n);
   return {
     c() {
-      e = H("div"), r = H("h3"), o = _e(i), a = le(), b && b.c(), l = le(), f = H("div"), c = H("a"), s = _e(h), d = le(), g && g.c(), B(e, "class", "edit push-bottom"), B(c, "href", window.location.href), B(c, "class", "button"), B(f, "class", "oc-dialog-buttonrow twobuttons");
+      e = H("div"), r = H("h3"), o = _e(i), a = le(), b && b.c(), l = le(), f = H("div"), c = H("a"), s = _e(h), d = le(), g && g.c(), B(e, "class", "edit push-bottom"), B(c, "href", window.location.href), B(c, "class", "button"), B(f, "class", "linkeditor-oc-dialog-buttonrow twobuttons");
     },
     m(T, O) {
       ie(T, e, O), W(e, r), W(r, o), W(e, a), b && b.m(e, null), ie(T, l, O), ie(T, f, O), W(f, c), W(c, s), W(f, d), g && g.m(f, null), E || (y = Oe(c, "click", ht(
@@ -8198,7 +8198,7 @@ function Fp(n) {
   n[1] && $s(n);
   return {
     c() {
-      e = H("form"), r = H("div"), i = H("h3"), a = _e(o), l = le(), O && O.c(), f = le(), c = H("div"), S && S.c(), h = le(), s = H("div"), d = H("a"), y = _e(E), b = le(), L && L.c(), B(r, "class", "edit"), B(c, "class", "oc-dialog-buttonrow onebutton urlvisit"), B(d, "href", window.location.href), B(d, "class", "cancel button"), B(s, "class", "oc-dialog-buttonrow twobuttons"), B(
+      e = H("form"), r = H("div"), i = H("h3"), a = _e(o), l = le(), O && O.c(), f = le(), c = H("div"), S && S.c(), h = le(), s = H("div"), d = H("a"), y = _e(E), b = le(), L && L.c(), B(r, "class", "edit"), B(c, "class", "linkeditor-oc-dialog-buttonrow onebutton urlvisit"), B(d, "href", window.location.href), B(d, "class", "cancel button"), B(s, "class", "linkeditor-oc-dialog-buttonrow twobuttons"), B(
         e,
         "action",
         /*OC*/
@@ -8393,7 +8393,7 @@ function jp(n) {
   n[1] && Fs(n);
   return {
     c() {
-      e = H("form"), r = H("div"), i = H("h3"), i.textContent = `${window.t("files_linkeditor", "New link")}`, o = le(), y && y.c(), a = le(), l = H("div"), f = H("a"), h = _e(c), s = le(), b && b.c(), B(r, "class", "edit"), B(f, "href", window.location.href), B(f, "class", "cancel button"), B(l, "class", "oc-dialog-buttonrow twobuttons"), B(
+      e = H("form"), r = H("div"), i = H("h3"), i.textContent = `${window.t("files_linkeditor", "New link")}`, o = le(), y && y.c(), a = le(), l = H("div"), f = H("a"), h = _e(c), s = le(), b && b.c(), B(r, "class", "edit"), B(f, "href", window.location.href), B(f, "class", "cancel button"), B(l, "class", "linkeditor-oc-dialog-buttonrow twobuttons"), B(
         e,
         "action",
         /*OC*/
@@ -10607,7 +10607,7 @@ function wd(n) {
   n[1] && ta(n);
   return {
     c() {
-      e = H("div"), r = H("h3"), o = _e(i), a = le(), b && b.c(), l = le(), f = H("div"), c = H("a"), s = _e(h), d = le(), g && g.c(), B(e, "class", "edit push-bottom"), B(c, "href", window.location.href), B(c, "class", "button"), B(f, "class", "oc-dialog-buttonrow twobuttons");
+      e = H("div"), r = H("h3"), o = _e(i), a = le(), b && b.c(), l = le(), f = H("div"), c = H("a"), s = _e(h), d = le(), g && g.c(), B(e, "class", "edit push-bottom"), B(c, "href", window.location.href), B(c, "class", "button"), B(f, "class", "linkeditor-oc-dialog-buttonrow twobuttons");
     },
     m(T, O) {
       ie(T, e, O), W(e, r), W(r, o), W(e, a), b && b.m(e, null), ie(T, l, O), ie(T, f, O), W(f, c), W(c, s), W(f, d), g && g.m(f, null), E || (y = Oe(c, "click", ht(
@@ -10944,7 +10944,7 @@ function _d(n) {
   n[1] && aa(n);
   return {
     c() {
-      e = H("form"), r = H("div"), i = H("h3"), a = _e(o), l = le(), O && O.c(), f = le(), c = H("div"), S && S.c(), h = le(), s = H("div"), d = H("a"), y = _e(E), b = le(), L && L.c(), B(r, "class", "edit"), B(c, "class", "oc-dialog-buttonrow onebutton urlvisit"), B(d, "href", window.location.href), B(d, "class", "cancel button"), B(s, "class", "oc-dialog-buttonrow twobuttons"), B(
+      e = H("form"), r = H("div"), i = H("h3"), a = _e(o), l = le(), O && O.c(), f = le(), c = H("div"), S && S.c(), h = le(), s = H("div"), d = H("a"), y = _e(E), b = le(), L && L.c(), B(r, "class", "edit"), B(c, "class", "linkeditor-oc-dialog-buttonrow onebutton urlvisit"), B(d, "href", window.location.href), B(d, "class", "cancel button"), B(s, "class", "linkeditor-oc-dialog-buttonrow twobuttons"), B(
         e,
         "action",
         /*OC*/
@@ -11133,7 +11133,7 @@ function Ad(n) {
   n[1] && ua(n);
   return {
     c() {
-      e = H("form"), r = H("div"), i = H("h3"), i.textContent = `${window.t("files_linkeditor", "New link")}`, o = le(), y && y.c(), a = le(), l = H("div"), f = H("a"), h = _e(c), s = le(), b && b.c(), B(r, "class", "edit"), B(f, "href", window.location.href), B(f, "class", "cancel button"), B(l, "class", "oc-dialog-buttonrow twobuttons"), B(
+      e = H("form"), r = H("div"), i = H("h3"), i.textContent = `${window.t("files_linkeditor", "New link")}`, o = le(), y && y.c(), a = le(), l = H("div"), f = H("a"), h = _e(c), s = le(), b && b.c(), B(r, "class", "edit"), B(f, "href", window.location.href), B(f, "class", "cancel button"), B(l, "class", "linkeditor-oc-dialog-buttonrow twobuttons"), B(
         e,
         "action",
         /*OC*/

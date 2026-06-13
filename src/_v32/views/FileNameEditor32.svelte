@@ -72,7 +72,7 @@
 				</label>
 			{/if}
 		</div>
-		<div class="oc-dialog-buttonrow twobuttons">
+		<div class="linkeditor-oc-dialog-buttonrow twobuttons">
 			<a
 				href={window.location.href}
 				on:click|preventDefault={() => {

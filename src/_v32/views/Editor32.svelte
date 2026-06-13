@@ -68,12 +68,12 @@
 				</label>
 			{/if}
 		</div>
-		<div class="oc-dialog-buttonrow onebutton urlvisit">
+		<div class="linkeditor-oc-dialog-buttonrow onebutton urlvisit">
 			{#if !loading}
 				<a href={sanitizeUrl(file.url)} target="_blank" class="button">{t("files_linkeditor", "Visit link")}</a>
 			{/if}
 		</div>
-		<div class="oc-dialog-buttonrow twobuttons">
+		<div class="linkeditor-oc-dialog-buttonrow twobuttons">
 			<a
 				href={window.location.href}
 				on:click|preventDefault={() => {
