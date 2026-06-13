@@ -177,7 +177,7 @@ test.describe("Link File Sharing", () => {
 		await page.getByText("Files", { exact: true }).click();
 
 		await page
-			.getByRole("row", { name: 'Toggle selection for file "Test File.webloc" View link Assigned collaborative tags' })
+			.locator("[data-cy-files-list-row-name=\"Test File.webloc\"]")
 			.getByLabel("Sharing options")
 			.click();
 
