@@ -2,6 +2,22 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.25, 13. June 2026
+
+### Added
+
+- Support for Nextcloud 34
+- New end-to-end-test for Nextcloud 34
+- Custom .linkeditor-oc-dialog styling, since .oc-dialog styling got removed from the global stylesheets
+
+### Changed
+
+- Updated translations from Transifex
+
+### Fixed
+
+- Updated JS dependencies via `npm audit`
+
 ## 1.1.24, 28. February 2026
 
 ### Added
