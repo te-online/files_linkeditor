@@ -21,6 +21,7 @@ OC.L10N.register(
     "Open in same window" : "Abrir na mesma janela",
     "Skip confirmation dialog before open (has to open in same window)" : "Pular a caixa de diálogo de confirmação antes de abrir (deve abrir na mesma janela)",
     "Link editor" : "Editor de links",
+    "An app to read and edit .URL and .webloc files." : "Um aplicativo para ler e editar arquivos .URL e .webloc.",
     "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Links externos da web no Nextcloud!\n* ✍️ **cria e edita** links .URL e .webloc dentro do visualizador de arquivos\n* 🌍 **abra links** clicando e então confirmando que quer acessar um site externo\n* 📤 **funciona em compartilhamentos públicos** para que você possa compartilhar links facilmente com outras pessoas\n* 🔄 **sincronize seus links**, pois .URL e .webloc são links da web criados na maioria dos sistemas operacionais.\n\n_[Ver o registro de alterações](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
