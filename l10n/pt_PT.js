@@ -20,6 +20,7 @@ OC.L10N.register(
     "You are about to visit:" : "Você está prestes a visitar:",
     "Saving failed!" : "Falha ao salvar!",
     "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Este arquivo de link não parece ser válido. – Você pode corrigir isso editando o arquivo.",
+    "A slight problem" : "Um probleminha",
     "Cancel" : "Cancelar",
     "Visit link" : "Visitar link",
     "Link target URL" : "URL de destino do link",
