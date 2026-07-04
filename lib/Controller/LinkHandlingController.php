@@ -107,7 +107,10 @@ class LinkHandlingController extends Controller {
 						// set default encoding if it couldn't be detected
 						$encoding = 'ISO-8859-15';
 					}
-					$fileContents = iconv($encoding, 'UTF-8', $fileContents);
+					if ($encoding !== 'UTF-8') {
+						// convert to UTF-8 if it is not already
+						$fileContents = mb_convert_encoding($fileContents, 'UTF-8', $encoding);
+					}
 					return new DataResponse(
 						[
 							'filecontents' => $fileContents,
