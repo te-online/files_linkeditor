@@ -16,6 +16,7 @@ OC.L10N.register(
     "Edit link" : "Editar link",
     "View link" : "Visualizar link",
     "New link" : "Novo link",
+    "Link.URL" : "Link.URL",
     "Link.webloc" : "Link.webloc",
     "You are about to visit:" : "Você está prestes a visitar:",
     "Saving failed!" : "Falha ao salvar!",
