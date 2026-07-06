@@ -2,6 +2,12 @@
 
 Notable changes in each released version can be seen here.
 
+## Upcoming
+
+### Changed
+
+- Replace `iconv` with `mb_convert_encoding` to add support for environments without `iconv` (contributed by @thpiron, see #157)
+
 ## 1.1.25, 13. June 2026
 
 ### Added
