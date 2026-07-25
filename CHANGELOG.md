@@ -7,6 +7,7 @@ Notable changes in each released version can be seen here.
 ### Changed
 
 - Replace `iconv` with `mb_convert_encoding` to add support for environments without `iconv` (contributed by @thpiron, see #157)
+- Updated translations from Transifex
 
 ### Fixed
 
