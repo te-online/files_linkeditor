@@ -27,8 +27,7 @@
 .linkeditor-oc-dialog .edit {
 	padding-left: 20px;
     padding-right: 20px;
-	min-width: 300px;
-	max-width: 400px;
+    width: clamp(300px, 80dvw, 400px);
     border-radius: var(--border-radius-container) var(--border-radius-container) 0 0;
     background-color: var(--color-main-background);
     color: var(--color-main-text);
@@ -37,8 +36,7 @@
 }
 .linkeditor-oc-dialog-buttonrow {
     padding: 10px 20px;
-    min-width: 300px;
-    max-width: 400px;
+    width: clamp(300px, 80dvw, 400px);
     display: flex;
     justify-content: space-between;
     background-color: var(--color-main-background);
