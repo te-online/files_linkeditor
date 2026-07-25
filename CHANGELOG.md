@@ -2,11 +2,15 @@
 
 Notable changes in each released version can be seen here.
 
-## Upcoming
+## 1.1.26, 25. July 2026
 
 ### Changed
 
 - Replace `iconv` with `mb_convert_encoding` to add support for environments without `iconv` (contributed by @thpiron, see #157)
+
+### Fixed
+
+- Dialog: Body and buttons should have same width, even with long filenames
 
 ## 1.1.25, 13. June 2026
 
