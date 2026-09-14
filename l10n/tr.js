@@ -28,7 +28,7 @@ OC.L10N.register(
     "e.g. https://example.org" : "https://ornek.org gibi",
     "Save" : "Kaydet",
     "Open in same window" : "Aynı pencerede açılsın",
-    "Skip confirmation dialog before open (has to open in same window)" : "Açılmadan önce onay istenmesin (aynı pencerede açılmalıdır)",
+    "Skip confirmation dialog before open (has to open in same window)" : "Açılmadan önce onay iletişim kutusu atlansın (aynı pencerede açılmalıdır)",
     "Link editor" : "Bağlantı düzenleyici",
     "An app to read and edit .URL and .webloc files." : ".URL ve .webloc dosyalarını okuyan ve düzenleyen bir uygulama.",
     "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Nextcloud için dış site bağlantıları!\n* ✍️ **Dosya görünümünde .URL ve .webloc bağlantıları oluşturup düzenleyebilirsiniz**\n* 🌍 Üzerine tıkladıktan sonra dış siteye gitmek istediğinizi onaylayarak **bağlantıları açabilirsiniz**\n* 📤 **Herkese açık paylaşımları destekler**. Böylece başkalarıyla kolayca bağlantı paylaşabilirsiniz\n* 🔄 Çoğu işletim sistemi tarafından kullanılan .URL ve .webloc biçimleriyle **site bağlantılarınızı eşitleyebilirsiniz**.\n\n_[Değişiklik günlüğü](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
