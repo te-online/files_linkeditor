@@ -2,6 +2,21 @@
 
 Notable changes in each released version can be seen here.
 
+## 1.1.27, 14. September 2026
+
+### Added
+
+- Support for Nextcloud 35 RC4
+- New Playwright test for Nextcloud 35, run manually
+
+### Changed
+
+- Updated translations from Transifex
+
+### Fixed
+
+- Updated JS dependencies via `npm audit`
+
 ## 1.1.26, 25. July 2026
 
 ### Changed
