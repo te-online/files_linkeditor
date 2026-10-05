@@ -25,7 +25,7 @@ OC.L10N.register(
     "Cancel" : "Abbrechen",
     "Visit link" : "Link besuchen",
     "Link target URL" : "Ziel-URL des Links",
-    "e.g. https://example.org" : "z. B. https://example.org",
+    "e.g. https://example.org" : "z. B. https://example.org",
     "Save" : "Speichern",
     "Open in same window" : "Im selben Fenster öffnen",
     "Skip confirmation dialog before open (has to open in same window)" : "Bestätigungsdialog vor dem Öffnen überspringen (muss im selben Fenster geöffnet werden)",
