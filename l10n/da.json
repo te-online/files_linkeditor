@@ -16,10 +16,19 @@
     "New link" : "Nyt link",
     "Link.URL" : "Link.URL",
     "Link.webloc" : "Link.webloc",
+    "You are about to visit:" : "Du er ved at gå til:",
     "Saving failed!" : "Kunne ikke gemme!",
+    "This link-file doesn't seem to be valid. – You can fix this by editing the file." : "Linkfilen ser ikke ud til at være gyldig. – Du kan rette det ved at redigere filen.",
+    "A slight problem" : "Et lille problem",
     "Cancel" : "Annuller",
+    "Visit link" : "Gå til link",
+    "Link target URL" : "Linkets mål-URL",
+    "e.g. https://example.org" : "f.eks. https://example.org",
     "Save" : "Gem",
+    "Open in same window" : "Åbn i samme vindue",
+    "Skip confirmation dialog before open (has to open in same window)" : "Spring bekræftelsen over før åbning (skal åbnes i samme vindue)",
     "Link editor" : "Link editor",
-    "An app to read and edit .URL and .webloc files." : "En app til at vise og redigere .URL og .webloc filer."
+    "An app to read and edit .URL and .webloc files." : "En app til at vise og redigere .URL og .webloc filer.",
+    "### External web links in Nextcloud!\n* ✍️ **create and edit** .URL and .webloc links in the file view\n* 🌍 **open links** by clicking them and confirming you want to go to the external site\n* 📤 **works in public shares** so you can share links easily with others\n* 🔄 **sync your links** as .URL and .webloc are web links as created on most operating systems.\n\n_[View changelog](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_" : "### Eksterne weblinks i Nextcloud!\n* ✍️ **Opret og rediger** .URL- og .webloc-links i filvisningen\n* 🌍 **Åbn links** ved at klikke på dem og bekræfte, at du vil gå til det eksterne websted\n* 📤 **Virker i offentlige delinger**, så du let kan dele links med andre\n* 🔄 **Synkroniser dine links**, da .URL og .webloc er weblinks, som de oprettes på de fleste styresystemer.\n\n_[Se ændringsloggen](https://github.com/te-online/files_linkeditor/blob/main/CHANGELOG.md)_"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
