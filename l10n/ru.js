@@ -2,7 +2,7 @@ OC.L10N.register(
     "files_linkeditor",
     {
     "You can not open a folder" : "Вы не можете открыть каталог",
-    "This file is too big to be opened. Please download the file instead." : "Файл слишком большой для открытия. Пожалуйста, скачайте его.",
+    "This file is too big to be opened. Please download the file instead." : "Файл слишком большой для открытия. Скачайте его.",
     "Cannot read the file." : "Не удается прочитать файл.",
     "Invalid file path supplied." : "Указан некорректный путь.",
     "The file is locked." : "Файл заблокирован.",
